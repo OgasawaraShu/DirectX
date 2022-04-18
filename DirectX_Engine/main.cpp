@@ -45,6 +45,8 @@ using namespace Microsoft::WRL;
 #include "Enemy.h"
 #include "Item.h"
 
+//#include "fbxsdk.h"
+
 Sphere sphere;
 
 Plane plane;
@@ -85,6 +87,8 @@ LRESULT CALLBACK WindowProc(
 //# Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
+    //FbxManager* fbxManager = FbxManager::Create();
+
     //ポインタ置き場
     Input* input = nullptr;
     WinApp* winApp = nullptr;
