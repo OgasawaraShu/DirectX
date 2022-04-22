@@ -45,6 +45,9 @@ using namespace Microsoft::WRL;
 #include "Enemy.h"
 #include "Item.h"
 
+//#include "FbxLoader.h"
+#include "3d/FbxLoader.h"
+
 //#include "fbxsdk.h"
 
 Sphere sphere;
@@ -186,6 +189,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
  //   debugtext2.debugTextInit(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height, debugTextTexNumber2, spriteCommon);
 
     // DirectX初期化処理　ここまで
+
+    FbxLoader::GetInstance()->Initialize(dxCommon->GetDev());
  
     //3D初期値設定
 
@@ -228,6 +233,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     
    enemy1.Intialize();
    item->Intialize();
+
+   FbxLoader::GetInstance()->LoadModelFromFile("Cube");
 
     while (true)  // ゲームループ
     {

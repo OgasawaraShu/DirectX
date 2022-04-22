@@ -7,6 +7,11 @@
 #include <d3dx12.h>
 #include <string>
 
+struct Node
+{
+
+};
+
 class Model
 {
 
@@ -14,11 +19,14 @@ public:
 	//読み込む
 	static Model* LoadFromOBJ(const std::string& modelname);
 
+	friend class FbxLoader;
 
 	
 private: // エイリアス
 // Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
+
+	std::string name;
 
 	// DirectX::を省
 	/*
