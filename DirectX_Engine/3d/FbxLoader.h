@@ -26,7 +26,23 @@ public:
 
 	void LoadModelFromFile(const string& modelName);
 
-	void ParseNodeRecursive(Model* model, FbxNode* fbxNode);
+	void ParseNodeRecursive(Model* model, FbxNode* fbxNode,Node*parent=nullptr);
+
+	void ParseMesh(Model* model, FbxNode* fbxNode);
+
+	//頂点座標読み取り
+	void ParseMeshVectices(Model* model, FbxMesh* fbxMesh);
+	//画面情報
+	void ParseMeshFaces(Model* model, FbxMesh* fbxMesh);
+	//マテリアル
+	void ParseMaterial(Model* model, FbxNode* fbxNode);
+	//テクスチャ
+	void LoadTexture(Model* model, const std::string& fullpath);
+
+	std::string ExtractFileName(const std::string& path);
+
+
+
 
 private:
 	//D3D12デバイス
@@ -49,4 +65,6 @@ private:
 public://定数
 	//モデル格納√パス
 	static const string baseDirectory;
+
+	static const string defaultTextureFileName;
 };
