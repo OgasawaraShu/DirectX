@@ -47,12 +47,20 @@ private: // エイリアス
 	std::vector<Node>nodes;
 
 	// DirectX::を省
-	/*
+	
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
-	*/
+	using TexMettadata=DirectX::TexMetadata;
+	using ScratchImage=DirectX::ScratchImage;
+	
+	using string = std::string;
+	template<class T> using vector =
+		template <class T> using vector = std::vector<T>;
+
+
+
 public: // サブクラス
 // 頂点データ構造体
 	struct VertexPosNormalUv
@@ -159,6 +167,11 @@ public:
 
 	void Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial);
 
+	void CreateBuffers2(ID3D12Device* device);
+
+	void Draw2(ID3D12GraphicsCommandList* cmdList);
+
+	const XMMATRIX& GetModelTransform() { return meshNode->globalTransform; }
 
 
 
@@ -191,6 +204,8 @@ private://メンバ変数
 	ComPtr<ID3D12Resource> vertBuff;
 	// インデックスバッファ
 	ComPtr<ID3D12Resource> indexBuff;
+
+	ComPtr<ID3D12DescriptorHeap> descHeapSRV;
 
 	//アンビエント係数
 	DirectX::XMFLOAT3 ambient = { 1,1,1 };
