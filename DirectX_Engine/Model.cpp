@@ -490,7 +490,7 @@ void Model::Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial
 	if (material.textureFilename.size() > 0) {
 
 		// シェーダリソースビューをセット
-		cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandleSRV);
+		cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandleSRV);
 	}
 
 	// 定数バッファビューをセット

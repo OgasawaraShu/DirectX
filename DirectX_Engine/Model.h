@@ -56,7 +56,7 @@ private: // エイリアス
 	using ScratchImage=DirectX::ScratchImage;
 	
 	using string = std::string;
-	template<class T> using vector =
+//	template<class T> using vector =
 		template <class T> using vector = std::vector<T>;
 
 
@@ -175,10 +175,10 @@ public:
 
 
 
-	std::vector<unsigned short>indices;
+	//std::vector<unsigned short>indices;
 
 	// 頂点データ配列
-	std::vector<VertexPosNormalUv> vertices;
+	//std::vector<VertexPosNormalUv> vertices;
 
 	
 private://メンバ変数

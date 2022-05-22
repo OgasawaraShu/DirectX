@@ -24,7 +24,8 @@ public:
 
 	using string = std::string;
 
-	void LoadModelFromFile(const string& modelName);
+	//void LoadModelFromFile(const string& modelName);
+	Model* LoadModelFromFile(const string& modelName);
 
 	void ParseNodeRecursive(Model* model, FbxNode* fbxNode,Node*parent=nullptr);
 

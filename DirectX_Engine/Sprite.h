@@ -18,17 +18,22 @@ public:
     struct ConstBufferData8 {
         DirectX::XMFLOAT4 color8;//色
         DirectX::XMMATRIX mat8;//3D変換行列
+        float Time8;
+        float Bar8;
     };
 
-    static Sprite*Create(SpriteCommon* spriteCommon, UINT texnumber,
+    static Sprite* Create(SpriteCommon* spriteCommon, UINT texnumber,
         DirectX::XMFLOAT2 anchorpoint = { 0.5f,0.5f }, bool isFlagX = false, bool isFlagY = false);
 
 
-private:
-    SpriteCommon* spriteCommon_=nullptr;
+protected:
+    SpriteCommon* spriteCommon_ = nullptr;
 
     //頂点バッファ
     Microsoft::WRL::ComPtr<ID3D12Resource> vertBuff_;
+
+    // 頂点数
+    static const int vertNum_ = 4;
 
     //頂点バッファビュー
     D3D12_VERTEX_BUFFER_VIEW vbView_;
@@ -74,7 +79,7 @@ private:
 
 public:
     void Initialize(SpriteCommon* spriteCommon, UINT texnumber,
-        DirectX::XMFLOAT2 anchorpoint, bool isFlagX , bool isFlagY );
+        DirectX::XMFLOAT2 anchorpoint, bool isFlagX, bool isFlagY);
 
     void SpriteTransVertexBuffer();
 
@@ -83,11 +88,49 @@ public:
 
     //位置
     void SetPosition(const DirectX::XMFLOAT3& position) { position_ = position; }
-    void SetRotation(const DirectX::XMFLOAT3& rotation) { rotation_= rotation; }
+    void SetRotation(const DirectX::XMFLOAT3& rotation) { rotation_ = rotation; }
     void SetSize(const DirectX::XMFLOAT2& size) { size_ = size; }
     void SettexLeftTop(const DirectX::XMFLOAT2& texLeftTop) { texLeftTop_ = texLeftTop; }
     void SettexSize(const DirectX::XMFLOAT2& texSize) { texSize_ = texSize; }
+    void SetColor(const DirectX::XMFLOAT4& color) { color_ = color; }
+    void SetAnchor(const DirectX::XMFLOAT2& anchorpoint) { anchorpoint_ = anchorpoint; }
 
     void Update();
+
+    //アニメーション用
+    void SpriteDivDraw(float& DIVnum, float Divsize, float& sizex, float sizey, float& count);
+
+    //ポストエフェクト
+    static const float clearColor[4];
+
+    static Sprite* PostCreate(SpriteCommon* spriteCommon, UINT texnumber,
+        DirectX::XMFLOAT2 anchorpoint = { 0.5f,0.5f }, bool isFlagX = false, bool isFlagY = false);
+
+
+    void PostInitialize(SpriteCommon* spriteCommon, UINT texnumber,
+        DirectX::XMFLOAT2 anchorpoint, bool isFlagX, bool isFlagY);
+
+    Microsoft::WRL::ComPtr<ID3D12Resource> texBuff;
+
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descHeapSRV;
+
+    Microsoft::WRL::ComPtr<ID3D12Resource>depthBuff;
+
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>descHeapRTV;
+
+    Microsoft::WRL::ComPtr<ID3D12DescriptorHeap>descHeapDSV;
+
+    Microsoft::WRL::ComPtr<ID3D12PipelineState>pipelineState_Post;
+    Microsoft::WRL::ComPtr<ID3D12RootSignature>rootSignature;
+
+
+
+    void CreateGraphicsPipelineState_Post();
+
+    void PreDrawScene(ID3D12GraphicsCommandList* cmdList);
+
+    void PostDrawScene(ID3D12GraphicsCommandList* cmdList);
+
+    void PostDraw();
 };
 
