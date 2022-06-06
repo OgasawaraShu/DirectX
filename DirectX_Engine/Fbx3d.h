@@ -9,6 +9,7 @@
 #include <d3dx12.h>
 #include <DirectXMath.h>
 #include <string>
+#include "3d/FbxLoader.h"
 
 
 class Fbx3d //:
@@ -47,6 +48,8 @@ public:
 	static void SetDevice(ID3D12Device* device) { Fbx3d::device = device; }
 	static void SetCamera(Camera*camera ){Fbx3d::camera=camera; }
 
+
+
 	void Initialize();
 
 	void Update();
@@ -57,6 +60,30 @@ public:
 	void Draw2(ID3D12GraphicsCommandList* cmdList);
 
 	static void CreateGraphicsPipeline();
+
+	FbxTime frameTime;
+
+	FbxTime startTime;
+
+	FbxTime endTime;
+
+	FbxTime currentTime;
+
+	bool isPlay = false;
+
+	void PlayAnimation2();
+
+public://定数
+	
+	static const int MAX_BONES = 32;
+
+	struct ConstBufferDataSkin
+	{
+		XMMATRIX bones[MAX_BONES];
+	};
+
+	//定数バッファ
+	ComPtr<ID3D12Resource>constBuffSkin;
 
 private:
 

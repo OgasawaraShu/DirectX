@@ -54,6 +54,11 @@ Model* Model::LoadFromOBJ(const std::string&modelname)
 	return model;
 }
 
+Model::~Model()
+{
+	fbxScene->Destroy();
+}
+
 void Model::LoadFromOBJInternal(const std::string& modelname)
 {
 	HRESULT result = S_FALSE;
@@ -509,6 +514,8 @@ void Model::Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial
 void Model::Draw2(ID3D12GraphicsCommandList* cmdList)
 {
 }
+
+
 
 void Model::CreateBuffers2(ID3D12Device* device)
 {

@@ -72,7 +72,8 @@ Model*FbxLoader::LoadModelFromFile(const string& modelName)
     //√ノードから準二階席する
     ParseNodeRecursive(model, fbxScene->GetRootNode());
     //シーン解放
-    fbxScene->Destroy();
+   // fbxScene->Destroy();
+    model->fbxScene = fbxScene;
 
     model->CreateBuffers();
 
@@ -163,6 +164,8 @@ void FbxLoader::ParseMesh(Model* model, FbxNode* fbxNode)
     ParseMeshFaces(model, fbxMesh);
     //マテリアル読み取り
     ParseMaterial(model, fbxNode);
+    //スキニング情報の読み取り
+    ParseSkin(model, fbxMesh);
 }
 
 void FbxLoader::ParseMeshVectices(Model* model, FbxMesh* fbxMesh)
@@ -335,6 +338,20 @@ void FbxLoader::LoadTexture(Model* model, const std::string& fullpath)
     }
 }
 
+void FbxLoader::ConvertMatrixFromFbx(DirectX::XMMATRIX* dst, const FbxAMatrix& src)
+{
+
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            dst->r[i].m128_f32[j] = (float)src.Get(i, j);
+        }
+    }
+
+}
+
 std::string FbxLoader::ExtractFileName(const std::string& path)
 {
     size_t pos1;
@@ -351,4 +368,117 @@ std::string FbxLoader::ExtractFileName(const std::string& path)
     }
 
     return path;
+}
+
+void FbxLoader::ParseSkin(Model* model, FbxMesh* fbxMesh)
+{
+    //情報
+    FbxSkin* fbxSkin =
+        static_cast<FbxSkin*>(fbxMesh->GetDeformer(0, FbxDeformer::eSkin));
+
+    if (fbxSkin == nullptr) {
+
+
+        for (int i = 0; i < model->vertices.size(); i++)
+        {
+            model->vertices[i].boneIndex[0] = 0;
+            model->vertices[i].boneWeight[0] = 1.0f;
+        }
+        return;
+    }
+
+    //ボーンの参照
+    std::vector<Model::Bone>& bones = model->bones;
+
+    //ボーンの数
+    int clusterCount = fbxSkin->GetClusterCount();
+    bones.reserve(clusterCount);
+
+    //全てのボーン
+    for (int i = 0; i < clusterCount; i++)
+    {
+        //FBXボーン情報
+        FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
+
+        //名前取得
+        const char* boneName = fbxCluster->GetLink()->GetName();
+
+        //新しく追加し、参照を得る
+        bones.emplace_back(Model::Bone(boneName));
+        Model::Bone& bone = bones.back();
+        //自作とFBxのボーンを紐づける
+        bone.fbxCluster = fbxCluster;
+
+        FbxAMatrix fbxMat;
+        fbxCluster->GetTransformLinkMatrix(fbxMat);
+
+        //XMMatrix型に変換する
+        XMMATRIX intialPose;
+        ConvertMatrixFromFbx(&intialPose, fbxMat);
+
+        //初期姿勢行列の行列を得る
+        bone.invInitialPose = XMMatrixInverse(nullptr, intialPose);
+    }
+
+    struct WeightSet {
+        UINT index;
+        float weight;
+    };
+
+    std::vector<std::list<WeightSet>>
+        weightLists(model->vertices.size());
+
+    for (int i = 0; i < clusterCount; i++)
+    {
+        FbxCluster* fbxCluster = fbxSkin->GetCluster(i);
+
+        int controlPointIndicesCount = fbxCluster->GetControlPointIndicesCount();
+
+        int* controlPointIndices = fbxCluster->GetControlPointIndices();
+
+        double* controlPointWeights = fbxCluster->GetControlPointWeights();
+
+        for (int j = 0; j < controlPointIndicesCount; j++)
+        {
+            int vertIndex = controlPointIndices[j];
+
+            float weight = (float)controlPointWeights[j];
+
+            weightLists[vertIndex].emplace_back(WeightSet{ (UINT)i,weight });
+        }
+    }
+
+    auto& vertices = model->vertices;
+
+
+    for (int i = 0; i < vertices.size(); i++)
+    {
+        auto& weightList = weightLists[i];
+
+        weightList.sort(
+            [](auto const& lhs, auto const& rhs) {
+                return lhs.weight > rhs.weight;
+            }
+        );
+
+        int weightArrayIndex = 0;
+
+        for (auto& weightSet : weightList)
+        {
+            vertices[i].boneIndex[weightArrayIndex] = weightSet.index;
+            vertices[i].boneWeight[weightArrayIndex] = weightSet.weight;
+
+            if (++weightArrayIndex >= Model::MAX_BONE_INDICES) {
+                float weight = 0.0f;
+
+                for (int j = 1; j < Model::MAX_BONE_INDICES; j++) {
+                    weight += vertices[i].boneWeight[j];
+                }
+
+                vertices[i].boneWeight[0] = 1.0f - weight;
+                break;
+            }
+        }
+    }
+   
 }

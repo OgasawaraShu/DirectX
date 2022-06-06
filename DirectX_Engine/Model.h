@@ -10,6 +10,8 @@
 #include <vector>
 #include <DirectXTex.h>
 
+#include<fbxsdk.h>
+
 struct Node
 {
 	//名前
@@ -37,7 +39,13 @@ public:
 
 	friend class FbxLoader;
 
-	
+	static const int MAX_BONE_INDICES = 4;
+
+	FbxScene* fbxScene = nullptr;
+
+	FbxScene* GetFbxScene() { return fbxScene; }
+
+	~Model();
 private: // エイリアス
 // Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
@@ -68,6 +76,8 @@ public: // サブクラス
 		DirectX::XMFLOAT3 pos; // xyz座標
 		DirectX::XMFLOAT3 normal; // 法線ベクトル
 		DirectX::XMFLOAT2 uv;  // uv座標
+		UINT boneIndex[MAX_BONE_INDICES];
+		float boneWeight[MAX_BONE_INDICES];
 	};
 
 	//マテリアル
@@ -124,11 +134,29 @@ public: // サブクラス
 	 };
 	 */
 
-	 struct VetexPosNormalUv
+	 struct VetexPosNormalUvSkin
 	 {
 		 DirectX::XMFLOAT3 pos;
 		 DirectX::XMFLOAT3 normal;
 		 DirectX::XMFLOAT2 uv;
+		 UINT boneIndex[MAX_BONE_INDICES];//番号
+		 float boneWeight[MAX_BONE_INDICES];//重み
+	 };
+
+	 //ボーン構造体
+	 struct Bone
+	 {
+		 //名前
+		 std::string name;
+		 //初期姿勢の逆
+		 DirectX::XMMATRIX invInitialPose;
+		 //クラスター
+		 FbxCluster* fbxCluster;
+		 //コンストラクタ
+		 Bone(const std::string& name)
+		 {
+			 this->name = name;
+		 }
 	 };
 
 	 //目sshすぉもつノード
@@ -173,14 +201,17 @@ public:
 
 	const XMMATRIX& GetModelTransform() { return meshNode->globalTransform; }
 
-
-
+	
 	//std::vector<unsigned short>indices;
 
 	// 頂点データ配列
 	//std::vector<VertexPosNormalUv> vertices;
+	//ボーン
+	std::vector<Bone> bones;
 
-	
+	//getter
+	std::vector<Bone>& GetBones() { return bones; }
+
 private://メンバ変数
 	
 	
@@ -222,6 +253,12 @@ private://メンバ変数
 	
 	
 	Microsoft::WRL::ComPtr<ID3D12Resource> constBuffB1; // 定数バッファ
+
+	
+
+	//public:
+
+		
 	
 };
 

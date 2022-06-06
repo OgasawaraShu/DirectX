@@ -47,6 +47,10 @@ using namespace Microsoft::WRL;
 
 //#include "FbxLoader.h"
 #include "3d/FbxLoader.h"
+#include "Fbx3d.h"
+#include "Camera.h"
+#include "DebugCamera.h"
+
 
 //#include "fbxsdk.h"
 
@@ -61,7 +65,10 @@ Ray ray;
 //
 DirectXCommon* dxCommon = nullptr;
 SpriteCommon* spriteCommon = new SpriteCommon();
+SpriteCommon* spriteCommon2= new SpriteCommon();
 
+
+DebugCamera* camera = nullptr;
 //ComPtr<ID3D12Device> dev;
 
 LRESULT CALLBACK WindowProc(
@@ -100,6 +107,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //WindowsAPIの初期化
     winApp = new WinApp();
     winApp->Initialize();
+
+    Model* model1 = nullptr;
+    Fbx3d* fbx3d1 = nullptr;
+    //DebugCamera* camera = nullptr;
+
    
 // DirectX初期化処理　ここから
 
@@ -114,7 +126,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //入力の初期化
     input = new Input();
     input->Intialize(winApp);
-      
+
+
+    camera = new DebugCamera(WinApp::window_width, WinApp::window_height, input);
+
     //3D初期化
     Object3d::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height);
     //読み込み
@@ -133,6 +148,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //スプライト初期化
   
     spriteCommon->Initialize(dxCommon->GetDev(),dxCommon->GetCmdList(),winApp->window_width,winApp->window_height);
+   spriteCommon->Initialize_Post(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_height);
+
+
+
+    //ポストエフェクト用
+  //Sprite*sprite=Sprite::Create(100, "Resources/Red.png");
+   Sprite* sprite100 = Sprite::PostCreate(spriteCommon, 100);
+   spriteCommon->SpriteCommonLoadTexture(100, L"Resources/Red.png");
 
     //スプライト
     Sprite* sprite = Sprite::Create(spriteCommon,0);
@@ -234,7 +257,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    enemy1.Intialize();
    item->Intialize();
 
-   FbxLoader::GetInstance()->LoadModelFromFile("Cube");
+   //モデル読み込み
+  model1= FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
+
+  camera->SetTarget({ 0,20,0 });
+  camera->SetDistance(3.0f);
+
+
+
+  Fbx3d::SetDevice(dxCommon->GetDev());
+
+  Fbx3d::SetCamera(camera);
+
+  Fbx3d::CreateGraphicsPipeline();
+
+
+
+  //3Dオブジェクト生成とモデルのセット
+  fbx3d1= new Fbx3d;
+  fbx3d1->Initialize();
+  fbx3d1->SetModel(model1);
+
+
+  
+
+  
+  
+
+   
+
+  fbx3d1->Update();
 
     while (true)  // ゲームループ
     {
@@ -242,19 +294,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //3d更新
         
         //スプライト
-      sprite->Update();
-      sprite2->Update();
-      sprite3->Update();
-      sprite4->Update();
+    //  sprite->Update();
+     // sprite2->Update();
+     // sprite3->Update();
+     // sprite4->Update();
 
-      sprite->SetPosition({ player->Player_RedX,player->Player_RedY,0 });
-      sprite2->SetPosition({ player->Player_BlueX,player->Player_BlueY,0 });
-      sprite3->SetPosition({ enemy1.Enemy1[1].X,enemy1.Enemy1[1].Y,0 });
-      sprite4->SetPosition({ item->LEG_[0].X,item->LEG_[0].Y,0});
+     // sprite->SetPosition({ player->Player_RedX,player->Player_RedY,0 });
+    // sprite2->SetPosition({ player->Player_BlueX,player->Player_BlueY,0 });
+     //sprite3->SetPosition({ enemy1.Enemy1[1].X,enemy1.Enemy1[1].Y,0 });
+    //  sprite4->SetPosition({ item->LEG_[0].X,item->LEG_[0].Y,0});
 
-      sprite2->SetSize({ 70*player->Blue_Lv,70 * player->Blue_Lv });
+ //     sprite2->SetSize({ 70*player->Blue_Lv,70 * player->Blue_Lv });
     
-      sprite2->SpriteTransVertexBuffer();
+  //    sprite2->SpriteTransVertexBuffer();
      
         //sprintf_s(moji, "%d", Target_Hit);
         //sprintf_s(moji2, "%d", TimeRimit);
@@ -278,6 +330,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         enemy1.Update();
         item->Update();
 
+        camera->Update();
+
+       // fbx3d1->Update();
+
+        /*
         if (collision.CollisionArm(player->Player_BlueX, player->Player_BlueY, player->Blue_R, enemy1.Enemy1[1].X, enemy1.Enemy1[1].Y, enemy1.Enemy1[1].R)&& enemy1.Enemy1[0].Flag ==1)
         {
             enemy1.Enemy1[0].Flag = 0;
@@ -288,37 +345,55 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         if (collision.CollisionArm(player->Central_x,player->Central_y,50,item->LEG_[0].X,item->LEG_[0].Y,50))
         {
             item->LEG_[0].Flag = 1;
-        }
+        }*/
       //  debugtext->Print(moji, debug_x, debug_y);
        // debugtext2.Print(spriteCommon, moji2, debug2_x, debug2_y,1.0f);
-   
-        // バックバッファの番号を取得（2つなので0番か1番）
+
+        //レンダ―テクスチャの描画
+        sprite100->PreDrawScene(dxCommon->GetCmdList());
+        ////スプライト共通コマンド
+        spriteCommon->PreDraw();
+
+
+
+        //ポストエフェクトここまで
+        sprite100->PostDrawScene(dxCommon->GetCmdList());
+
+        //バックバッファの番号を取得（2つなので0番か1番）
         dxCommon->PreDraw();
 
+
+        spriteCommon->PreDraw_Post();
+        // sprite100->Update();
+        sprite100->PostDraw();
+        
         //3D描画前処理
         Object3d::PreDraw(dxCommon->GetCmdList());
 
         //3D描画
         //ここに処理追加できる
+        fbx3d1->Draw2(dxCommon->GetCmdList());
 
         //3D描画後処理
         Object3d::PostDraw();
    
+
+
         ////スプライト共通コマンド
-        spriteCommon->PreDraw();
+       // spriteCommon->PreDraw();
 
         //スプライト表示
 
         //アイテム
-        if(item->LEG_[0].Flag ==0) sprite4->SpriteDraw();
+       // if(item->LEG_[0].Flag ==0) sprite4->SpriteDraw();
 
 
         //敵
-        if (enemy1.Enemy1[0].Flag == 1)sprite3->SpriteDraw();
+       // if (enemy1.Enemy1[0].Flag == 1)sprite3->SpriteDraw();
 
         //自キャラ
-        sprite->SpriteDraw();
-        sprite2->SpriteDraw();
+      //  sprite->SpriteDraw();
+      //  sprite2->SpriteDraw();
        
         //メイン
         if (GameScene == 1)
@@ -358,6 +433,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     audio->Finalize();
     delete audio;
+
+    delete fbx3d1;
+    delete model1;
   
     return 0;
 }
