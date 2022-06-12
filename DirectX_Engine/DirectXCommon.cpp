@@ -257,7 +257,7 @@ void DirectXCommon::PreDraw()
     cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
 
     // ３．画面クリア           R     G     B    A
-    float clearColor[] = { 0,0, 0,1 }; // 青っぽい色
+    float clearColor[] = { 0,0,1,1 }; // 青っぽい色
     cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
     cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 

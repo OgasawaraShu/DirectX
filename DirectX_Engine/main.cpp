@@ -258,10 +258,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    item->Intialize();
 
    //モデル読み込み
-  model1= FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
+  model1= FbxLoader::GetInstance()->LoadModelFromFile("cube");
 
   camera->SetTarget({ 0,20,0 });
-  camera->SetDistance(3.0f);
+  camera->SetDistance(20.0f);
 
 
 
@@ -286,7 +286,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
    
 
-  fbx3d1->Update();
+  //fbx3d1->Update();
 
     while (true)  // ゲームループ
     {
@@ -332,7 +332,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         camera->Update();
 
-       // fbx3d1->Update();
+        fbx3d1->Update();
 
         /*
         if (collision.CollisionArm(player->Player_BlueX, player->Player_BlueY, player->Blue_R, enemy1.Enemy1[1].X, enemy1.Enemy1[1].Y, enemy1.Enemy1[1].R)&& enemy1.Enemy1[0].Flag ==1)
@@ -365,7 +365,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         spriteCommon->PreDraw_Post();
         // sprite100->Update();
-        sprite100->PostDraw();
+        //sprite100->PostDraw();
         
         //3D描画前処理
         Object3d::PreDraw(dxCommon->GetCmdList());

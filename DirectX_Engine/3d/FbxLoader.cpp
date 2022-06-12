@@ -75,7 +75,7 @@ Model*FbxLoader::LoadModelFromFile(const string& modelName)
    // fbxScene->Destroy();
     model->fbxScene = fbxScene;
 
-    model->CreateBuffers();
+    model->CreateBuffers2(device);
 
     return model;
 
