@@ -14,39 +14,6 @@ Camera* Fbx3d::camera = nullptr;
 
 using namespace DirectX;
 
-void Fbx3d::Initialize()
-{
-	HRESULT result;
-
-	result = device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataTransform) + 0xff) & ~0xff),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constBuffTransform));
-
-	//定数バッファの作成
-	result = device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataSkin) + 0xff) & ~0xff),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constBuffSkin));
-
-	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
-
-	ConstBufferDataSkin* constMapSkin = nullptr;
-	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
-	for (int i = 0; i < MAX_BONES; i++)
-	{
-		constMapSkin->bones[i] = XMMatrixIdentity();
-	}
-	constBuffSkin->Unmap(0, nullptr);
-}
-
-
 void Fbx3d::CreateGraphicsPipeline()
 {
 	HRESULT result = S_FALSE;
@@ -124,7 +91,7 @@ void Fbx3d::CreateGraphicsPipeline()
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0
 
-         },
+		 },
 		{//スキンウェイト
 			"BONEWEIGHTS",0,DXGI_FORMAT_R32G32B32A32_FLOAT,0,
 			D3D12_APPEND_ALIGNED_ELEMENT,
@@ -181,7 +148,7 @@ void Fbx3d::CreateGraphicsPipeline()
 
 	// ルートパラメータ
 	CD3DX12_ROOT_PARAMETER rootparams[3];
-	
+
 	// CBV（座標変換行列用）
 	rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);
 	// SRV（テクスチャ）
@@ -209,6 +176,42 @@ void Fbx3d::CreateGraphicsPipeline()
 	result = device->CreateGraphicsPipelineState(&gpipeline, IID_PPV_ARGS(pipelinestate.ReleaseAndGetAddressOf()));
 	if (FAILED(result)) { assert(0); }
 
+}
+
+
+
+void Fbx3d::Initialize()
+{
+	//Model::SetDevice(device);
+
+	HRESULT result;
+
+	result = device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataTransform) + 0xff) & ~0xff),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&constBuffTransform));
+
+	//定数バッファの作成
+	result = device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataSkin) + 0xff) & ~0xff),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&constBuffSkin));
+
+	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+
+	ConstBufferDataSkin* constMapSkin = nullptr;
+	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
+	for (int i = 0; i < MAX_BONES; i++)
+	{
+		constMapSkin->bones[i] = XMMatrixIdentity();
+	}
+	constBuffSkin->Unmap(0, nullptr);
 }
 
 void Fbx3d::Update()
@@ -282,7 +285,7 @@ void Fbx3d::Update()
 	
 }
 
-void Fbx3d::Draw2(ID3D12GraphicsCommandList* cmdList)
+void Fbx3d::Draw(ID3D12GraphicsCommandList* cmdList)
 {
 	//割り当てなければやらない
 	if (model == nullptr) {

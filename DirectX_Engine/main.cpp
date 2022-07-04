@@ -67,8 +67,6 @@ DirectXCommon* dxCommon = nullptr;
 SpriteCommon* spriteCommon = new SpriteCommon();
 SpriteCommon* spriteCommon2= new SpriteCommon();
 
-
-DebugCamera* camera = nullptr;
 //ComPtr<ID3D12Device> dev;
 
 LRESULT CALLBACK WindowProc(
@@ -123,15 +121,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     dxCommon->Initialize(winApp);
     HRESULT result;
      
+
+
+     input = new Input();
+
     //入力の初期化
-    input = new Input();
+  //  Input* input = Input::GetInstance();
+  
     input->Intialize(winApp);
 
 
+    //カメラ
+    DebugCamera* camera = nullptr;
     camera = new DebugCamera(WinApp::window_width, WinApp::window_height, input);
 
     //3D初期化
-    Object3d::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height);
+   // Object3d::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height);
+
+
+
+    //FBX
+ //   Fbx3d::SetDevice(dxCommon->GetDev());
+
+  //  Fbx3d::SetCamera(camera);
+
+  //  Fbx3d::CreateGraphicsPipeline();
+
+    //3Dオブジェクト生成とモデルのセット
+ //   fbx3d1 = new Fbx3d;
+ //   fbx3d1->Initialize();
+ //   fbx3d1->SetModel(model1);
     //読み込み
 
     //生成
@@ -147,7 +166,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     
     //スプライト初期化
   
-    spriteCommon->Initialize(dxCommon->GetDev(),dxCommon->GetCmdList(),winApp->window_width,winApp->window_height);
+   spriteCommon->Initialize(dxCommon->GetDev(),dxCommon->GetCmdList(),winApp->window_width,winApp->window_height);
    spriteCommon->Initialize_Post(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_height);
 
 
@@ -257,20 +276,24 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    enemy1.Intialize();
    item->Intialize();
 
+   camera->SetTarget({ 0,20,0 });
+   camera->SetDistance(100.0f);
+
+
    //モデル読み込み
+   Fbx3d::SetDevice(dxCommon->GetDev());
+
+   Fbx3d::SetCamera(camera);
+
+   Fbx3d::CreateGraphicsPipeline();
+
+
   model1= FbxLoader::GetInstance()->LoadModelFromFile("cube");
 
-  camera->SetTarget({ 0,20,0 });
-  camera->SetDistance(20.0f);
+  
 
 
-
-  Fbx3d::SetDevice(dxCommon->GetDev());
-
-  Fbx3d::SetCamera(camera);
-
-  Fbx3d::CreateGraphicsPipeline();
-
+  
 
 
   //3Dオブジェクト生成とモデルのセット
@@ -282,7 +305,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   
 
   
-  
+ 
 
    
 
@@ -290,26 +313,28 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     while (true)  // ゲームループ
     {
+     //3d更新   
+     //スプライト
+     
 
-        //3d更新
-        
-        //スプライト
-    //  sprite->Update();
+     // sprite->Update();
      // sprite2->Update();
      // sprite3->Update();
      // sprite4->Update();
 
-     // sprite->SetPosition({ player->Player_RedX,player->Player_RedY,0 });
-    // sprite2->SetPosition({ player->Player_BlueX,player->Player_BlueY,0 });
-     //sprite3->SetPosition({ enemy1.Enemy1[1].X,enemy1.Enemy1[1].Y,0 });
-    //  sprite4->SetPosition({ item->LEG_[0].X,item->LEG_[0].Y,0});
 
- //     sprite2->SetSize({ 70*player->Blue_Lv,70 * player->Blue_Lv });
+
+     // sprite->SetPosition({ player->Player_RedX,player->Player_RedY,0 });
+     // sprite2->SetPosition({ player->Player_BlueX,player->Player_BlueY,0 });
+     // sprite3->SetPosition({ enemy1.Enemy1[1].X,enemy1.Enemy1[1].Y,0 });
+     // sprite4->SetPosition({ item->LEG_[0].X,item->LEG_[0].Y,0});
+
+     // sprite2->SetSize({ 70*player->Blue_Lv,70 * player->Blue_Lv });
     
-  //    sprite2->SpriteTransVertexBuffer();
+     // sprite2->SpriteTransVertexBuffer();
      
-        //sprintf_s(moji, "%d", Target_Hit);
-        //sprintf_s(moji2, "%d", TimeRimit);
+     // sprintf_s(moji, "%d", Target_Hit);
+     // sprintf_s(moji2, "%d", TimeRimit);
      
         if (winApp->ProcessMessage())
         {
@@ -368,14 +393,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //sprite100->PostDraw();
         
         //3D描画前処理
-        Object3d::PreDraw(dxCommon->GetCmdList());
+      //  Object3d::PreDraw(dxCommon->GetCmdList());
 
         //3D描画
         //ここに処理追加できる
-        fbx3d1->Draw2(dxCommon->GetCmdList());
+        fbx3d1->Draw(dxCommon->GetCmdList());
 
         //3D描画後処理
-        Object3d::PostDraw();
+        //Object3d::PostDraw();
    
 
 
@@ -436,6 +461,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     delete fbx3d1;
     delete model1;
+
+    FbxLoader::GetInstance()->Finalize();
   
     return 0;
 }

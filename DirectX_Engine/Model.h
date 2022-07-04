@@ -185,7 +185,7 @@ public:
 
 	//bool InitializeDescriptorHeap();
 
-	void CreateBuffers();
+	//void CreateBuffers();
 
 	/// <summary>
 	/// デスクリプタヒープの初期化

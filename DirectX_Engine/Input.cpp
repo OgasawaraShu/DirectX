@@ -11,6 +11,14 @@
 #pragma comment(lib,"dxguid.lib")
 
 
+//Input* Input::GetInstance()
+//{/
+//
+//    static Input instance;
+
+//    return &instance;
+//}
+
 void Input::Intialize(WinApp* winApp)
 {
     HRESULT result;

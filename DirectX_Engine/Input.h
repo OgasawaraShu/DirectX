@@ -14,9 +14,20 @@
 
 
 //“ü—Í
-class Input
+class Input //final
 {
+//private:
+//	Input();
+//	~Input();
+
+//public:
+//	Input(const Input& obj) = delete;
+//	Input& operator=(const Input& obj) = delete;
+
+//	static Input* GetInstance();
 public:
+
+
 	//namespaceÈ—ª
 	template<class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 

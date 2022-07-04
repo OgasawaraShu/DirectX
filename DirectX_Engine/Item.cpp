@@ -7,6 +7,8 @@ void Item::Intialize()//‰Šú‰»
 {
     memset(LEG_, 0, sizeof(LEG_));
 
+    //LEG_[0] = {};
+
     //\‘¢‘Ì‰Šú‰»‘ã“ü
     for (int i = 0; i++; i < 10)
     {
@@ -23,6 +25,11 @@ void Item::Intialize()//‰Šú‰»
     {
         ARM_[i] = { 0,0,0,0,0 };
     }
+
+    //for (Item::Arm& arm : ARM_)
+    //{
+    //    arm = { 0,0,0,0,0 };
+    //}
 
     memset(STRONG_, 0, sizeof(STRONG_));
 

@@ -57,7 +57,7 @@ public:
 
 	void SetModel(Model* model) { this->model = model; }
 
-	void Draw2(ID3D12GraphicsCommandList* cmdList);
+	void Draw(ID3D12GraphicsCommandList* cmdList);
 
 	static void CreateGraphicsPipeline();
 

@@ -367,7 +367,7 @@ bool Model::InitializeDescriptorHeap()
 	return true;
 }
 
-
+/*
 void Model::CreateBuffers()
 {
 	HRESULT result = S_FALSE;
@@ -473,7 +473,7 @@ void Model::CreateBuffers()
 
 
 }
-
+*/
 void Model::Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial)
 {
 
@@ -627,7 +627,7 @@ void Model::CreateBuffers2(ID3D12Device* device)
 	);
 
 	// テクスチャ用バッファの生成
-	result = Model::device->CreateCommittedResource(
+	result = device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0),
 		D3D12_HEAP_FLAG_NONE,
 		&texresDesc,
