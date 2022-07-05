@@ -193,7 +193,7 @@ public:
 	/// <returns></returns>
 	bool InitializeDescriptorHeap();
 
-	void Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial);
+	void Draw3(ID3D12GraphicsCommandList* cmdList);
 
 	void CreateBuffers2(ID3D12Device* device);
 

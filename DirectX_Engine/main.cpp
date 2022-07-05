@@ -92,6 +92,11 @@ LRESULT CALLBACK WindowProc(
 #    define MyOutputDebugString( str, ... ) // 空実装
 #endif
 
+
+Model* model1 = nullptr;
+Fbx3d* fbx3d1 = nullptr;
+//カメラ
+DebugCamera* camera = nullptr;
 //# Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
@@ -106,8 +111,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     winApp = new WinApp();
     winApp->Initialize();
 
-    Model* model1 = nullptr;
-    Fbx3d* fbx3d1 = nullptr;
+    
     //DebugCamera* camera = nullptr;
 
    
@@ -131,12 +135,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     input->Intialize(winApp);
 
 
-    //カメラ
-    DebugCamera* camera = nullptr;
+ 
     camera = new DebugCamera(WinApp::window_width, WinApp::window_height, input);
 
     //3D初期化
-   // Object3d::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height);
+   //Object3d::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height);
 
 
 
@@ -275,10 +278,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     
    enemy1.Intialize();
    item->Intialize();
+   camera->SetTarget({ 10,0,0 });
+   //camera->SetDistance(30.0f);
 
-   camera->SetTarget({ 0,20,0 });
-   camera->SetDistance(100.0f);
 
+
+   model1 = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 
    //モデル読み込み
    Fbx3d::SetDevice(dxCommon->GetDev());
@@ -288,8 +293,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Fbx3d::CreateGraphicsPipeline();
 
 
-  model1= FbxLoader::GetInstance()->LoadModelFromFile("cube");
-
+  
   
 
 
@@ -305,6 +309,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   
 
   
+  fbx3d1->PlayAnimation2();
  
 
    
@@ -397,7 +402,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         //3D描画
         //ここに処理追加できる
-        fbx3d1->Draw(dxCommon->GetCmdList());
+        fbx3d1->Draw2(dxCommon->GetCmdList());
 
         //3D描画後処理
         //Object3d::PostDraw();

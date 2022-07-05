@@ -57,10 +57,15 @@ public:
 
 	void SetModel(Model* model) { this->model = model; }
 
-	void Draw(ID3D12GraphicsCommandList* cmdList);
+	void Draw2(ID3D12GraphicsCommandList* cmdList);
 
 	static void CreateGraphicsPipeline();
 
+	
+
+	void PlayAnimation2();
+
+private:
 	FbxTime frameTime;
 
 	FbxTime startTime;
@@ -70,8 +75,6 @@ public:
 	FbxTime currentTime;
 
 	bool isPlay = false;
-
-	void PlayAnimation2();
 
 public://íËêî
 	

@@ -367,114 +367,8 @@ bool Model::InitializeDescriptorHeap()
 	return true;
 }
 
-/*
-void Model::CreateBuffers()
-{
-	HRESULT result = S_FALSE;
 
-
-
-	std::vector<VertexPosNormalUv> realVertices;
-
-	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
-	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
-	
-
-	// 頂点バッファ生成
-	result = device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		//&CD3DX12_RESOURCE_DESC::Buffer(sizeof(vertices)),
-		&CD3DX12_RESOURCE_DESC::Buffer(sizeVB),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&vertBuff));
-	if (FAILED(result)) {
-		assert(0);
-		return;
-	}
-
-	// インデックスバッファ生成
-	result = device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		//&CD3DX12_RESOURCE_DESC::Buffer(sizeof(indices)),
-		&CD3DX12_RESOURCE_DESC::Buffer(sizeIB),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&indexBuff));
-	if (FAILED(result)) {
-		assert(0);
-		return;
-	}
-
-	// 頂点バッファへのデータ転送
-	VertexPosNormalUv* vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
-	if (SUCCEEDED(result)) {
-		//memcpy(vertMap, vertices, sizeof(vertices));
-		std::copy(vertices.begin(), vertices.end(), vertMap);
-		vertBuff->Unmap(0, nullptr);
-	}
-
-	// インデックスバッファへのデータ転送
-	unsigned short* indexMap = nullptr;
-	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
-	if (SUCCEEDED(result)) {
-
-		// 全インデックスに対して
-		//for (int i = 0; i < _countof(indices); i++)
-	//	{
-	//		indexMap[i] = indices[i];	// インデックスをコピー
-	//	}
-		std::copy(indices.begin(), indices.end(), indexMap);
-
-		indexBuff->Unmap(0, nullptr);
-	}
-
-	// 頂点バッファビューの作成
-	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
-	//	vbView.SizeInBytes = sizeof(vertices);
-	vbView.SizeInBytes = sizeVB;
-	vbView.StrideInBytes = sizeof(vertices[0]);
-
-	// インデックスバッファビューの作成
-	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
-	ibView.Format = DXGI_FORMAT_R16_UINT;
-	//ibView.SizeInBytes = sizeof(indices);
-	ibView.SizeInBytes = sizeIB;
-
-	//const DirectX::Image* img = scratchImg.GetImage(0, 0, 0);
-	//assert(img);
-
-	//定数バッファの生成
-	result = device->CreateCommittedResource(
-		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
-		D3D12_HEAP_FLAG_NONE,
-		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB1) + 0xff) & ~0xff),
-		D3D12_RESOURCE_STATE_GENERIC_READ,
-		nullptr,
-		IID_PPV_ARGS(&constBuffB1)
-	);
-
-
-
-	// 定数バッファへデータ転送
-	ConstBufferDataB1* constMap1 = nullptr;
-	result = constBuffB1->Map(0, nullptr, (void**)&constMap1);
-	constMap1->ambient = material.ambient;
-	constMap1->diffuse = material.diffuse;
-	constMap1->specular = material.specular;
-	constMap1->alpha = material.alpha;
-
-	constBuffB1->Unmap(0, nullptr);
-
-
-
-
-}
-*/
-void Model::Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial)
+void Model::Draw3(ID3D12GraphicsCommandList* cmdList)
 {
 
 	// 頂点バッファの設定
@@ -482,8 +376,8 @@ void Model::Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial
 	// インデックスバッファの設定
 	cmdList->IASetIndexBuffer(&ibView);
 
-	cmdList->SetGraphicsRootConstantBufferView(rootParamIndexMaterial,
-		constBuffB1->GetGPUVirtualAddress());
+	//cmdList->SetGraphicsRootConstantBufferView(rootParamIndexMaterial,
+	//	constBuffB1->GetGPUVirtualAddress());
 
 	// デスクリプタヒープの配列
 	ID3D12DescriptorHeap* ppHeaps[] = { descHeapSRV.Get() };
@@ -492,12 +386,12 @@ void Model::Draw(ID3D12GraphicsCommandList* cmdList, UINT rootParamIndexMaterial
 	// 定数バッファビューをセット
 	//cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0->GetGPUVirtualAddress());
 	// シェーダリソースビューをセット
-	//cmdList->SetGraphicsRootDescriptorTable(1, descHeapSRV->GetGPUDescriptorHandleForHeapStart());
+	cmdList->SetGraphicsRootDescriptorTable(1, descHeapSRV->GetGPUDescriptorHandleForHeapStart());
 
 	if (material.textureFilename.size() > 0) {
 
 	// シェーダリソースビューをセット
-		cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandleSRV);
+	//	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandleSRV);
 	}
 
 	// 定数バッファビューをセット
@@ -521,7 +415,7 @@ void Model::Draw2(ID3D12GraphicsCommandList* cmdList)
 
 void Model::CreateBuffers2(ID3D12Device* device)
 {
-	HRESULT result = S_FALSE;
+	HRESULT result;
 
 
 
@@ -591,6 +485,7 @@ void Model::CreateBuffers2(ID3D12Device* device)
 	ibView.SizeInBytes = sizeIB;
 
 	//定数バッファの生成
+	/**/
 	result = device->CreateCommittedResource(
 		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
 		D3D12_HEAP_FLAG_NONE,

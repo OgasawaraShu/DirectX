@@ -203,8 +203,6 @@ void Fbx3d::Initialize()
 		nullptr,
 		IID_PPV_ARGS(&constBuffSkin));
 
-	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
-
 	ConstBufferDataSkin* constMapSkin = nullptr;
 	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
 	for (int i = 0; i < MAX_BONES; i++)
@@ -212,6 +210,10 @@ void Fbx3d::Initialize()
 		constMapSkin->bones[i] = XMMatrixIdentity();
 	}
 	constBuffSkin->Unmap(0, nullptr);
+
+
+	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
+
 }
 
 void Fbx3d::Update()
@@ -253,19 +255,21 @@ void Fbx3d::Update()
 		constBuffTransform->Unmap(0, nullptr);
 	}
 
-	std::vector<Model::Bone>& bones = model->GetBones();
-
-
 	//アニメーション
 	if (isPlay) {
 		//1フレーム進める
 		currentTime += frameTime;
 
+		//最後まで行ったら先頭に戻す
 		if (currentTime > endTime) {
 			currentTime = startTime;
 		}
 
 	}
+
+
+
+	std::vector<Model::Bone>& bones = model->GetBones();
 
 	ConstBufferDataSkin* constMapSkin = nullptr;
 	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
@@ -285,7 +289,7 @@ void Fbx3d::Update()
 	
 }
 
-void Fbx3d::Draw(ID3D12GraphicsCommandList* cmdList)
+void Fbx3d::Draw2(ID3D12GraphicsCommandList* cmdList)
 {
 	//割り当てなければやらない
 	if (model == nullptr) {
@@ -298,30 +302,33 @@ void Fbx3d::Draw(ID3D12GraphicsCommandList* cmdList)
 	cmdList->SetGraphicsRootSignature(rootsignature.Get());
 	//プリミティブ
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	
+	cmdList->SetGraphicsRootConstantBufferView(0,
+		constBuffTransform->GetGPUVirtualAddress());
+
 	//定数バッファビュー
 	cmdList->SetGraphicsRootConstantBufferView(2,
 		constBuffSkin->GetGPUVirtualAddress());
 	
-
 	//描画
-	model->Draw(cmdList,0);
+	model->Draw3(cmdList);
 }
 
 void Fbx3d::PlayAnimation2()
 {
 	FbxScene* fbxScene = model->GetFbxScene();
-
+	//0のアニメーションを取得
 	FbxAnimStack* animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
-
+	//アニメーション名前を取得
 	const char* animstackname = animstack->GetName();
-
+	//時間取得
 	FbxTakeInfo* takeinfo = fbxScene->GetTakeInfo(animstackname);
-
+	//開始時間取得
 	startTime = takeinfo->mLocalTimeSpan.GetStart();
-
+	//終了時間取得
 	endTime = takeinfo->mLocalTimeSpan.GetStop();
-
+	//開始時間に合わせる
 	currentTime = startTime;
-
+	//再生中にする
 	isPlay = true;
 }
