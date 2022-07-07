@@ -202,7 +202,7 @@ void Fbx3d::Initialize()
 		D3D12_RESOURCE_STATE_GENERIC_READ,
 		nullptr,
 		IID_PPV_ARGS(&constBuffSkin));
-
+	/**/
 	ConstBufferDataSkin* constMapSkin = nullptr;
 	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
 	for (int i = 0; i < MAX_BONES; i++)
@@ -323,6 +323,9 @@ void Fbx3d::PlayAnimation2()
 	const char* animstackname = animstack->GetName();
 	//時間取得
 	FbxTakeInfo* takeinfo = fbxScene->GetTakeInfo(animstackname);
+
+
+
 	//開始時間取得
 	startTime = takeinfo->mLocalTimeSpan.GetStart();
 	//終了時間取得

@@ -378,7 +378,7 @@ void FbxLoader::ParseSkin(Model* model, FbxMesh* fbxMesh)
 
     if (fbxSkin == nullptr) {
 
-
+        /**/
         for (int i = 0; i < model->vertices.size(); i++)
         {
             model->vertices[i].boneIndex[0] = 0;

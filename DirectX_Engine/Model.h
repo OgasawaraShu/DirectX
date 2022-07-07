@@ -133,7 +133,7 @@ public: // サブクラス
 		 Node* parent = nullptr;
 	 };
 	 */
-
+/*
 	 struct VetexPosNormalUvSkin
 	 {
 		 DirectX::XMFLOAT3 pos;
@@ -142,7 +142,7 @@ public: // サブクラス
 		 UINT boneIndex[MAX_BONE_INDICES];//番号
 		 float boneWeight[MAX_BONE_INDICES];//重み
 	 };
-
+	 */
 	 //ボーン構造体
 	 struct Bone
 	 {

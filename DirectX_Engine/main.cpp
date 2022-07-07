@@ -310,11 +310,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
   
   fbx3d1->PlayAnimation2();
- 
-
-   
-
-  //fbx3d1->Update();
 
     while (true)  // ゲームループ
     {
