@@ -379,6 +379,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         ////スプライト共通コマンド
         spriteCommon->PreDraw();
 
+        fbx3d1->Draw2(dxCommon->GetCmdList());
 
 
         //ポストエフェクトここまで
@@ -389,16 +390,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
         spriteCommon->PreDraw_Post();
-        // sprite100->Update();
-        //sprite100->PostDraw();
+         sprite100->Update();
+        sprite100->PostDraw();
         
         //3D描画前処理
       //  Object3d::PreDraw(dxCommon->GetCmdList());
 
         //3D描画
         //ここに処理追加できる
-        fbx3d1->Draw2(dxCommon->GetCmdList());
-
+      
         //3D描画後処理
         //Object3d::PostDraw();
    

@@ -286,14 +286,19 @@ void SpriteCommon::CreateGraphicsPipelineState_Post()
             D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
         }, // (1行で書いたほうが見やすい)
     };
-    CD3DX12_DESCRIPTOR_RANGE  descRangeSRV;
+    CD3DX12_DESCRIPTOR_RANGE  descRangeSRV0;
     //descRangeCBV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);//b0 レジスタ
-    descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);//t0 レジスタ
+    descRangeSRV0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);//t0 レジスタ
 
+    CD3DX12_DESCRIPTOR_RANGE  descRangeSRV1;
+    //descRangeCBV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);//b0 レジスタ
+    descRangeSRV1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);//t0 レジスタ
 
-    CD3DX12_ROOT_PARAMETER rootparams[2];
-    rootparams[0].InitAsConstantBufferView(0);//定数バッファビューとして初期化(b0　レジスタ)
-    rootparams[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+    CD3DX12_ROOT_PARAMETER rootparams[3];
+    rootparams[0].InitAsConstantBufferView(0, 0, D3D12_SHADER_VISIBILITY_ALL);//定数バッファビューとして初期化(b0　レジスタ)
+    rootparams[1].InitAsDescriptorTable(1, &descRangeSRV0, D3D12_SHADER_VISIBILITY_ALL);
+    rootparams[2].InitAsDescriptorTable(1, &descRangeSRV1, D3D12_SHADER_VISIBILITY_ALL);
+
 
     // グラフィックスパイプライン設定
     D3D12_GRAPHICS_PIPELINE_STATE_DESC gpipeline{};
@@ -642,14 +647,18 @@ void SpriteCommon::CreateSprite2dpipe_Post()
             D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
         }, // (1行で書いたほうが見やすい)
     };
-    CD3DX12_DESCRIPTOR_RANGE  descRangeSRV;
+    CD3DX12_DESCRIPTOR_RANGE  descRangeSRV0;
     //descRangeCBV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);//b0 レジスタ
-    descRangeSRV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);//t0 レジスタ
+    descRangeSRV0.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);//t0 レジスタ
 
+    CD3DX12_DESCRIPTOR_RANGE  descRangeSRV1;
+    //descRangeCBV.Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, 1, 0);//b0 レジスタ
+    descRangeSRV1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 1);//t0 レジスタ
 
-    CD3DX12_ROOT_PARAMETER rootparams[2];
-    rootparams[0].InitAsConstantBufferView(0);//定数バッファビューとして初期化(b0　レジスタ)
-    rootparams[1].InitAsDescriptorTable(1, &descRangeSRV, D3D12_SHADER_VISIBILITY_ALL);
+    CD3DX12_ROOT_PARAMETER rootparams[3];
+    rootparams[0].InitAsConstantBufferView(0,0,D3D12_SHADER_VISIBILITY_ALL);//定数バッファビューとして初期化(b0　レジスタ)
+    rootparams[1].InitAsDescriptorTable(1, &descRangeSRV0, D3D12_SHADER_VISIBILITY_ALL);
+    rootparams[2].InitAsDescriptorTable(1, &descRangeSRV1, D3D12_SHADER_VISIBILITY_ALL);
 
     // グラフィックスパイプライン設定
     D3D12_GRAPHICS_PIPELINE_STATE_DESC gpipeline{};

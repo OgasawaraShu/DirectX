@@ -45,6 +45,8 @@ public://ƒƒ“ƒoŠÖ”
 
 	void PadUpdate();
 
+	static Input* GetInstance();
+
 	
 	//XINPUT_STATE state;
 
