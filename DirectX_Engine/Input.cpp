@@ -35,37 +35,20 @@ void Input::Intialize(WinApp* winApp)
     result = dinput->CreateDevice(GUID_SysKeyboard, &devkeyboard, NULL);
     //入力データの形式セット
     result = devkeyboard->SetDataFormat(&c_dfDIKeyboard);
+    // マウスデバイスの生成	
+    result = dinput->CreateDevice(GUID_SysMouse, &devMouse, NULL);
+    // 入力データ形式のセット
+    result = devMouse->SetDataFormat(&c_dfDIMouse2); // 標準形式
     //排他制御レベルのセット
     result = devkeyboard->SetCooperativeLevel(
         winApp->GetHwnd(), DISCL_FOREGROUND | DISCL_NONEXCLUSIVE | DISCL_NOWINKEY);
-
-
-
-    //ゲームパッド
-    //result=dinput->EnumDevices(DI8DEVCLASS_GAMECTRL, EnumJoysticksCallback,
-    //   NULL, DIEDFL_ATTACHEDONLY);
-
-
+    
 }
 
-/*
-BOOL CALLBACK EnumJoysticksCallback(const DIDEVICEINSTANCE* pdidInstance, VOID* pContext)
-{
-    HRESULT hr;
 
-    hr =dinput->CreateDevice(pdidInstance->guidInstance, &Input::gamepad, NULL);
-
-    if (FAILED(hr)) return DIENUM_CONTINUE;
-
-    return DIENUM_STOP;
-}
-*/
 void Input::Update()
 {
     HRESULT result;
-
-    //前回のキー入力を保存
-   // memcpy(oldkey, key, sizeof(key));
 
     //キーボード情報の取得
     result = devkeyboard->Acquire();
@@ -75,6 +58,14 @@ void Input::Update()
 
     result = devkeyboard->GetDeviceState(sizeof(key), key);
 
+
+
+    // マウス
+    result = devMouse->Acquire();	// マウス動作開始
+    // 前回の入力を保存
+    mouseStatePre = mouseState;
+    // マウスの入力
+    result = devMouse->GetDeviceState(sizeof(mouseState), &mouseState);
 }
 
 bool Input::PushKey(BYTE keyNumber)
@@ -136,5 +127,38 @@ void Input::PadUpdate()
     vibration.wRightMotorSpeed = 0;
     XInputSetState(0, &vibration);
 
+
+}
+
+bool Input::PushMouseLeft()
+{
+    // 0でなければ押している
+    if (mouseState.rgbButtons[0]) {
+        return true;
+    }
+    return false;
+}
+
+bool Input::TriggerMouseLeft()
+{
+    // 前回が0で、今回が0でなければトリガー
+    if (!mouseStatePre.rgbButtons[0] && mouseState.rgbButtons[0]) {
+        return true;
+    }
+
+    return false;
+}
+
+Input::MouseMove Input::GetMouseMove()
+{
+    MouseMove tmp;
+    tmp.lX = mouseState.lX;
+    tmp.lY = mouseState.lY;
+    tmp.lZ = mouseState.lZ;
+    return tmp;
+}
+
+void Input::MouseSetPosition()
+{
 
 }

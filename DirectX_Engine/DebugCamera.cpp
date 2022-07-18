@@ -1,4 +1,5 @@
 #include "DebugCamera.h"
+#include "Fbx3d.h"
 #include <cassert>
 
 using namespace DirectX;
@@ -17,10 +18,93 @@ DebugCamera::DebugCamera(int window_width, int window_height, Input* input)
 void DebugCamera::Update()
 {
 	bool dirty = false;
-	float angleX = 0;
-	float angleY = 0;
+	float target_x = 0;
+
+	// マウスの入力を取得
+	Input::MouseMove mouseMove = input->GetMouseMove();
+
+	GamePad* GP = nullptr;
+	GP = new GamePad();
+
+	 //パッドの更新
+	GP->Update();
+
+	// マウスの左ボタンが押されていたらカメラを回転させる
+	/*
+	if (input->PushMouseLeft())
+	{
+		
+	}
+	*/
+
+	float dy = mouseMove.lX * scaleY;
+	float dx = mouseMove.lY * scaleX;
+
+	angleX = -dx * XM_PI;
+	angleY = -dy * XM_PI;
+	dirty = true;
+
+
+	//ゲームパッドアナログスティックR入力時処理(視点移動)
+	if (GP->state.Gamepad.sThumbRX != 0 || GP->state.Gamepad.sThumbRY != 0)
+	{
+		float dy = static_cast<FLOAT>(GP->state.Gamepad.sThumbRX / 32767.0 * (0.02f));
+		float dx = static_cast<FLOAT>(GP->state.Gamepad.sThumbRY / 32767.0 * (0.02f));
+
+		angleX = dx * XM_PI;
+		angleY = -dy * XM_PI;
+		dirty = true;
+	}
+	
 
 	
+	// WASDが押されていたらカメラを並行移動させる
+	if (input->PushKey(DIK_A)||input->PushKey(DIK_D)|| input->PushKey(DIK_W) || input->PushKey(DIK_S))
+	{
+		float dx1 = 0;
+		float dz = 0;
+		if (input->PushKey(DIK_A))
+		{
+			dx1 -= 0.6f;
+		}
+		
+		if (input->PushKey(DIK_D))
+		{
+			dx1 += 0.6f;
+		}
+
+		if (input->PushKey(DIK_W))
+		{
+			dz += 0.6f;
+		}
+
+		if (input->PushKey(DIK_S))
+		{
+			dz -= 0.6f;
+		}
+	
+		XMVECTOR move = { dx1, 0, dz, 0 };
+		move = XMVector3Transform(move, matRot);
+
+		MoveVector(move);
+		dirty = true;
+	}
+	
+	//ゲームパッドアナログスティックL入力時処理(場所移動)
+	if (GP->state.Gamepad.sThumbLX != 0 || GP->state.Gamepad.sThumbLY != 0)
+	{
+		float dx = static_cast<FLOAT>(GP->state.Gamepad.sThumbLX / 32767.0 * (1.0f));
+		float dz = static_cast<FLOAT>(GP->state.Gamepad.sThumbLY / 32767.0 * (1.0f));
+
+
+		XMVECTOR move = { dx, 0, dz, 0 };
+		move = XMVector3Transform(move, matRot);
+
+		MoveVector(move);
+		dirty = true;
+	}
+
+
 	if (dirty || viewDirty) {
 		// 追加回転分の回転行列を生成
 		XMMATRIX matRotNew = XMMatrixIdentity();
@@ -31,19 +115,37 @@ void DebugCamera::Update()
 		// クォータニオンを使用する方が望ましい
 		matRot = matRotNew * matRot;
 
-		// 注視点から視点へのベクトルと、上方向ベクトル
-		XMVECTOR vTargetEye = { 0.0f, 0.0f, -distance, 1.0f };
+		// 注視点から視点へのベクトルと、上方向ベクトル  視点
+		//XMVECTOR vTargetEye = { 0.0f, 0.0f, -distance, 1.0f };
+		XMVECTOR vEyeTarget = { 0.0f, 0.0f, distance, 1.0f };
 		XMVECTOR vUp = { 0.0f, 1.0f, 0.0f, 0.0f };
 
 		// ベクトルを回転
-		vTargetEye = XMVector3Transform(vTargetEye, matRot);
+		//vTargetEye = XMVector3Transform(vTargetEye, matRot);
+		vEyeTarget = XMVector3Transform(vEyeTarget, matRot);
 		vUp = XMVector3Transform(vUp, matRot);
 
 		// 注視点からずらした位置に視点座標を決定
-		const XMFLOAT3& target = GetTarget();
-		SetEye({ target.x + vTargetEye.m128_f32[0], target.y + vTargetEye.m128_f32[1], target.z + vTargetEye.m128_f32[2] });
+		//const XMFLOAT3& target = GetTarget();
+		const XMFLOAT3& target = GetEye();
+
+
+		//SetEye({ target.x + vTargetEye.m128_f32[0], target.y + vTargetEye.m128_f32[1], target.z + vTargetEye.m128_f32[2] });
+		SetTarget({ target.x + vEyeTarget.m128_f32[0], target.y + vEyeTarget.m128_f32[1], target.z + vEyeTarget.m128_f32[2] });
 		SetUp({ vUp.m128_f32[0], vUp.m128_f32[1], vUp.m128_f32[2] });
 	}
 
 	Camera::Update();
 }
+
+float DebugCamera::GetAngleX()
+{
+	return angleX;
+}
+
+float DebugCamera::GetAngleY()
+{
+	return angleY;
+}
+
+

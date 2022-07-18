@@ -10,6 +10,8 @@
 #include <DirectXMath.h>
 #include <string>
 #include "3d/FbxLoader.h"
+#include "DebugCamera.h"
+//#include "Input.h"
 
 
 class Fbx3d //:
@@ -26,6 +28,7 @@ protected:
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMMATRIX = DirectX::XMMATRIX;
+	using XMVECTOR = DirectX::XMVECTOR;
 
 	ComPtr<ID3D12Resource> constBuffTransform;
 
@@ -41,18 +44,26 @@ protected:
 
 	Model* model = nullptr;
 
+	XMFLOAT3 vec = { 0,0,1 };
 
+	XMVECTOR move = { 0,0,1.0f,0 };
 
+	float dy;
+		float dx;
 public:
 
 	static void SetDevice(ID3D12Device* device) { Fbx3d::device = device; }
 	static void SetCamera(Camera*camera ){Fbx3d::camera=camera; }
 
 
+	Fbx3d(Input* input);
 
 	void Initialize();
 
 	void Update();
+	void Update_CameraVec(double angleX, double angleY, int Move);
+
+
 
 
 	void SetModel(Model* model) { this->model = model; }
@@ -65,6 +76,11 @@ public:
 
 	void PlayAnimation2();
 
+	//void SetVec(XMVECTOR) {};;
+
+	void SetPosition(const DirectX::XMFLOAT3& position_) { position = position_; }
+	void SetScale(const DirectX::XMFLOAT3& scale_) { scale = scale_; }
+
 private:
 	FbxTime frameTime;
 
@@ -76,6 +92,14 @@ private:
 
 	bool isPlay = false;
 
+
+	float angleX1;
+	float angleY1;
+
+	
+	// 入力クラスのポインタ
+	Input* input;
+
 public://定数
 	
 	static const int MAX_BONES = 32;
@@ -84,6 +108,8 @@ public://定数
 	{
 		XMMATRIX bones[MAX_BONES];
 	};
+
+
 
 	//定数バッファ
 	ComPtr<ID3D12Resource>constBuffSkin;
@@ -106,8 +132,5 @@ public:
 		XMMATRIX world;
 		XMFLOAT3 cameraPos;
 	};
-
-	//static Camera* camera;
-
 };
 

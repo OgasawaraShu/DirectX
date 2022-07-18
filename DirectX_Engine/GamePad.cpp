@@ -26,6 +26,15 @@ void GamePad::Update()
         state.Gamepad.sThumbLY = 0;
     }
 
+    //ゲームパッド右側処理
+    if ((state.Gamepad.sThumbRX < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE && state.Gamepad.sThumbRX > -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE) &&
+        (state.Gamepad.sThumbRY < XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE && state.Gamepad.sThumbRY > -XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE))
+    {
+        state.Gamepad.sThumbRX = 0;
+        state.Gamepad.sThumbRY = 0;
+    }
+
+
 
     vibration.wLeftMotorSpeed = 0;
     vibration.wRightMotorSpeed = 0;

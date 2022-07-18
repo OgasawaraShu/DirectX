@@ -70,5 +70,29 @@ private:
 	//WindowsAPI
 	WinApp* winApp = nullptr;
 
+	//以下マウス
+public:
+	struct MouseMove {
+		LONG    lX;
+		LONG    lY;
+		LONG    lZ;
+	};
+
+
+	// キーの左ボタン押下をチェック
+	bool PushMouseLeft();
+
+	// キーの左ボタントリガーをチェック
+	bool TriggerMouseLeft();
+
+	// マウス移動量を取得
+	MouseMove GetMouseMove();
+
+	void MouseSetPosition();
+
+private://メンバ変数
+	ComPtr<IDirectInputDevice8> devMouse;
+	DIMOUSESTATE2 mouseState = {};
+	DIMOUSESTATE2 mouseStatePre = {};
 };
 

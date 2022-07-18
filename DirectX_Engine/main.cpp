@@ -51,7 +51,8 @@ using namespace Microsoft::WRL;
 #include "Camera.h"
 #include "DebugCamera.h"
 
-
+#include "PortalGun.h"
+#include "GamePad.h"
 //#include "fbxsdk.h"
 
 Sphere sphere;
@@ -93,8 +94,7 @@ LRESULT CALLBACK WindowProc(
 #endif
 
 
-Model* model1 = nullptr;
-Fbx3d* fbx3d1 = nullptr;
+
 //カメラ
 DebugCamera* camera = nullptr;
 //# Windowsアプリでのエントリーポイント(main関数)
@@ -106,14 +106,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     Input* input = nullptr;
     WinApp* winApp = nullptr;
     Audio* audio = nullptr;
-    
+    GamePad* gamepad = nullptr;
     //WindowsAPIの初期化
     winApp = new WinApp();
     winApp->Initialize();
 
-    
-    //DebugCamera* camera = nullptr;
-
+    gamepad = new GamePad();
    
 // DirectX初期化処理　ここから
 
@@ -275,15 +273,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     Item* item = nullptr;
     item = new Item();
 
-    
+    //
+    PortalGun*portalgun = nullptr;
+    portalgun = new PortalGun(input,gamepad);
+
    enemy1.Intialize();
    item->Intialize();
-   camera->SetTarget({ 10,0,0 });
+  // camera->SetTarget({ 10,0,0 });
    //camera->SetDistance(30.0f);
+   Model* model1 = nullptr;
+   Fbx3d* fbx3d1 = nullptr;
+
+   Model* model2 = nullptr;
+   Fbx3d* fbx3d2 = nullptr;
+
+   Model* model3 = nullptr;
+   Fbx3d* fbx3d3 = nullptr;
+
+   Model* model4 = nullptr;
+   Fbx3d* fbx3d4 = nullptr;
 
 
+   model1 = FbxLoader::GetInstance()->LoadModelFromFile("floor");
+   model2 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
+   model3 = FbxLoader::GetInstance()->LoadModelFromFile("blueBall");
+   model4 = FbxLoader::GetInstance()->LoadModelFromFile("redBall");
 
-   model1 = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 
    //モデル読み込み
    Fbx3d::SetDevice(dxCommon->GetDev());
@@ -292,24 +307,48 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
    Fbx3d::CreateGraphicsPipeline();
 
-
+   portalgun->Initialize();
   
-  
+  //gette,setter関連
+   float blueBall_x = 0;
+   float blueBall_y = 0;
+   float blueBall_z = 0;
+   float blueBall_r = 0;
 
+ 
+  // portalgun->setter_blue(blueBall_x, blueBall_y, blueBall_z, blueBall_r);
 
-  
-
+   
 
   //3Dオブジェクト生成とモデルのセット
-  fbx3d1= new Fbx3d;
+  fbx3d1= new Fbx3d(input);
   fbx3d1->Initialize();
   fbx3d1->SetModel(model1);
+  
+
+  fbx3d2 = new Fbx3d(input);
+  fbx3d2->Initialize();
+  fbx3d2->SetModel(model2);
+
+  fbx3d3 = new Fbx3d(input);
+  fbx3d3->Initialize();
+  fbx3d3->SetModel(model3);
+
+  fbx3d4 = new Fbx3d(input);
+  fbx3d4->Initialize();
+  fbx3d4->SetModel(model4);
+
+
+  fbx3d1->SetPosition({ 0, -150, 0 });
+
+  fbx3d3->SetScale({ 0.05, 0.05,0.05 });
+  fbx3d4->SetScale({ 0.05, 0.05,0.05 });
+
+  fbx3d4->SetPosition({ 20, 0, 0 });
 
 
   
-
-  
-  fbx3d1->PlayAnimation2();
+ // fbx3d1->PlayAnimation2();
 
     while (true)  // ゲームループ
     {
@@ -322,7 +361,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
      // sprite3->Update();
      // sprite4->Update();
 
-
+     // fbx3d3->SetPosition({ blueBall_x, blueBall_y,portalgun->get_blueZ() });
 
      // sprite->SetPosition({ player->Player_RedX,player->Player_RedY,0 });
      // sprite2->SetPosition({ player->Player_BlueX,player->Player_BlueY,0 });
@@ -333,8 +372,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     
      // sprite2->SpriteTransVertexBuffer();
      
-     // sprintf_s(moji, "%d", Target_Hit);
-     // sprintf_s(moji2, "%d", TimeRimit);
+      sprintf_s(moji, "%f", camera->GetAngleX());
+      //sprintf_s(moji2,"%d",camera->GetAngleY());
      
         if (winApp->ProcessMessage())
         {
@@ -351,36 +390,29 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //ゲーム内の動作  
 
         //更新
-        player->Controll();//ゲームパッドによるPlayerの操作
-        enemy1.Update();
-        item->Update();
+        portalgun->Update();
+        //p-portalgun->setter_blue(blueBall_x, blueBall_y, blueBall_z, blueBall_r);
+
 
         camera->Update();
+        //debugcamera->Update();
 
         fbx3d1->Update();
+        fbx3d2->Update();
+        fbx3d3->Update_CameraVec(camera->GetAngleX(), camera->GetAngleY(),portalgun->get_flagZ());
+        fbx3d4->Update();
 
-        /*
-        if (collision.CollisionArm(player->Player_BlueX, player->Player_BlueY, player->Blue_R, enemy1.Enemy1[1].X, enemy1.Enemy1[1].Y, enemy1.Enemy1[1].R)&& enemy1.Enemy1[0].Flag ==1)
-        {
-            enemy1.Enemy1[0].Flag = 0;
-            player->Blue_Lv += 1;
-            player->Blue_R += 30;
-        }
 
-        if (collision.CollisionArm(player->Central_x,player->Central_y,50,item->LEG_[0].X,item->LEG_[0].Y,50))
-        {
-            item->LEG_[0].Flag = 1;
-        }*/
-      //  debugtext->Print(moji, debug_x, debug_y);
-       // debugtext2.Print(spriteCommon, moji2, debug2_x, debug2_y,1.0f);
+        
+       
+        //debugtext2->Print(spriteCommon, moji2, debug2_x, debug2_y,1.0f);
 
         //レンダ―テクスチャの描画
         sprite100->PreDrawScene(dxCommon->GetCmdList());
         ////スプライト共通コマンド
         spriteCommon->PreDraw();
 
-
-
+     
         //ポストエフェクトここまで
         sprite100->PostDrawScene(dxCommon->GetCmdList());
 
@@ -398,14 +430,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //3D描画
         //ここに処理追加できる
         fbx3d1->Draw2(dxCommon->GetCmdList());
+        fbx3d2->Draw2(dxCommon->GetCmdList());
+        fbx3d3->Draw2(dxCommon->GetCmdList());
+        fbx3d4->Draw2(dxCommon->GetCmdList());
 
         //3D描画後処理
         //Object3d::PostDraw();
-   
-
+       
 
         ////スプライト共通コマンド
-       // spriteCommon->PreDraw();
+        spriteCommon->PreDraw();
+        debugtext->Print(moji, 100, 100);
+        debugtext->DrawAll();//的カウント
 
         //スプライト表示
 
@@ -420,12 +456,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
       //  sprite->SpriteDraw();
       //  sprite2->SpriteDraw();
        
-        //メイン
-        if (GameScene == 1)
-        {
-           debugtext->DrawAll();//的カウント
-           // debugtext2.DrawAll(dxCommon->GetCmdList(), spriteCommon, dxCommon->GetDev());//時間カウント
-        }
+        
         // ４．描画コマンドここまで
      
         // DirectX毎フレーム処理　ここまで

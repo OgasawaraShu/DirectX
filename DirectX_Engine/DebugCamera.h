@@ -1,6 +1,7 @@
 #pragma once
 #include "Camera.h"
 #include "Input.h"
+#include "GamePad.h"
 
 /// <summary>
 /// デバッグ用カメラ
@@ -25,6 +26,11 @@ public:
 		this->distance = distance; viewDirty = true;
 	}
 
+	float GetAngleX();
+	float GetAngleY();
+
+
+
 private:
 	// 入力クラスのポインタ
 	Input* input;
@@ -35,5 +41,12 @@ private:
 	float scaleY = 1.0f;
 	// 回転行列
 	XMMATRIX matRot = DirectX::XMMatrixIdentity();
+	//
+	float camera_posX = 0;
+	float camera_posZ = 0;
+
+	double angleX = 0;//カメラの角度X
+	double angleY = 0;//カメラの角度Y
+
 };
 
