@@ -54,6 +54,14 @@ using namespace Microsoft::WRL;
 #include "PortalGun.h"
 #include "GamePad.h"
 //#include "fbxsdk.h"
+#include <vector>
+
+Model* modelPlane = nullptr;
+Model* modelBox = nullptr;
+Model* modelPyramid = nullptr;
+
+std::vector<Object3d*> objects;
+
 
 Sphere sphere;
 
@@ -137,8 +145,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     camera = new DebugCamera(WinApp::window_width, WinApp::window_height, input);
 
     //3D初期化
-   //Object3d::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height);
-
+   Object3d::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height);
 
 
     //FBX
@@ -345,6 +352,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d4->SetScale({ 0.05, 0.05,0.05 });
 
   fbx3d4->SetPosition({ 20, 0, 0 });
+  fbx3d3->SetPosition({ 0, 0, -20 });
+
+
 
 
   
@@ -411,8 +421,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         sprite100->PreDrawScene(dxCommon->GetCmdList());
         ////スプライト共通コマンド
         spriteCommon->PreDraw();
+       
 
-     
+
+        fbx3d1->Draw2(dxCommon->GetCmdList());
+        fbx3d2->Draw2(dxCommon->GetCmdList());
+        fbx3d3->Draw2(dxCommon->GetCmdList());
+        fbx3d4->Draw2(dxCommon->GetCmdList());
+
+
+
         //ポストエフェクトここまで
         sprite100->PostDrawScene(dxCommon->GetCmdList());
 
@@ -421,19 +439,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
         spriteCommon->PreDraw_Post();
-        // sprite100->Update();
-        //sprite100->PostDraw();
+         sprite100->Update();
+        sprite100->PostDraw();
         
         //3D描画前処理
       //  Object3d::PreDraw(dxCommon->GetCmdList());
-
-        //3D描画
+          //3D描画
         //ここに処理追加できる
-        fbx3d1->Draw2(dxCommon->GetCmdList());
-        fbx3d2->Draw2(dxCommon->GetCmdList());
-        fbx3d3->Draw2(dxCommon->GetCmdList());
-        fbx3d4->Draw2(dxCommon->GetCmdList());
-
+      
         //3D描画後処理
         //Object3d::PostDraw();
        
@@ -494,6 +507,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     delete model1;
 
     FbxLoader::GetInstance()->Finalize();
-  
+
+
+    for (auto object : objects) {
+        delete(object);
+    }
+
+    delete(modelPlane);
+    delete(modelBox);
+    delete(modelPyramid);
+
     return 0;
 }

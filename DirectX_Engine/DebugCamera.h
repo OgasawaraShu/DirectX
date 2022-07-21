@@ -29,6 +29,9 @@ public:
 	float GetAngleX();
 	float GetAngleY();
 
+	float GetPositionX();
+	float GetPositionY();
+
 
 
 private:

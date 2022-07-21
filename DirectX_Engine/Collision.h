@@ -21,8 +21,27 @@ public:
 
 	static bool CheckRay2Sphere(const Ray& ray, const Sphere& sphere, float* distance = nullptr, DirectX::XMVECTOR* inter = nullptr);
 
+	/// <summary>
+	/// 球と球の当たり判定
+	/// </summary>
+	/// <param name="sphereA">球A</param>
+	/// <param name="sphereB">球B</param>
+	/// <param name="inter">交点（出力用）</param>
+	/// <returns></returns>
+	static bool CheckSphere2Sphere(const Sphere& sphereA, const Sphere& sphereB, DirectX::XMVECTOR* inter = nullptr, DirectX::XMVECTOR* reject = nullptr);
 
-	int CollisionArm(float x,float y,float r, float x2, float y2, float r2);
+	/// <summary>
+	/// 球と法線付き三角形の当たり判定
+	/// </summary>
+	/// <param name="sphere">球</param>
+	/// <param name="triangle">三角形</param>
+	/// <param name="inter">交点（三角形上の最近接点）</param>
+	/// <returns>交差しているか否か</returns>
+	static bool CheckSphere2Triangle(const Sphere& sphere, const Triangle& triangle, DirectX::XMVECTOR* inter = nullptr, DirectX::XMVECTOR* reject = nullptr);
+
+
+
+
 
 };
 

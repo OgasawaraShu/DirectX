@@ -48,8 +48,10 @@ protected:
 
 	XMVECTOR move = { 0,0,1.0f,0 };
 
+	int TriggerFlag = 0;
+
 	float dy;
-		float dx;
+    float dx;
 public:
 
 	static void SetDevice(ID3D12Device* device) { Fbx3d::device = device; }
