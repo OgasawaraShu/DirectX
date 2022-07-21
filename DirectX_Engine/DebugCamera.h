@@ -50,6 +50,10 @@ private:
 
 	double angleX = 0;//カメラの角度X
 	double angleY = 0;//カメラの角度Y
+	double oldx = 0;
+
+	int Flag = 0;
+
 
 };
 

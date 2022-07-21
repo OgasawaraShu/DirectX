@@ -1,5 +1,8 @@
 ﻿#include "Fbx3d.h"
+#include "CollisionManager.h"
+#include "BaseCollider.h"
 #include <d3dcompiler.h>
+
 #pragma comment(lib,"d3dcompiler.lib")
 
 using namespace Microsoft::WRL;
@@ -13,6 +16,15 @@ ID3D12Device* Fbx3d::device = nullptr;
 Camera* Fbx3d::camera = nullptr;
 
 using namespace DirectX;
+
+Fbx3d::~Fbx3d()
+{
+	if (collider)
+	{
+		CollisionManager::GetInstance()->RemoveCollider(collider);
+		delete collider;
+	}
+}
 
 void Fbx3d::CreateGraphicsPipeline()
 {
@@ -189,6 +201,8 @@ void Fbx3d::Initialize()
 {
 	//Model::SetDevice(device);
 
+	name = typeid(*this).name();
+
 	HRESULT result;
 
 	result = device->CreateCommittedResource(
@@ -292,6 +306,10 @@ void Fbx3d::Update()
 	constBuffSkin->Unmap(0, nullptr);
 
 	
+	//当たり判定更新
+	if (collider) {
+		collider->Update();
+	}
 }
 
 void Fbx3d::Update_CameraVec(double angleX, double angleY ,int Move)
@@ -434,7 +452,10 @@ void Fbx3d::Update_CameraVec(double angleX, double angleY ,int Move)
 	constBuffSkin->Unmap(0, nullptr);
 
 
-
+	//当たり判定更新
+	if (collider) {
+		collider->Update();
+	}
 }
 
 void Fbx3d::Draw2(ID3D12GraphicsCommandList* cmdList)
@@ -482,6 +503,21 @@ void Fbx3d::PlayAnimation2()
 	currentTime = startTime;
 	//再生中にする
 	isPlay = true;
+}
+
+void Fbx3d::SetColider(BaseCollider* collider)
+{
+	collider->SetObject(this);
+	this->collider = collider;
+	//マネージャに登録
+	CollisionManager::GetInstance()->AddCollider(collider);
+	//コライダー更新
+	collider->Update();
+}
+
+void Fbx3d::OnCollision(const CollisionInfo& info)
+{
+	
 }
 
 

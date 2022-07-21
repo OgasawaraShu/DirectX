@@ -36,13 +36,20 @@ void DebugCamera::Update()
 		
 	}
 	*/
-
+	
 	float dy = mouseMove.lX * scaleY;
 	float dx = mouseMove.lY * scaleX;
 
 	angleX = -dx * XM_PI;
 	angleY = -dy * XM_PI;
+
+	
+
 	dirty = true;
+
+	oldx += angleY;
+
+
 
 
 	//ゲームパッドアナログスティックR入力時処理(視点移動)
@@ -131,6 +138,8 @@ void DebugCamera::Update()
 
 
 		//SetEye({ target.x + vTargetEye.m128_f32[0], target.y + vTargetEye.m128_f32[1], target.z + vTargetEye.m128_f32[2] });
+	
+		
 		SetTarget({ target.x + vEyeTarget.m128_f32[0], target.y + vEyeTarget.m128_f32[1], target.z + vEyeTarget.m128_f32[2] });
 		SetUp({ vUp.m128_f32[0], vUp.m128_f32[1], vUp.m128_f32[2] });
 	}
@@ -146,6 +155,11 @@ float DebugCamera::GetAngleX()
 float DebugCamera::GetAngleY()
 {
 	return angleY;
+}
+
+float DebugCamera::GetPositionX()
+{
+	return oldx;
 }
 
 

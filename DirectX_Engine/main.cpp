@@ -56,6 +56,9 @@ using namespace Microsoft::WRL;
 //#include "fbxsdk.h"
 #include <vector>
 
+#include "SphereCollider.h"
+#include "CollisionManager.h"
+
 Model* modelPlane = nullptr;
 Model* modelBox = nullptr;
 Model* modelPyramid = nullptr;
@@ -75,6 +78,8 @@ Ray ray;
 DirectXCommon* dxCommon = nullptr;
 SpriteCommon* spriteCommon = new SpriteCommon();
 SpriteCommon* spriteCommon2= new SpriteCommon();
+
+class CollisionManager;
 
 //ComPtr<ID3D12Device> dev;
 
@@ -355,7 +360,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d3->SetPosition({ 0, 0, -20 });
 
 
+  //衝突マネージャー
+  CollisionManager* collisionManager = nullptr;
+  collisionManager = CollisionManager::GetInstance();
 
+  fbx3d3->SetColider(new SphereCollider);
+  fbx3d4->SetColider(new SphereCollider);
 
   
  // fbx3d1->PlayAnimation2();
@@ -382,7 +392,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     
      // sprite2->SpriteTransVertexBuffer();
      
-      sprintf_s(moji, "%f", camera->GetAngleX());
+      sprintf_s(moji, "%f", camera->GetPositionX());
       //sprintf_s(moji2,"%d",camera->GetAngleY());
      
         if (winApp->ProcessMessage())
@@ -471,7 +481,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
        
         
         // ４．描画コマンドここまで
-     
+     collisionManager->CheckAllCollisions();
         // DirectX毎フレーム処理　ここまで
         dxCommon->PostDraw();
     }

@@ -11,8 +11,11 @@
 #include <string>
 #include "3d/FbxLoader.h"
 #include "DebugCamera.h"
+#include "CollisionInfo.h"
+#include "CollisionManager.h"
 //#include "Input.h"
 
+class BaseCollider;
 
 class Fbx3d //:
 	//public Object3d
@@ -59,11 +62,12 @@ public:
 
 
 	Fbx3d(Input* input);
+	virtual~Fbx3d();
 
 	void Initialize();
 
-	void Update();
-	void Update_CameraVec(double angleX, double angleY, int Move);
+	virtual void Update();
+	virtual void Update_CameraVec(double angleX, double angleY, int Move);
 
 
 
@@ -78,12 +82,16 @@ public:
 
 	void PlayAnimation2();
 
-	//void SetVec(XMVECTOR) {};;
-
 	void SetPosition(const DirectX::XMFLOAT3& position_) { position = position_; }
 	void SetScale(const DirectX::XMFLOAT3& scale_) { scale = scale_; }
 
-private:
+
+	const XMMATRIX& GetMatWorld() { return matWorld; }//ワールド行列の取得
+	void SetColider(BaseCollider* collider);//こらいだーのセット
+	void OnCollision(const CollisionInfo& info);//コールバック関数
+
+
+protected:
 	FbxTime frameTime;
 
 	FbxTime startTime;
@@ -97,10 +105,13 @@ private:
 
 	float angleX1;
 	float angleY1;
-
 	
 	// 入力クラスのポインタ
 	Input* input;
+
+	const char* name = nullptr;
+
+	BaseCollider* collider = nullptr;
 
 public://定数
 	
