@@ -37,6 +37,17 @@ void CollisionManager::CheckAllCollisions()
 					colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
 				}
 			}
+			//‹…‚Æ•½–Ê
+			else if (colA->GetShapeType() == COLLISIONSHAPE_SPHERE &&
+				colB->GetShapeType() == COLLISIONSHAPE_PLANE) {
+				Sphere* SphereA = dynamic_cast<Sphere*>(colA);
+				Plane* PlaneB = dynamic_cast<Plane*>(colB);
+				DirectX::XMVECTOR inter;
+				if (Collision::CheckSphere2Plane(*SphereA, *PlaneB, &inter)) {
+					colA->OnCollision(CollisionInfo(colB->GetObject3d(), colB, inter));
+					colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
+				}
+			}
 			/*
 			else if (colA->GetShapeType() == COLLISIONSHAPE_MESH &&
 				colB->GetShapeType() == COLLISIONSHAPE_SPHERE) {
@@ -91,6 +102,7 @@ bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDis
 			inter = tempInter;
 			it_hit = it;
 		}
+		/*
 		else if (colA->GetShapeType() == COLLISIONSHAPE_MESH) {
 			MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(colA);
 
@@ -104,13 +116,14 @@ bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDis
 			inter = tempInter;
 			it_hit = it;
 		}
+		
 	}
 
 	if (result && hitInfo) {
 		hitInfo->distance = distance;
 		hitInfo->inter = inter;
 		hitInfo->collider = *it_hit;
-		hitInfo->object = hitInfo->collider->GetObject3d();
+		hitInfo->fbx = hitInfo->collider->GetObject3d();
 	}
 
 	return result;

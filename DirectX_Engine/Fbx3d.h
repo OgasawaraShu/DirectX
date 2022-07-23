@@ -90,6 +90,8 @@ public:
 	void SetColider(BaseCollider* collider);//こらいだーのセット
 	void OnCollision(const CollisionInfo& info);//コールバック関数
 
+	inline Model* GetModel() { return model; }
+
 
 protected:
 	FbxTime frameTime;
