@@ -22,6 +22,46 @@ bool Collision::CheckSphere2Plane(const Sphere& sphere,
 	return true;
 }
 
+bool Collision::CheckSphere2Box(const Sphere& sphere, const Box& box, DirectX::XMVECTOR* inter)
+{
+	float sqDistance = 0.0f;
+	float pos;
+
+	pos = sphere.center.m128_f32[0];
+	if (pos < box.minPos.m128_f32[0])
+	{
+		sqDistance += (box.minPos.m128_f32[0] - pos) * (box.minPos.m128_f32[0] - pos);
+	}
+	else if (pos > box.maxPos.m128_f32[0])
+	{
+		sqDistance += (pos - box.maxPos.m128_f32[0]) * (pos - box.maxPos.m128_f32[0]);
+	}
+
+
+	pos = sphere.center.m128_f32[1];
+	if (pos < box.minPos.m128_f32[1])
+	{
+		sqDistance += (box.minPos.m128_f32[1] - pos) * (box.minPos.m128_f32[1] - pos);
+	}
+	else if (pos > box.maxPos.m128_f32[1])
+	{
+		sqDistance += (pos - box.maxPos.m128_f32[1]) * (pos - box.maxPos.m128_f32[1]);
+	}
+
+	pos = sphere.center.m128_f32[2];
+	if (pos < box.minPos.m128_f32[2])
+	{
+		sqDistance += (box.minPos.m128_f32[2] - pos) * (box.minPos.m128_f32[2] - pos);
+	}
+	else if (pos > box.maxPos.m128_f32[2])
+	{
+		sqDistance += (pos - box.maxPos.m128_f32[2]) * (pos - box.maxPos.m128_f32[2]);
+	}
+
+	return sqDistance >= sphere.redius* sphere.redius;
+	//return false;
+}
+
 
 void Collision::ClosestPtPoint2Triangle(const DirectX::XMVECTOR& point, const Triangle& triangle, DirectX::XMVECTOR* closest)
 {

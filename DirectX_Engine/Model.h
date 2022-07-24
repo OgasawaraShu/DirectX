@@ -9,6 +9,7 @@
 #include <DirectXMath.h>
 #include <vector>
 #include <DirectXTex.h>
+#include "Mesh.h"
 
 #include<fbxsdk.h>
 
@@ -201,6 +202,8 @@ public:
 
 	const XMMATRIX& GetModelTransform() { return meshNode->globalTransform; }
 
+	inline  const std::vector<Node>& GetMeshes() { return  nodes;}
+
 	
 	//std::vector<unsigned short>indices;
 
@@ -211,6 +214,18 @@ public:
 
 	//getter
 	std::vector<Bone>& GetBones() { return bones; }
+
+	/// <summary>
+/// 頂点配列を取得
+/// </summary>
+/// <returns>頂点配列</returns>
+	inline const std::vector<VertexPosNormalUv>& GetVertices() { return vertices; }
+
+	/// <summary>
+	/// インデックス配列を取得
+	/// </summary>
+	/// <returns>インデックス配列</returns>
+	inline const std::vector<unsigned short>& GetIndices() { return indices; }
 
 private://メンバ変数
 	

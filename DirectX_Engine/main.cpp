@@ -57,6 +57,8 @@ using namespace Microsoft::WRL;
 #include <vector>
 
 #include "SphereCollider.h"
+#include "PlaneCollider.h"
+#include "BoxCollider.h"
 #include "CollisionManager.h"
 
 Model* modelPlane = nullptr;
@@ -80,6 +82,7 @@ SpriteCommon* spriteCommon = new SpriteCommon();
 SpriteCommon* spriteCommon2= new SpriteCommon();
 
 class CollisionManager;
+class Bullet;
 
 //ComPtr<ID3D12Device> dev;
 
@@ -306,7 +309,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Fbx3d* fbx3d4 = nullptr;
 
 
-   model1 = FbxLoader::GetInstance()->LoadModelFromFile("floor");
+   model1 = FbxLoader::GetInstance()->LoadModelFromFile("wall1");
    model2 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
    model3 = FbxLoader::GetInstance()->LoadModelFromFile("blueBall");
    model4 = FbxLoader::GetInstance()->LoadModelFromFile("redBall");
@@ -351,7 +354,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d4->SetModel(model4);
 
 
-  fbx3d1->SetPosition({ 0, -150, 0 });
+  fbx3d1->SetPosition({ 0, -10, 0 });
+  fbx3d1->SetRotate({ 0,0,0 });
 
   fbx3d3->SetScale({ 0.05, 0.05,0.05 });
   fbx3d4->SetScale({ 0.05, 0.05,0.05 });
@@ -364,8 +368,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   CollisionManager* collisionManager = nullptr;
   collisionManager = CollisionManager::GetInstance();
 
-  fbx3d3->SetColider(new SphereCollider);
-  fbx3d4->SetColider(new SphereCollider);
+  float radius = 5.0f;
+
+  fbx3d1->SetColider(new BoxCollider(XMVECTOR{20,20,30,0}));
+  fbx3d3->SetColider(new SphereCollider(XMVECTOR{0,radius,0,0},radius));
+  fbx3d4->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
 
   
  // fbx3d1->PlayAnimation2();
@@ -375,6 +382,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
      //3d更新   
      //スプライト
      
+        ray.start = { 10,0.5,0.0,1 };
+        ray.dir = { -1,0,0,0 };
+        //RaycastHit raycastHit;
+
 
      // sprite->Update();
      // sprite2->Update();

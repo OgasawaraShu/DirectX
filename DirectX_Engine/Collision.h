@@ -10,6 +10,8 @@ public:
 	static bool CheckSphere2Plane(const Sphere& sphere, const Plane&
 		plane, DirectX::XMVECTOR* inter = nullptr);
 
+	static bool CheckSphere2Box(const Sphere& sphere, const Box&
+		box, DirectX::XMVECTOR* inter = nullptr);
 
 	static void ClosestPtPoint2Triangle(const DirectX::XMVECTOR& point,
 		const Triangle& triangle, DirectX::XMVECTOR* closest);

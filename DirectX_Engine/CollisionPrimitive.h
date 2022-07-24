@@ -47,3 +47,17 @@ struct Ray
 	//方向
 	DirectX::XMVECTOR dir = { 1,0,0,0 };
 };
+
+
+//四角形
+
+struct Box
+{
+	//最小座標
+	DirectX::XMVECTOR minPos={0,0,0,1};
+
+	//最大座標
+	DirectX::XMVECTOR maxPos={0,0,0,1};
+
+
+};
