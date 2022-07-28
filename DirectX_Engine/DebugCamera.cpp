@@ -47,9 +47,19 @@ void DebugCamera::Update()
 
 	dirty = true;
 
-	oldx += angleY;
+	oldx += angleX;
 
-
+	//カメラのX軸ベクトルが後ろに行きそうなら押し戻す
+	if (oldx > 0.98)
+	{
+		angleX -= 0.02;
+		oldx -= 0.02;
+	}
+	else if (oldx < -0.98)
+	{
+		angleX += 0.02;
+		oldx += 0.02;
+	}
 
 
 	//ゲームパッドアナログスティックR入力時処理(視点移動)
