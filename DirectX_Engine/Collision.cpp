@@ -62,6 +62,11 @@ bool Collision::CheckSphere2Box(const Sphere& sphere, const Box& box, DirectX::X
 	//return false;
 }
 
+bool Collision::CheckSphere2Box(const Sphere& sphere, unsigned short attribute, const Box& box, DirectX::XMVECTOR* inter)
+{
+	return false;
+}
+
 
 void Collision::ClosestPtPoint2Triangle(const DirectX::XMVECTOR& point, const Triangle& triangle, DirectX::XMVECTOR* closest)
 {

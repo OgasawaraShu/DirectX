@@ -60,6 +60,7 @@ using namespace Microsoft::WRL;
 #include "PlaneCollider.h"
 #include "BoxCollider.h"
 #include "CollisionManager.h"
+#include "Bullet.h"
 
 Model* modelPlane = nullptr;
 Model* modelBox = nullptr;
@@ -74,7 +75,6 @@ Plane plane;
 
 Triangle triangle;
 
-Ray ray;
 
 //
 DirectXCommon* dxCommon = nullptr;
@@ -308,11 +308,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Model* model4 = nullptr;
    Fbx3d* fbx3d4 = nullptr;
 
+   Model* model5 = nullptr;
+   Fbx3d* fbx3d5 = nullptr;
+
+   Model* model6 = nullptr;
+   Fbx3d* fbx3d6 = nullptr;
+
+   Model* model7 = nullptr;
+   Fbx3d* fbx3d7 = nullptr;
+
+   Model* model8= nullptr;
+   Fbx3d* fbx3d8= nullptr;
+
+   Model* model9 = nullptr;
+   Fbx3d* fbx3d9 = nullptr;
+
 
    model1 = FbxLoader::GetInstance()->LoadModelFromFile("wall1");
    model2 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
    model3 = FbxLoader::GetInstance()->LoadModelFromFile("blueBall");
    model4 = FbxLoader::GetInstance()->LoadModelFromFile("redBall");
+   model5 = FbxLoader::GetInstance()->LoadModelFromFile("wall2");
+   model6 = FbxLoader::GetInstance()->LoadModelFromFile("wall");
+   model7 = FbxLoader::GetInstance()->LoadModelFromFile("wall3");
+   model8 = FbxLoader::GetInstance()->LoadModelFromFile("wall4");
+   model9 = FbxLoader::GetInstance()->LoadModelFromFile("blueBall");
 
 
    //モデル読み込み
@@ -353,6 +373,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d4->Initialize();
   fbx3d4->SetModel(model4);
 
+  fbx3d5 = new Fbx3d(input);
+  fbx3d5->Initialize();
+  fbx3d5->SetModel(model5);
+
+  fbx3d6 = new Fbx3d(input);
+  fbx3d6->Initialize();
+  fbx3d6->SetModel(model6);
+
+  fbx3d7 = new Fbx3d(input);
+  fbx3d7->Initialize();
+  fbx3d7->SetModel(model7);
+
+  fbx3d8 = new Fbx3d(input);
+  fbx3d8->Initialize();
+  fbx3d8->SetModel(model8);
+
+  fbx3d9= new Fbx3d(input);
+  fbx3d9->Initialize();
+  fbx3d9->SetModel(model9);
 
   fbx3d1->SetPosition({ 0, -10, 0 });
   fbx3d1->SetRotate({ 0,0,0 });
@@ -362,7 +401,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
   fbx3d4->SetPosition({ 20, 0, 0 });
   fbx3d3->SetPosition({ 0, 0, -20 });
+  fbx3d9->SetPosition({ 0, 0, -20 });
 
+
+  fbx3d5->SetPosition({ 0, -10, 0 });
+  fbx3d5->SetRotate({ 0,0,0 });
+
+
+  fbx3d6->SetPosition({ 0, -10, 0 });
+  fbx3d6->SetRotate({ 0,0,0 });
+
+
+  fbx3d7->SetPosition({ 0, -10, 0 });
+  fbx3d7->SetRotate({ 0,0,0 });
+
+  fbx3d8->SetPosition({ 0, -10, 0 });
+  fbx3d8->SetRotate({ 0,0,0 });
 
   //衝突マネージャー
   CollisionManager* collisionManager = nullptr;
@@ -370,23 +424,31 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
   float radius = 5.0f;
 
-  fbx3d1->SetColider(new BoxCollider(XMVECTOR{20,20,30,0}));
+  fbx3d1->SetColider(new BoxCollider(XMVECTOR{80,80,80,0}));
   fbx3d3->SetColider(new SphereCollider(XMVECTOR{0,radius,0,0},radius));
   fbx3d4->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
-
-  
+  fbx3d6->SetColider(new PlaneCollider);
+  fbx3d9->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
+  //fbx3d5->SetColider(new BoxCollider(XMVECTOR{ 60,40,70,0 }));
  // fbx3d1->PlayAnimation2();
+
+  fbx3d3->SetVer();
+  fbx3d4->SetVer();
+  fbx3d9->SetVer();
 
     while (true)  // ゲームループ
     {
      //3d更新   
      //スプライト
-     
+        Ray ray;
         ray.start = { 10,0.5,0.0,1 };
         ray.dir = { -1,0,0,0 };
-        //RaycastHit raycastHit;
+       // RaycastHit raycastHit;
+
+       // if (collisionManager->Raycast(ray, &raycastHit)) {
 
 
+       // }
      // sprite->Update();
      // sprite2->Update();
      // sprite3->Update();
@@ -431,7 +493,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d1->Update();
         fbx3d2->Update();
         fbx3d3->Update_CameraVec(camera->GetAngleX(), camera->GetAngleY(),portalgun->get_flagZ());
-        fbx3d4->Update();
+        fbx3d4->Update_CameraVec2(camera->GetAngleX(), camera->GetAngleY(), portalgun->get_flagZ());
+        fbx3d5->Update();
+        fbx3d6->Update();
+        fbx3d7->Update();
+        fbx3d8->Update();
+
+        fbx3d9->Update();
+       // fbx3d9->Update_CameraVec3(camera->GetAngleX(), camera->GetAngleY(), portalgun->get_flagZ());
 
 
         
@@ -449,6 +518,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d2->Draw2(dxCommon->GetCmdList());
         fbx3d3->Draw2(dxCommon->GetCmdList());
         fbx3d4->Draw2(dxCommon->GetCmdList());
+        fbx3d5->Draw2(dxCommon->GetCmdList());
+        fbx3d6->Draw2(dxCommon->GetCmdList());
+        fbx3d7->Draw2(dxCommon->GetCmdList());
+        fbx3d8->Draw2(dxCommon->GetCmdList());
 
 
 

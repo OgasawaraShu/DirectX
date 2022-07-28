@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CollisionPrimitive.h"
+//#include "BaseCollider.h"
 //#include "RaycastHit.h"
 //#include "QueryCallback.h"
 
@@ -36,6 +37,8 @@ public:// メンバ関数
 	/// 全ての衝突チェック
 	/// </summary>
 	void CheckAllCollisions();
+
+
 
 	//void QuerySphere(const Sphere& sphere, QueryCallback* callback, unsigned short attribute = (unsigned short)0xffffffff);
 
