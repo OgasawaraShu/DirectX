@@ -33,6 +33,7 @@ public:
 	float GetPositionY();
 
 
+	XMMATRIX GetRot() { return matRot; }
 
 private:
 	// 入力クラスのポインタ

@@ -60,7 +60,8 @@ using namespace Microsoft::WRL;
 #include "PlaneCollider.h"
 #include "BoxCollider.h"
 #include "CollisionManager.h"
-#include "Bullet.h"
+#include "PlayerFbx.h"
+#include "BulletFbx.h"
 
 Model* modelPlane = nullptr;
 Model* modelBox = nullptr;
@@ -303,10 +304,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Fbx3d* fbx3d2 = nullptr;
 
    Model* model3 = nullptr;
-   Fbx3d* fbx3d3 = nullptr;
+   BulletFbx* fbx3d3 = nullptr;
 
    Model* model4 = nullptr;
-   Fbx3d* fbx3d4 = nullptr;
+   BulletFbx* fbx3d4 = nullptr;
 
    Model* model5 = nullptr;
    Fbx3d* fbx3d5 = nullptr;
@@ -321,7 +322,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Fbx3d* fbx3d8= nullptr;
 
    Model* model9 = nullptr;
-   Fbx3d* fbx3d9 = nullptr;
+   PlayerFbx* fbx3d9 = nullptr;
 
 
    model1 = FbxLoader::GetInstance()->LoadModelFromFile("wall1");
@@ -365,11 +366,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d2->Initialize();
   fbx3d2->SetModel(model2);
 
-  fbx3d3 = new Fbx3d(input);
+  fbx3d3 = new BulletFbx(input);
   fbx3d3->Initialize();
   fbx3d3->SetModel(model3);
 
-  fbx3d4 = new Fbx3d(input);
+  fbx3d4 = new BulletFbx(input);
   fbx3d4->Initialize();
   fbx3d4->SetModel(model4);
 
@@ -389,7 +390,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d8->Initialize();
   fbx3d8->SetModel(model8);
 
-  fbx3d9= new Fbx3d(input);
+  fbx3d9= new PlayerFbx(input);
   fbx3d9->Initialize();
   fbx3d9->SetModel(model9);
 
@@ -432,9 +433,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   //fbx3d5->SetColider(new BoxCollider(XMVECTOR{ 60,40,70,0 }));
  // fbx3d1->PlayAnimation2();
 
+
+  //当たり判定の属性
   fbx3d3->SetVer();
   fbx3d4->SetVer();
   fbx3d9->SetVer();
+
+ 
+
 
     while (true)  // ゲームループ
     {
@@ -447,6 +453,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
        // if (collisionManager->Raycast(ray, &raycastHit)) {
 
+         //
+        fbx3d3->SetWorld(camera->GetRot());
 
        // }
      // sprite->Update();
@@ -492,15 +500,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         fbx3d1->Update();
         fbx3d2->Update();
-        fbx3d3->Update_CameraVec(camera->GetAngleX(), camera->GetAngleY(),portalgun->get_flagZ());
-        fbx3d4->Update_CameraVec2(camera->GetAngleX(), camera->GetAngleY(), portalgun->get_flagZ());
+        fbx3d3->BlueBulletUpdate(camera->GetAngleX(), camera->GetAngleY());// _CameraVec(camera->GetAngleX(), camera->GetAngleY(), portalgun->get_flagZ());
+        fbx3d4->RedBulletUpdate(camera->GetAngleX(), camera->GetAngleY());// _CameraVec2(camera->GetAngleX(), camera->GetAngleY(), portalgun->get_flagZ());
         fbx3d5->Update();
         fbx3d6->Update();
         fbx3d7->Update();
         fbx3d8->Update();
 
-        fbx3d9->Update();
-       // fbx3d9->Update_CameraVec3(camera->GetAngleX(), camera->GetAngleY(), portalgun->get_flagZ());
+        //fbx3d9->Update();
+        fbx3d9->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
 
 
         

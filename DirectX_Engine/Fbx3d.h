@@ -83,12 +83,6 @@ public:
 	virtual void Initialize();
 
 	virtual void Update();
-	virtual void Update_CameraVec(double angleX, double angleY, int Move);
-	virtual void Update_CameraVec2(double angleX, double angleY, int Move);
-	virtual void Update_CameraVec3(double angleX, double angleY, int Move);
-
-
-
 
 	void SetModel(Model* model) { this->model = model; }
 
@@ -114,6 +108,10 @@ public:
 
 
 	void SetVer();
+
+	void SetWorld(XMMATRIX matrot_) { matrot = matrot_; }
+
+	XMMATRIX matrot;
 
 protected:
 	FbxTime frameTime;
@@ -160,7 +158,7 @@ public://íËêî
 	int debug = 0;
 	int debug2 = 0;
 
-private:
+protected:
 
 	static ID3D12Device* device;
 
