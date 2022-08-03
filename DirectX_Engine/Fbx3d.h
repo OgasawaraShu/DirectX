@@ -106,6 +106,7 @@ public:
 
 	inline Model* GetModel() { return model; }
 
+	void UpdateWorldMatix();
 
 	void SetVer();
 

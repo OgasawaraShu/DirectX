@@ -11,6 +11,7 @@ using namespace DirectX;
 
 void PlayerFbx::OnCollision(const CollisionInfo& info)
 {
+	moveCamera -= moveCamera;
 
 }
 
@@ -108,7 +109,62 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 
 	}
 
-	XMVECTOR moveCamera = { dx1, 0, dz, 0 };
+
+
+	// 落下処理
+	if (!onGround) {
+		// 下向き加速度
+		const float fallAcc = -0.01f;
+		const float fallVYMin = -0.5f;
+		// 加速
+		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
+		// 移動
+		moveCamera.m128_f32[0] += fallV.m128_f32[0];
+		moveCamera.m128_f32[1] += fallV.m128_f32[1];
+		moveCamera.m128_f32[2] += fallV.m128_f32[2];
+	}
+	// ジャンプ操作
+	else if (input->TriggerKey(DIK_SPACE)) {
+		onGround = false;
+		const float jumpVYFist = 0.2f;
+		fallV = { 0, jumpVYFist, 0, 0 };
+	}
+
+
+
+	// 接地状態
+	/*
+	if (onGround) {
+		// スムーズに坂を下る為の吸着距離
+		const float adsDistance = 0.2f;
+		// 接地を維持
+		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereCollider->GetRadius() * 2.0f + adsDistance)) {
+			onGround = true;
+			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
+			// 行列の更新など
+			Object3d::Update();
+		}
+		// 地面がないので落下
+		else {
+			onGround = false;
+			fallV = {};
+		}
+	}
+	// 落下状態
+	else if (fallV.m128_f32[1] <= 0.0f) {
+		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereCollider->GetRadius() * 2.0f)) {
+			// 着地
+			onGround = true;
+			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
+			// 行列の更新など
+			Object3d::Update();
+		}
+	}
+	*/
+
+
+
+	moveCamera = { dx1, 0, dz, 0 };
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 
 

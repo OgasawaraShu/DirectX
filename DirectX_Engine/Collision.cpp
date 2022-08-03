@@ -280,16 +280,16 @@ bool Collision::CheckSphere2Triangle(const Sphere& sphere, const Triangle& trian
 	// 球と三角形の距離が半径以下なら当たっていない
 	if (distanceSquare > sphere.redius * sphere.redius)	return false;
 	// 擬似交点を計算
-	if (inter) {
-		// 三角形上の最近接点pを疑似交点とする
-		*inter = p;
-	}
-	// 押し出すベクトルを計算
+	if (inter) {// 押し出すベクトルを計算
 	if (reject) {
 		float ds = XMVector3Dot(sphere.center, triangle.normal).m128_f32[0];
 		float dt = XMVector3Dot(triangle.p0, triangle.normal).m128_f32[0];
 		float rejectLen = dt - ds + sphere.redius;
 		*reject = triangle.normal * rejectLen;
 	}
+		// 三角形上の最近接点pを疑似交点とする
+		*inter = p;
+	}
+	
 	return true;
 }

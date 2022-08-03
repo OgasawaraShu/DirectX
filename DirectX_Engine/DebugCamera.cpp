@@ -78,29 +78,7 @@ void DebugCamera::Update()
 	// WASD‚ª‰Ÿ‚³‚ê‚Ä‚¢‚½‚çƒJƒƒ‰‚ð•ÀsˆÚ“®‚³‚¹‚é
 	if (input->PushKey(DIK_A)||input->PushKey(DIK_D)|| input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
-		float dx1 = 0;
-		float dz = 0;
-		if (input->PushKey(DIK_A))
-		{
-			dx1 -= 0.6f;
-		}
-		
-		if (input->PushKey(DIK_D))
-		{
-			dx1 += 0.6f;
-		}
-
-		if (input->PushKey(DIK_W))
-		{
-			dz += 0.6f;
-		}
-
-		if (input->PushKey(DIK_S))
-		{
-			dz -= 0.6f;
-		}
-	
-		XMVECTOR move = { dx1, 0, dz, 0 };
+		XMVECTOR move = move_;
 		move = XMVector3Transform(move, matRot);
 
 		MoveVector(move);

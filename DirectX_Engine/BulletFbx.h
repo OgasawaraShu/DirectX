@@ -1,6 +1,7 @@
 #pragma once
 #include "Fbx3d.h"
 #include "Input.h"
+#include "PlayerFbx.h"
 
 class BulletFbx :
 	public Fbx3d
@@ -20,9 +21,12 @@ public:
 	void BlueBulletUpdate(double angleX, double angleY);
 	void RedBulletUpdate(double angleX, double angleY);
 
+	void SetMove(XMVECTOR move) { move_ = move; }
+
+
 private:
 	Input* input;
 	float angleX;
 	float angleY;
-
+	XMVECTOR move_;
 };

@@ -20,10 +20,18 @@ public:
 	// 入力クラスのポインタ
 
 	void PlayerUpdate(double angleX, double angleY);
+
+	XMVECTOR GetMove() { return moveCamera; }
 private:
 	Input* input;
 	float angleX;
 	float angleY;
 
+
+
+	bool onGround = true;
+	
+	XMVECTOR fallV;
+	XMVECTOR moveCamera;
 };
 

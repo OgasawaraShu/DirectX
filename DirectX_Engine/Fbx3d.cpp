@@ -236,7 +236,7 @@ void Fbx3d::Initialize()
 
 }
 
-void Fbx3d::Update()
+void Fbx3d::UpdateWorldMatix()
 {
 	XMMATRIX matScale, matRot, matTrans;
 
@@ -252,6 +252,29 @@ void Fbx3d::Update()
 	matWorld *= matScale;
 	matWorld *= matRot;
 	matWorld *= matTrans;
+}
+
+void Fbx3d::Update()
+{
+	/*
+	XMMATRIX matScale, matRot, matTrans;
+
+	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+	matRot = XMMatrixIdentity();
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+
+	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+
+	matWorld = XMMatrixIdentity();
+	matWorld *= matScale;
+	matWorld *= matRot;
+	matWorld *= matTrans;
+	*/
+
+	//行列の更新
+	UpdateWorldMatix();
 
 	//ビュープロジェクション行列
 	const XMMATRIX& matViewProjection =
@@ -368,6 +391,8 @@ void Fbx3d::SetColider(BaseCollider* collider)
 	this->collider = collider;
 	//マネージャに登録
 	CollisionManager::GetInstance()->AddCollider(collider);
+	//行列の更新
+	UpdateWorldMatix();
 	//コライダー更新
 	collider->Update();
 }
@@ -376,6 +401,8 @@ void Fbx3d::OnCollision(const CollisionInfo& info)
 {
 
 }
+
+
 
 void Fbx3d::SetVer()
 {

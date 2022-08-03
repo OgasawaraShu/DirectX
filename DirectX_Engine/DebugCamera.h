@@ -35,9 +35,13 @@ public:
 
 	XMMATRIX GetRot() { return matRot; }
 
+	void SetMove(XMVECTOR move) { move_ = move; }
+
 private:
 	// 入力クラスのポインタ
 	Input* input;
+	//
+	
 	// カメラ注視点までの距離
 	float distance = 20;
 	// スケーリング
@@ -55,6 +59,6 @@ private:
 
 	int Flag = 0;
 
-
+	XMVECTOR move_;
 };
 

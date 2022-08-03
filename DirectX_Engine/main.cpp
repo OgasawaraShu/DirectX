@@ -439,8 +439,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d4->SetVer();
   fbx3d9->SetVer();
 
- 
-
+ //
+  
 
     while (true)  // ゲームループ
     {
@@ -455,6 +455,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
          //
         fbx3d3->SetWorld(camera->GetRot());
+        camera->SetMove(fbx3d9->GetMove());
+        fbx3d3->SetMove(fbx3d9->GetMove());
+        fbx3d4->SetMove(fbx3d9->GetMove());
 
        // }
      // sprite->Update();

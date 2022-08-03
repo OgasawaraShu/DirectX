@@ -77,40 +77,9 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 
 		move = XMVector3Transform(move, matRot);
 	}
-	float dx1 = 0;
-	float dz = 0;
-	// WASDが押されていたらカメラを並行移動させる
+	
 
-
-	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
-	{
-
-		if (input->PushKey(DIK_A))
-		{
-			dx1 -= 0.6f;
-		}
-
-		if (input->PushKey(DIK_D))
-		{
-			dx1 += 0.6f;
-		}
-
-		if (input->PushKey(DIK_W))
-		{
-			dz += 0.6f;
-		}
-
-		if (input->PushKey(DIK_S))
-		{
-			dz -= 0.6f;
-		}
-
-
-	}
-
-
-
-	XMVECTOR moveCamera = { dx1, 0, dz, 0 };
+	XMVECTOR moveCamera = move_;
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 
 
@@ -268,36 +237,9 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 
 		move2 = XMVector3Transform(move2, matRot);
 	}
-	float dx1 = 0;
-	float dz = 0;
-	// WASDが押されていたらカメラを並行移動させる
-	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
-	{
+	
 
-		if (input->PushKey(DIK_A))
-		{
-			dx1 -= 0.6f;
-		}
-
-		if (input->PushKey(DIK_D))
-		{
-			dx1 += 0.6f;
-		}
-
-		if (input->PushKey(DIK_W))
-		{
-			dz += 0.6f;
-		}
-
-		if (input->PushKey(DIK_S))
-		{
-			dz -= 0.6f;
-		}
-
-
-	}
-
-	XMVECTOR moveCamera = { dx1, 0, dz, 0 };
+	XMVECTOR moveCamera = move_;
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 
 
