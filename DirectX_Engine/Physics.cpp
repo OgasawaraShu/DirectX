@@ -1,6 +1,6 @@
 #include "Physics.h"
 
-void Physics::pendulum(float x, float y)
+void Physics::Pendulum(float x, float y)
 {
 
 	// 公式に従って速度を加算
@@ -18,4 +18,27 @@ void Physics::pendulum(float x, float y)
 	// 求めた角度から軸を原点とした円周上の座標を取得
 	x = cos(angle) * LENGTH;
 	y = sin(angle) * LENGTH;
+}
+
+void Physics::Gravity(float x, float y)
+{
+	//重力をつけてy軸で落下
+	g1 += acceleration_g;
+	y += g1;
+}
+
+float Physics::Screw(float y, float g)
+{
+	float v = 0.0;
+
+	//y軸を長さ　重力をパワーとして投げる力を出力
+	v = y * g;
+
+	return v;
+}
+
+void Physics::Initialize()
+{
+	//重力を下向き設定
+	g1 += vel;
 }

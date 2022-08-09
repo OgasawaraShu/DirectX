@@ -11,10 +11,13 @@
 class Physics
 {
 public:
+	void Initialize();
 
-	void pendulum(float x,float y);//U‚èqŠÖ”
+	void Pendulum(float x,float y);//U‚èqŠÖ”
 
+	void Gravity(float x, float y);
 
+	float Screw(float y,float g);
 private:
 
 	float acceleration_g = G / 60;//‰Á‘¬“x
@@ -24,6 +27,8 @@ private:
 	double x1;     // •R‚ğL‚Î‚µ‚Äˆêü‚³‚¹‚½ê‡‚Éo—ˆ‚é‰~üã‚ÌÀ•WA‚O‚Í•R‚ª²‚Ì^‰º‚É‚¢‚éˆÊ’u
 	double angle;
 	double speed; // x‚Ì‘¬“x
+
+	float g1;
 
 	//G1 += vel;
 

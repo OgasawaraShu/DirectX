@@ -1,6 +1,7 @@
 #pragma once
 #include "Fbx3d.h"
 #include "Input.h"
+#include "Physics.h"
 
 class PlayerFbx :
 	public Fbx3d
