@@ -110,7 +110,7 @@ public:
     void PostInitialize(SpriteCommon* spriteCommon, UINT texnumber,
         DirectX::XMFLOAT2 anchorpoint, bool isFlagX, bool isFlagY);
 
-    Microsoft::WRL::ComPtr<ID3D12Resource> texBuff;
+    Microsoft::WRL::ComPtr<ID3D12Resource> texBuff[2];
 
     Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> descHeapSRV;
 

@@ -29,4 +29,7 @@ private:
 	float angleX;
 	float angleY;
 	XMVECTOR move_;
+
+	XMVECTOR memory;
+	XMVECTOR memory3;
 };

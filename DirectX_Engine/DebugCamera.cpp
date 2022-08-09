@@ -29,14 +29,6 @@ void DebugCamera::Update()
 	 //パッドの更新
 	GP->Update();
 
-	// マウスの左ボタンが押されていたらカメラを回転させる
-	/*
-	if (input->PushMouseLeft())
-	{
-		
-	}
-	*/
-	
 	float dy = mouseMove.lX * scaleY;
 	float dx = mouseMove.lY * scaleX;
 
@@ -73,10 +65,8 @@ void DebugCamera::Update()
 		dirty = true;
 	}
 	
-
-	
 	// WASDが押されていたらカメラを並行移動させる
-	if (input->PushKey(DIK_A)||input->PushKey(DIK_D)|| input->PushKey(DIK_W) || input->PushKey(DIK_S))
+	if (input->PushKey(DIK_A)||input->PushKey(DIK_D)|| input->PushKey(DIK_W) || input->PushKey(DIK_S)||input->TriggerKey(DIK_SPACE))
 	{
 		XMVECTOR move = move_;
 		move = XMVector3Transform(move, matRot);

@@ -257,7 +257,7 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 	else if (TriggerFlag2 == 0 && debug2 == 0)
 	{
 		//ïΩçsà⁄ìÆ
-		matTrans = XMMatrixTranslation(position.x += moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
+		matTrans = XMMatrixTranslation(position.x +=moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
 	}
 	else
 	{
@@ -265,9 +265,9 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	}
 
-	memory2.m128_f32[0] += moveCamera.m128_f32[0];
-	memory2.m128_f32[1] += moveCamera.m128_f32[1];
-	memory2.m128_f32[2] += moveCamera.m128_f32[2];
+	memory3.m128_f32[0] += moveCamera.m128_f32[0];
+	memory3.m128_f32[1] += moveCamera.m128_f32[1];
+	memory3.m128_f32[2] += moveCamera.m128_f32[2];
 
 
 	matWorld = XMMatrixIdentity();

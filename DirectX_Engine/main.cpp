@@ -455,6 +455,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
          //
         fbx3d3->SetWorld(camera->GetRot());
+
+
         camera->SetMove(fbx3d9->GetMove());
         fbx3d3->SetMove(fbx3d9->GetMove());
         fbx3d4->SetMove(fbx3d9->GetMove());

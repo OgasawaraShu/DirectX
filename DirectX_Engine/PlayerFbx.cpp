@@ -11,8 +11,7 @@ using namespace DirectX;
 
 void PlayerFbx::OnCollision(const CollisionInfo& info)
 {
-	moveCamera -= moveCamera;
-
+	
 }
 
 void PlayerFbx::Initialize_Bullet()
@@ -82,6 +81,7 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	}
 	float dx1 = 0;
 	float dz = 0;
+	float dy = 0;
 	// WASDが押されていたらカメラを並行移動させる
 	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
@@ -110,7 +110,6 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	}
 
 
-
 	// 落下処理
 	if (!onGround) {
 		// 下向き加速度
@@ -119,21 +118,12 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 		// 加速
 		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
 		// 移動
-		moveCamera.m128_f32[0] += fallV.m128_f32[0];
 		moveCamera.m128_f32[1] += fallV.m128_f32[1];
-		moveCamera.m128_f32[2] += fallV.m128_f32[2];
 	}
-	// ジャンプ操作
-	else if (input->TriggerKey(DIK_SPACE)) {
-		onGround = false;
-		const float jumpVYFist = 0.2f;
-		fallV = { 0, jumpVYFist, 0, 0 };
-	}
-
 
 
 	// 接地状態
-	/*
+	/*w
 	if (onGround) {
 		// スムーズに坂を下る為の吸着距離
 		const float adsDistance = 0.2f;
@@ -164,17 +154,17 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 
 
 
-	moveCamera = { dx1, 0, dz, 0 };
+	moveCamera = { dx1, fallV.m128_f32[1], dz, 0};
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 
 
 	//平行移動
-	matTrans = XMMatrixTranslation(position.x += moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
+	matTrans = XMMatrixTranslation(position.x += moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1]+fallV.m128_f32[1], position.z += moveCamera.m128_f32[2]);
 
 
-	memory2.m128_f32[0] += moveCamera.m128_f32[0];
-	memory2.m128_f32[1] += moveCamera.m128_f32[1];
-	memory2.m128_f32[2] += moveCamera.m128_f32[2];
+	memory.m128_f32[0] += moveCamera.m128_f32[0];
+	memory.m128_f32[1] += moveCamera.m128_f32[1];
+	memory.m128_f32[2] += moveCamera.m128_f32[2];
 
 
 	matWorld = XMMatrixIdentity();

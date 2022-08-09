@@ -1,6 +1,7 @@
 #include "Sprite.h"
 #include <d3dx12.h>
 #include "WinApp.h"
+#include "Input.h"
 
 #include <d3dcompiler.h>
 #pragma comment(lib,"d3dcompiler.lib")
@@ -229,6 +230,7 @@ void Sprite::Update()
     constMap->color8 = color_;
     constMap->mat8 = matWorld_ * spriteCommon_->GetMatProjection();
 
+    /*
     if (constMap->Time8 < 2.0f)
     {
         constMap->Time8 += 0.02f;
@@ -237,6 +239,10 @@ void Sprite::Update()
     {
         constMap->Time8 = 0.1f;
     }
+    */
+
+    constMap->Time8 += 2.0f;
+
 
     if (constMap->Bar8 < 20.0f)
     {
@@ -377,35 +383,38 @@ void Sprite::PostInitialize(SpriteCommon* spriteCommon, UINT texnumber,
         1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET
     );
 
-    //テクスチャバッファ生成
-    result = spriteCommon->GetDevice()->CreateCommittedResource(
-        &CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK,
-            D3D12_MEMORY_POOL_L0),
-        D3D12_HEAP_FLAG_NONE,
-        &texresDesc,
-        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-        &CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor),
-        IID_PPV_ARGS(&texBuff)
-    );
+    for (int i = 0; i < 2; i++)
+    {
+        //テクスチャバッファ生成
+        result = spriteCommon->GetDevice()->CreateCommittedResource(
+            &CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK,
+                D3D12_MEMORY_POOL_L0),
+            D3D12_HEAP_FLAG_NONE,
+            &texresDesc,
+            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+            &CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor),
+            IID_PPV_ARGS(&texBuff[i])
+        );
 
-    const UINT pixelCount = WinApp::window_width * WinApp::window_height;
 
-    const UINT rowPitch = sizeof(UINT) * WinApp::window_width;
+        const UINT pixelCount = WinApp::window_width * WinApp::window_height;
 
-    const UINT depthPitch = rowPitch * WinApp::window_height;
+        const UINT rowPitch = sizeof(UINT) * WinApp::window_width;
 
-    UINT* img = new UINT[pixelCount];
-    for (int i = 0; i < pixelCount; i++) { img[i] = 0xff0000ff; }
+        const UINT depthPitch = rowPitch * WinApp::window_height;
 
-    result = texBuff->WriteToSubresource(0, nullptr,
-        img, rowPitch, depthPitch);
+        UINT* img = new UINT[pixelCount];
+        for (int j = 0; j < pixelCount; j++) { img[j] = 0xff0000ff; }
 
-    delete[] img;
+        result = texBuff[i]->WriteToSubresource(0, nullptr,
+            img, rowPitch, depthPitch);
 
+        delete[] img;
+    }
     D3D12_DESCRIPTOR_HEAP_DESC srvDescHeapDesc = {};
     srvDescHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     srvDescHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-    srvDescHeapDesc.NumDescriptors = 1;
+    srvDescHeapDesc.NumDescriptors = 2;
 
     result = spriteCommon->GetDevice()->CreateDescriptorHeap(&srvDescHeapDesc, IID_PPV_ARGS(&descHeapSRV));
 
@@ -415,23 +424,33 @@ void Sprite::PostInitialize(SpriteCommon* spriteCommon, UINT texnumber,
     srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
     srvDesc.Texture2D.MipLevels = 1;
 
-    spriteCommon->GetDevice()->CreateShaderResourceView(texBuff.Get(),
-        &srvDesc,
-        descHeapSRV->GetCPUDescriptorHandleForHeapStart());
 
+    for (int i = 0; i < 2; i++)
+    {
+        spriteCommon->GetDevice()->CreateShaderResourceView(texBuff[i].Get(),
+            &srvDesc,
+            CD3DX12_CPU_DESCRIPTOR_HANDLE(
+                descHeapSRV->GetCPUDescriptorHandleForHeapStart(), i,
+                spriteCommon->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)));
+    }
 
 
     //RTV
     D3D12_DESCRIPTOR_HEAP_DESC rtvDescHeapDesc{};
     rtvDescHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-    rtvDescHeapDesc.NumDescriptors = 1;
+    rtvDescHeapDesc.NumDescriptors = 2;
 
     result = spriteCommon->GetDevice()->CreateDescriptorHeap(&rtvDescHeapDesc, IID_PPV_ARGS(&descHeapRTV));
 
-    spriteCommon->GetDevice()->CreateRenderTargetView(texBuff.Get(),
-        nullptr,
-        descHeapRTV->GetCPUDescriptorHandleForHeapStart());
+    for (int i = 0; i < 2; i++)
+    {
 
+        spriteCommon->GetDevice()->CreateRenderTargetView(texBuff[i].Get(),
+            nullptr,
+            CD3DX12_CPU_DESCRIPTOR_HANDLE(
+                descHeapRTV->GetCPUDescriptorHandleForHeapStart(), i,
+                spriteCommon->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV)));
+    }
 
     //深度バッファリソース設定
     CD3DX12_RESOURCE_DESC depthResDesc =
@@ -659,34 +678,50 @@ void Sprite::CreateGraphicsPipelineState_Post()
 
 void Sprite::PreDrawScene(ID3D12GraphicsCommandList* cmdList)
 {
-    // ID3D12GraphicsCommandList* cmdList = spriteCommon_->GetcmdList();
-    cmdList->ResourceBarrier(1,
-        &CD3DX12_RESOURCE_BARRIER::Transition(texBuff.Get(),
-            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-            D3D12_RESOURCE_STATE_RENDER_TARGET));
+    // ID3D12GraphicsCommandList* cmdList = spriteCommon_->GetcmdList()
+    for (int i = 0; i < 2; i++) {
+        cmdList->ResourceBarrier(1,
+            &CD3DX12_RESOURCE_BARRIER::Transition(texBuff[i].Get(),
+                D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+                D3D12_RESOURCE_STATE_RENDER_TARGET));
+    }
 
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvH =
-        descHeapRTV->GetCPUDescriptorHandleForHeapStart();
 
+    D3D12_CPU_DESCRIPTOR_HANDLE rtvHs[2];
+    for (int i = 0; i < 2; i++) {
+        rtvHs[i] = CD3DX12_CPU_DESCRIPTOR_HANDLE(
+            descHeapRTV->GetCPUDescriptorHandleForHeapStart(), i,
+            spriteCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
+    }
     D3D12_CPU_DESCRIPTOR_HANDLE dsvH =
         descHeapDSV->GetCPUDescriptorHandleForHeapStart();
 
-    cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
+    cmdList->OMSetRenderTargets(2, rtvHs, false, &dsvH);
 
-    cmdList->RSSetViewports(1, &CD3DX12_VIEWPORT(0.0f, 0.0f, WinApp::window_width, WinApp::window_height));
+    CD3DX12_VIEWPORT viewports[2];
+    CD3DX12_RECT scissorRects[2];
+    for (int i = 0; i < 2; i++)
+    {
+        viewports[i] = CD3DX12_VIEWPORT(0.0f, 0.0f, WinApp::window_width, WinApp::window_height);
+        scissorRects[i] = CD3DX12_RECT(0, 0, WinApp::window_width, WinApp::window_height);
+    }
+    cmdList->RSSetViewports(2, viewports);
 
-    cmdList->RSSetScissorRects(1, &CD3DX12_RECT(0, 0, WinApp::window_width, WinApp::window_height));
+    cmdList->RSSetScissorRects(2, scissorRects);
 
-    cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
-
+    for (int i = 0; i < 2; i++) {
+        cmdList->ClearRenderTargetView(rtvHs[i], clearColor, 0, nullptr);
+    }
     cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 
 }
 
 void Sprite::PostDrawScene(ID3D12GraphicsCommandList* cmdList)
 {
-    cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(texBuff.Get(),
-        D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
+    for (int i = 0; i < 2; i++) {
+        cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(texBuff[i].Get(),
+            D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
+    }
 }
 
 void Sprite::PostDraw()
@@ -746,6 +781,10 @@ void Sprite::PostDraw()
  //       this->constBuff->Unmap(0, nullptr);
   //  }
 //
+    
+
+
+
 
     ID3D12GraphicsCommandList* cmdList = spriteCommon_->GetcmdList();
 
@@ -766,11 +805,24 @@ void Sprite::PostDraw()
     ID3D12DescriptorHeap* ppHeaps[] = { descHeapSRV.Get() };
     // デスクリプタヒープをセット
     cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+
     // 定数バッファビューをセット
     cmdList->SetGraphicsRootConstantBufferView(0, this->constBuff_->GetGPUVirtualAddress());
     // シェーダリソースビューをセット
    // cmdList->SetGraphicsRootDescriptorTable(1, CD3DX12_GPU_DESCRIPTOR_HANDLE(descHeap->GetGPUDescriptorHandleForHeapStart(), this->texNumber, descriptorHandleIncrementSize));
-    cmdList->SetGraphicsRootDescriptorTable(1, descHeapSRV->GetGPUDescriptorHandleForHeapStart());
+    cmdList->SetGraphicsRootDescriptorTable(1,
+        CD3DX12_GPU_DESCRIPTOR_HANDLE(
+            descHeapSRV->GetGPUDescriptorHandleForHeapStart(), 0,
+            spriteCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+        ));
+
+
+
+    cmdList->SetGraphicsRootDescriptorTable(2,
+        CD3DX12_GPU_DESCRIPTOR_HANDLE(
+            descHeapSRV->GetGPUDescriptorHandleForHeapStart(), 1,
+            spriteCommon_->GetDevice()->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV)
+        ));
     // 描画コマンド
     cmdList->DrawInstanced(4, 1, 0, 0);
 }

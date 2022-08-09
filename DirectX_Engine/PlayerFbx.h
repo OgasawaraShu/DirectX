@@ -28,11 +28,10 @@ private:
 	float angleX;
 	float angleY;
 
-
-
 	bool onGround = true;
 	
 	XMVECTOR fallV;
 	XMVECTOR moveCamera;
+	XMVECTOR memory;
 };
 
