@@ -15,7 +15,7 @@ public:
 
 	void Pendulum(float x,float y);//U‚èqŠÖ”
 
-	void Gravity(float x, float y);
+	float Gravity(float x, float y);
 
 	float Screw(float y,float g);
 private:

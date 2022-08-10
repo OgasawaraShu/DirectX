@@ -20,20 +20,22 @@ void Physics::Pendulum(float x, float y)
 	y = sin(angle) * LENGTH;
 }
 
-void Physics::Gravity(float x, float y)
+float Physics::Gravity(float x, float y)
 {
 	//重力をつけてy軸で落下
 	g1 += acceleration_g;
-	y += g1;
+	y -= g1;
+
+	return y;
 }
 
 float Physics::Screw(float y, float g)
 {
 	float v = 0.0;
 
-	//y軸を長さ　重力をパワーとして投げる力を出力
+	//y軸を長さ　重力(落ちてるときにある力)をパワーとして投げる力を出力
 	v = y * g;
-
+	//vはｘもしくはｚ軸に飛ばす力
 	return v;
 }
 

@@ -11,7 +11,7 @@ using namespace DirectX;
 
 void PlayerFbx::OnCollision(const CollisionInfo& info)
 {
-	
+	onGround = true;
 }
 
 void PlayerFbx::Initialize_Bullet()
@@ -35,6 +35,9 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	//パッドのポインタ
 	GamePad* GP = nullptr;
 	GP = new GamePad();
+	//重力のポインタ
+	Physics* phy = nullptr;
+	phy = new Physics();
 	//パッドの更新
 	GP->Update();
 
@@ -111,14 +114,15 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 
 
 	// 落下処理
-	if (!onGround) {
-		// 下向き加速度
-		const float fallAcc = -0.01f;
-		const float fallVYMin = -0.5f;
-		// 加速
-		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
-		// 移動
-		moveCamera.m128_f32[1] += fallV.m128_f32[1];
+	if (!onGround)
+	{
+		// 重力を加算
+		fallV.m128_f32[1]=phy->Gravity(0, fallV.m128_f32[1]);
+	}
+	else
+	{
+		fallV.m128_f32[1] = 0;
+		
 	}
 
 
@@ -154,7 +158,7 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 
 
 
-	moveCamera = { dx1, fallV.m128_f32[1], dz, 0};
+	moveCamera = { dx1, fallV.m128_f32[1]+dy, dz, 0};
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 
 
