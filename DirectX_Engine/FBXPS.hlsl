@@ -31,7 +31,7 @@ float4 main(VSOutput input):SV_TARGET
 
 
   output.target0= shadecolor * texcolor;
-  output.target1= float4(0.3*(shadecolor * texcolor).rgb,1);
+  output.target1= float4(0.7*(shadecolor * texcolor).rgb,1);
 
 
 

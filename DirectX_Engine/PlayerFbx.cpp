@@ -19,12 +19,13 @@ void PlayerFbx::Initialize_Bullet()
 
 }
 
-PlayerFbx::PlayerFbx(Input* input)
+PlayerFbx::PlayerFbx(Input* input,Physics* physics)
 	:Fbx3d(input)
 {
 	assert(input);
 
 	this->input = input;
+	this->physics = physics;
 }
 
 void PlayerFbx::PlayerUpdate(double angleX, double angleY)
@@ -36,8 +37,8 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	GamePad* GP = nullptr;
 	GP = new GamePad();
 	//重力のポインタ
-	Physics* phy = nullptr;
-	phy = new Physics();
+//	Physics* phy = nullptr;
+	//phy = new Physics();
 	//パッドの更新
 	GP->Update();
 
@@ -117,15 +118,32 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	if (!onGround)
 	{
 		// 重力を加算
-		fallV.m128_f32[1]=phy->Gravity(0, fallV.m128_f32[1]);
+		//fallV.m128_f32[1]=phy->Gravity(0, fallV.m128_f32[1]);
+		//physics->Jump(fallV.m128_f32[1], 0);
 	}
 	else
 	{
-		fallV.m128_f32[1] = 0;
+
+	//	Momentum = phy->Screw(30,fallV.m128_f32[1]);
+	//	fallV.m128_f32[1] = 0;
+		if (input->TriggerKey(DIK_SPACE))
+		{
+			
+		}
 		
 	}
 
+	if (input->TriggerKey(DIK_SPACE))
+	{
+		position.x = Warp.m128_f32[0];
+		position.y = Warp.m128_f32[1];
+		position.z = Warp.m128_f32[2];
 
+		//matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+	}
+	
+	dy = fallV.m128_f32[1];
+	
 	// 接地状態
 	/*w
 	if (onGround) {
@@ -158,7 +176,7 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 
 
 
-	moveCamera = { dx1, fallV.m128_f32[1]+dy, dz, 0};
+	moveCamera = { dx1, dy, dz, 0};
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 
 

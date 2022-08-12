@@ -265,9 +265,9 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	}
 
-	memory3.m128_f32[0] += moveCamera.m128_f32[0];
-	memory3.m128_f32[1] += moveCamera.m128_f32[1];
-	memory3.m128_f32[2] += moveCamera.m128_f32[2];
+	memory3.m128_f32[0] = position.x;
+	memory3.m128_f32[1] = position.y;
+	memory3.m128_f32[2] = position.z;
 
 
 	matWorld = XMMatrixIdentity();

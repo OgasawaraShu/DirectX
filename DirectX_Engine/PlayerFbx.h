@@ -2,6 +2,7 @@
 #include "Fbx3d.h"
 #include "Input.h"
 #include "Physics.h"
+#include "BulletFbx.h"
 
 class PlayerFbx :
 	public Fbx3d
@@ -17,22 +18,30 @@ public:
 
 	void Initialize_Bullet();
 
-	PlayerFbx(Input*input);
+	PlayerFbx(Input*input, Physics* physics);
 	// 入力クラスのポインタ
 
 	void PlayerUpdate(double angleX, double angleY);
 
 	XMVECTOR GetMove() { return moveCamera; }
+	void SetMemo(XMVECTOR Memo) { Warp = Memo; }
 private:
 	Input* input;
+	Physics* physics;
 	float angleX;
 	float angleY;
 
-	bool onGround = false;
+	float Momentum;
 
+	bool onGround = true;
+	float acceleration_g = 9.81 / 60;//加速度
+	float JumpVel = 2;
 
 	XMVECTOR fallV;
 	XMVECTOR moveCamera;
 	XMVECTOR memory;
+
+	XMVECTOR Warp;
+	XMFLOAT3 Warp2;
 };
 

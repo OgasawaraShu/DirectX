@@ -23,6 +23,8 @@ public:
 
 	void SetMove(XMVECTOR move) { move_ = move; }
 
+	XMVECTOR GetMemo() { return memory3; }
+
 
 private:
 	Input* input;

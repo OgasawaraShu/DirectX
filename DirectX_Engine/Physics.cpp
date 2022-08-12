@@ -29,6 +29,17 @@ float Physics::Gravity(float x, float y)
 	return y;
 }
 
+void Physics::Jump(float y, float YGround)
+{
+
+	JumpVel -= acceleration_g;
+	y += JumpVel;
+
+	//y = 0.5 * G * Time * Time - JumpVel * Time + YGround;
+	//Time += 1;
+	//return y;
+}
+
 float Physics::Screw(float y, float g)
 {
 	float v = 0.0;
@@ -38,6 +49,8 @@ float Physics::Screw(float y, float g)
 	//v‚Í‚˜‚à‚µ‚­‚Í‚šŽ²‚É”ò‚Î‚·—Í
 	return v;
 }
+
+
 
 void Physics::Initialize()
 {

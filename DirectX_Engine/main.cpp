@@ -62,6 +62,7 @@ using namespace Microsoft::WRL;
 #include "CollisionManager.h"
 #include "PlayerFbx.h"
 #include "BulletFbx.h"
+#include "Physics.h" 
 
 Model* modelPlane = nullptr;
 Model* modelBox = nullptr;
@@ -124,6 +125,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     WinApp* winApp = nullptr;
     Audio* audio = nullptr;
     GamePad* gamepad = nullptr;
+    Physics* physics=nullptr;
     //WindowsAPIの初期化
     winApp = new WinApp();
     winApp->Initialize();
@@ -143,6 +145,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
      input = new Input();
+     physics = new Physics();
 
     //入力の初期化
   //  Input* input = Input::GetInstance();
@@ -390,7 +393,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d8->Initialize();
   fbx3d8->SetModel(model8);
 
-  fbx3d9= new PlayerFbx(input);
+  fbx3d9= new PlayerFbx(input,physics);
   fbx3d9->Initialize();
   fbx3d9->SetModel(model9);
 
@@ -460,6 +463,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         camera->SetMove(fbx3d9->GetMove());
         fbx3d3->SetMove(fbx3d9->GetMove());
         fbx3d4->SetMove(fbx3d9->GetMove());
+
+        fbx3d9->SetMemo(fbx3d4->GetMemo());
 
        // }
      // sprite->Update();

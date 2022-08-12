@@ -17,18 +17,22 @@ public:
 
 	float Gravity(float x, float y);
 
+	void Jump(float y, float YGround);
+
 	float Screw(float y,float g);
 private:
 
 	float acceleration_g = G / 60;//加速度
 	float N = MASS * 0.08;//摩擦力
 	float vel = -10;//下方向のベクトル
+	float JumpVel = 2;
 
 	double x1;     // 紐を伸ばして一周させた場合に出来る円周上の座標、０は紐が軸の真下にいる位置
 	double angle;
 	double speed; // xの速度
 
 	float g1;
+	float Time=0;
 
 	//G1 += vel;
 
