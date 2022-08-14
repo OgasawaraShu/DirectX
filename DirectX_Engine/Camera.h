@@ -116,6 +116,9 @@ public: // メンバ関数
 	void MoveVector(const XMFLOAT3& move);
 	void MoveVector(const XMVECTOR& move);
 
+    /// Y軸を除いたベクトルの移動 
+	void MoveVectorNotY(const XMVECTOR& move);
+
 protected: // メンバ変数
 	// ビュー行列
 	XMMATRIX matView = DirectX::XMMatrixIdentity();

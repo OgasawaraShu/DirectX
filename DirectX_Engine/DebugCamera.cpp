@@ -71,6 +71,16 @@ void DebugCamera::Update()
 		XMVECTOR move = move_;
 		move = XMVector3Transform(move, matRot);
 
+		MoveVectorNotY(move);
+		dirty = true;
+	}
+
+	//onGroundÇ™falseÇ»ÇÁYé≤Ç‡éQè∆ÇµÇΩvectorà⁄ìÆÇ∑ÇÈ
+	if (onGround_ != true)
+	{
+		XMVECTOR move = move_;
+		move = XMVector3Transform(move, matRot);
+
 		MoveVector(move);
 		dirty = true;
 	}

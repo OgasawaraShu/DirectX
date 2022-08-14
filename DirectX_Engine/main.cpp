@@ -442,10 +442,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //座標Set関連
         fbx3d3->SetWorld(camera->GetRot());
         fbx3d3->SetMove(fbx3d9->GetMove());
-        camera->SetMove(fbx3d9->GetMove());  
         fbx3d4->SetMove(fbx3d9->GetMove());
         fbx3d9->SetMemo(fbx3d4->GetMemo());
+        camera->SetMove(fbx3d9->GetMove());
         camera->SetWarpPosition(fbx3d9->GetPosition());
+        camera->SetGround(fbx3d9->Getground());
 
      // sprite2->SpriteTransVertexBuffer();
      

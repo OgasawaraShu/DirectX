@@ -37,6 +37,7 @@ public:
 
 	void SetMove(XMVECTOR move) { move_ = move; }
 	void SetWarpPosition(XMFLOAT3 Warp) { Warp_=Warp; }
+	void SetGround(bool onGround) { onGround_ = onGround; }
 
 private:
 	// 入力クラスのポインタ
@@ -59,6 +60,8 @@ private:
 	double oldx = 0;
 
 	int Flag = 0;
+
+	bool onGround_ ;
 
 	XMVECTOR move_;
 	XMFLOAT3 Warp_;

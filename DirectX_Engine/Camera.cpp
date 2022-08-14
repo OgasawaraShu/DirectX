@@ -178,11 +178,27 @@ void Camera::MoveVector(const XMVECTOR& move)
 	XMFLOAT3 target_moved = GetTarget();
 
 	eye_moved.x += move.m128_f32[0];
-	//eye_moved.y += move.m128_f32[1];
+	eye_moved.y += move.m128_f32[1];
 	eye_moved.z += move.m128_f32[2];
 
 	target_moved.x += move.m128_f32[0];
-	//target_moved.y += move.m128_f32[1];
+	target_moved.y += move.m128_f32[1];
+	target_moved.z += move.m128_f32[2];
+
+	SetEye(eye_moved);
+	SetTarget(target_moved);
+}
+
+void Camera::MoveVectorNotY(const XMVECTOR& move)
+{
+	// 視点と注視点座標を移動し、反映
+	XMFLOAT3 eye_moved = GetEye();
+	XMFLOAT3 target_moved = GetTarget();
+
+	eye_moved.x += move.m128_f32[0];
+	eye_moved.z += move.m128_f32[2];
+
+	target_moved.x += move.m128_f32[0];
 	target_moved.z += move.m128_f32[2];
 
 	SetEye(eye_moved);

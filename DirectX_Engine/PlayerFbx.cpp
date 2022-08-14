@@ -36,12 +36,9 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	//パッドのポインタ
 	GamePad* GP = nullptr;
 	GP = new GamePad();
-	//重力のポインタ
-//	Physics* phy = nullptr;
-	//phy = new Physics();
+
 	//パッドの更新
 	GP->Update();
-
 
 	//角度のフラグ
 	bool dirty = false;
@@ -50,12 +47,7 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 
 	angleX = angleX;
 	angleY = angleY;
-
-
-
-	//押されたらフラグをtrueにし覚えるのをやめる
 	dirty = true;
-
 
 	XMMATRIX matScale, matRot, matTrans;
 
@@ -76,17 +68,15 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 		// ※回転行列を累積していくと、誤差でスケーリングがかかる危険がある為
 		// クォータニオンを使用する方が望ましい
 		matRot = matRotNew * matRot;
-
-
-
 		//ベクトルと行列の積
-
 		move2 = XMVector3Transform(move2, matRot);
 	}
+
 	float dx1 = 0;
 	float dz = 0;
 	float dy = 0;
-	// WASDが押されていたらカメラを並行移動させる
+
+	// WASDが押されていたら並行移動させる
 	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
 
@@ -109,8 +99,6 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 		{
 			dz -= 0.6f;
 		}
-
-
 	}
 
 	if (input->TriggerKey(DIK_SPACE))
@@ -124,15 +112,24 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 		position = Warp2;
 	}
 
-	dy = fallV.m128_f32[1];
-	
-	moveCamera = { dx1, dy, dz, 0};
+	//onGroundがtrueなら落下ベクトルを0
+	//falseなら徐々に重力に従って加速する
+	if (onGround != true)
+	{
+		fallV.m128_f32[1] = physics->Gravity(0, fallV.m128_f32[1]);
+	}
+	else
+	{
+		fallV.m128_f32[1] = 0;
+	}
+
+	moveCamera = { dx1, fallV.m128_f32[1], dz, 0};
 
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 	
 	//positionにVectorを足す
 	position.x += moveCamera.m128_f32[0];
-	position.y += moveCamera.m128_f32[1] + fallV.m128_f32[1];
+	position.y += moveCamera.m128_f32[1];
 	position.z += moveCamera.m128_f32[2];
 
 	//平行移動

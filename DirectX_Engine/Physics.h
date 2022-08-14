@@ -15,11 +15,11 @@ public:
 
 	void Pendulum(float x,float y);//U‚èqŠÖ”
 
-	float Gravity(float x, float y);
+	float Gravity(float x, float y);//d—Í
 
-	void Jump(float y, float YGround);
+	void Jump(float y, float YGround);//JUMP
 
-	float Screw(float y,float g);
+	float Screw(float y,float g);//‰ñ“]‰^“®
 private:
 
 	float acceleration_g = G / 60;//‰Á‘¬“x
