@@ -25,6 +25,7 @@ public:
 
 	XMVECTOR GetMove() { return moveCamera; }
 	void SetMemo(XMVECTOR Memo) { Warp = Memo; }
+	XMFLOAT3 GetPosition() { return Warp2; }
 private:
 	Input* input;
 	Physics* physics;

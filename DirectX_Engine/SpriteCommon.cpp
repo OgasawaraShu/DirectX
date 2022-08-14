@@ -587,7 +587,7 @@ void SpriteCommon::CreateSprite2dpipe_Post()
 
     // 頂点シェーダの読み込みとコンパイル
     result = D3DCompileFromFile(
-        L"Resources/shaders/SpriteVS.hlsl",  // シェーダファイル名
+        L"Resources/shaders/PostVS.hlsl",  // シェーダファイル名
         nullptr,
         D3D_COMPILE_STANDARD_FILE_INCLUDE, // インクルード可能にする
         "main", "vs_5_0", // エントリーポイント名、シェーダーモデル指定

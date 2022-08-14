@@ -36,6 +36,7 @@ public:
 	XMMATRIX GetRot() { return matRot; }
 
 	void SetMove(XMVECTOR move) { move_ = move; }
+	void SetWarpPosition(XMFLOAT3 Warp) { Warp_=Warp; }
 
 private:
 	// 入力クラスのポインタ
@@ -60,5 +61,6 @@ private:
 	int Flag = 0;
 
 	XMVECTOR move_;
+	XMFLOAT3 Warp_;
 };
 

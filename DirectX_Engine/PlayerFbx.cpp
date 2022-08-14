@@ -113,87 +113,35 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 
 	}
 
-
-	// 落下処理
-	if (!onGround)
-	{
-		// 重力を加算
-		//fallV.m128_f32[1]=phy->Gravity(0, fallV.m128_f32[1]);
-		//physics->Jump(fallV.m128_f32[1], 0);
-	}
-	else
-	{
-
-	//	Momentum = phy->Screw(30,fallV.m128_f32[1]);
-	//	fallV.m128_f32[1] = 0;
-		if (input->TriggerKey(DIK_SPACE))
-		{
-			
-		}
-		
-	}
-
 	if (input->TriggerKey(DIK_SPACE))
 	{
-		position.x = Warp.m128_f32[0];
-		position.y = Warp.m128_f32[1];
-		position.z = Warp.m128_f32[2];
+		
+		Warp2.x = Warp.m128_f32[0];
+		Warp2.y = Warp.m128_f32[1];
+		Warp2.z = Warp.m128_f32[2];
 
-		//matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+		
+		position = Warp2;
 	}
-	
+
 	dy = fallV.m128_f32[1];
 	
-	// 接地状態
-	/*w
-	if (onGround) {
-		// スムーズに坂を下る為の吸着距離
-		const float adsDistance = 0.2f;
-		// 接地を維持
-		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereCollider->GetRadius() * 2.0f + adsDistance)) {
-			onGround = true;
-			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
-			// 行列の更新など
-			Object3d::Update();
-		}
-		// 地面がないので落下
-		else {
-			onGround = false;
-			fallV = {};
-		}
-	}
-	// 落下状態
-	else if (fallV.m128_f32[1] <= 0.0f) {
-		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereCollider->GetRadius() * 2.0f)) {
-			// 着地
-			onGround = true;
-			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
-			// 行列の更新など
-			Object3d::Update();
-		}
-	}
-	*/
-
-
-
 	moveCamera = { dx1, dy, dz, 0};
-	moveCamera = XMVector3Transform(moveCamera, matRot);
 
+	moveCamera = XMVector3Transform(moveCamera, matRot);
+	
+	//positionにVectorを足す
+	position.x += moveCamera.m128_f32[0];
+	position.y += moveCamera.m128_f32[1] + fallV.m128_f32[1];
+	position.z += moveCamera.m128_f32[2];
 
 	//平行移動
-	matTrans = XMMatrixTranslation(position.x += moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1]+fallV.m128_f32[1], position.z += moveCamera.m128_f32[2]);
-
-
-	memory.m128_f32[0] += moveCamera.m128_f32[0];
-	memory.m128_f32[1] += moveCamera.m128_f32[1];
-	memory.m128_f32[2] += moveCamera.m128_f32[2];
-
+	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 
 	matWorld = XMMatrixIdentity();
 	matWorld *= matScale;
 	matWorld *= matRot;
 	matWorld *= matTrans;
-
 
 	//ビュープロジェクション行列
 	const XMMATRIX& matViewProjection =

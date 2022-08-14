@@ -74,6 +74,11 @@ void DebugCamera::Update()
 		MoveVector(move);
 		dirty = true;
 	}
+
+	if (input->PushKey(DIK_SPACE))
+	{
+		SetEye(Warp_);
+	}
 	
 	//ゲームパッドアナログスティックL入力時処理(場所移動)
 	if (GP->state.Gamepad.sThumbLX != 0 || GP->state.Gamepad.sThumbLY != 0)
