@@ -36,10 +36,12 @@ void DebugCamera::Update()
 	angleY = -dy * XM_PI;
 
 	
+	
 
 	dirty = true;
 
 	oldx += angleX;
+	oldy += angleY;
 
 	//カメラのX軸ベクトルが後ろに行きそうなら押し戻す
 	if (oldx > 0.98)
@@ -105,6 +107,17 @@ void DebugCamera::Update()
 	}
 
 
+	//テレポートしたら角度を球の逆にする
+	if (redTeleport == true)
+	{
+		angleX = angle_RedX;
+		angleY = angle_RedY-Ras;
+
+		dirty = true;
+	}
+
+
+
 	if (dirty || viewDirty) {
 		// 追加回転分の回転行列を生成
 		XMMATRIX matRotNew = XMMatrixIdentity();
@@ -153,6 +166,11 @@ float DebugCamera::GetAngleY()
 float DebugCamera::GetPositionX()
 {
 	return oldx;
+}
+
+float DebugCamera::GetPositionY()
+{
+	return oldy;
 }
 
 

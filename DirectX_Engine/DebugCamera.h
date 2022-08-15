@@ -38,6 +38,10 @@ public:
 	void SetMove(XMVECTOR move) { move_ = move; }
 	void SetWarpPosition(XMFLOAT3 Warp) { Warp_=Warp; }
 	void SetGround(bool onGround) { onGround_ = onGround; }
+	void SetAngleRedX(float x) { angle_RedX = x;}
+	void SetAngleRedY(float y) { angle_RedY = y;}
+	void SetRedTeleport(bool teleport) { redTeleport = teleport;}
+
 
 private:
 	// 入力クラスのポインタ
@@ -58,10 +62,18 @@ private:
 	double angleX = 0;//カメラの角度X
 	double angleY = 0;//カメラの角度Y
 	double oldx = 0;
+	float oldy = 0;
+
+	const float Ras = 3.15;
 
 	int Flag = 0;
 
 	bool onGround_ ;
+
+	bool redTeleport;
+
+	float angle_RedX;
+	float angle_RedY;
 
 	XMVECTOR move_;
 	XMFLOAT3 Warp_;

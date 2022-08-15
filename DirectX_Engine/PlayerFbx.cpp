@@ -101,6 +101,7 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 		}
 	}
 
+	
 	if (input->TriggerKey(DIK_SPACE))
 	{
 		
@@ -110,6 +111,12 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 
 		
 		position = Warp2;
+
+		redTeleport = true;
+	}
+	else
+	{
+		redTeleport = false;
 	}
 
 	//onGround‚ªtrue‚È‚ç—Ž‰ºƒxƒNƒgƒ‹‚ð0

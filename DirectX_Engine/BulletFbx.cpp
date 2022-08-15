@@ -192,7 +192,6 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 	//パッドの更新
 	GP->Update();
 
-
 	//角度のフラグ
 	bool dirty = false;
 
@@ -203,6 +202,8 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 		angleX2 = angleX;
 		angleY2 = angleY;
 
+		oldRedX += angleX2;
+		oldRedY += angleY2;
 
 	}
 	else
@@ -231,23 +232,17 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 		// クォータニオンを使用する方が望ましい
 		matRot = matRotNew * matRot;
 
-
-
 		//ベクトルと行列の積
-
 		move2 = XMVector3Transform(move2, matRot);
 	}
 	
-
 	XMVECTOR moveCamera = move_;
 	moveCamera = XMVector3Transform(moveCamera, matRot);
-
 
 	if (input->TriggerMouseRight())
 	{
 		TriggerFlag2 = 1;
 	}
-
 
 	if (TriggerFlag2 == 1 && debug2 == 0)
 	{
@@ -269,12 +264,10 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 	memory3.m128_f32[1] = position.y;
 	memory3.m128_f32[2] = position.z;
 
-
 	matWorld = XMMatrixIdentity();
 	matWorld *= matScale;
 	matWorld *= matRot;
 	matWorld *= matTrans;
-
 
 	//ビュープロジェクション行列
 	const XMMATRIX& matViewProjection =
@@ -310,8 +303,6 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 
 	}
 
-
-
 	std::vector<Model::Bone>& bones = model->GetBones();
 
 	ConstBufferDataSkin* constMapSkin = nullptr;
@@ -328,7 +319,6 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 		constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
 	}
 	constBuffSkin->Unmap(0, nullptr);
-
 
 	//当たり判定更新
 	if (collider) {

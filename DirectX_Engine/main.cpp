@@ -447,10 +447,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         camera->SetMove(fbx3d9->GetMove());
         camera->SetWarpPosition(fbx3d9->GetPosition());
         camera->SetGround(fbx3d9->Getground());
+     
 
      // sprite2->SpriteTransVertexBuffer();
      
-      sprintf_s(moji, "%f", camera->GetPositionX());
+      sprintf_s(moji, "%f", camera->GetPositionY());
       //sprintf_s(moji2,"%d",camera->GetAngleY());
      
         if (winApp->ProcessMessage())
@@ -479,6 +480,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d7->Update();
         fbx3d8->Update();
         fbx3d9->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
+
+
+        camera->SetAngleRedX(fbx3d4->GetAngleX2());
+        camera->SetAngleRedY(fbx3d4->GetAngleY2());
+        camera->SetRedTeleport(fbx3d9->GetredTeleport());
 
 
         //レンダ―テクスチャの描画

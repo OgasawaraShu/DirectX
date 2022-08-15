@@ -31,6 +31,8 @@ public:
 
 	bool Getground() { return onGround; }
 
+	bool GetredTeleport() { return redTeleport; }
+
 private:
 
 	//クラスのポインタ
@@ -47,6 +49,8 @@ private:
 	float Momentum;//
 
 	bool onGround = true;//地面の判定
+
+	bool redTeleport = false;//赤への転送
 
 	float acceleration_g = 9.81 / 60;//加速度
 
