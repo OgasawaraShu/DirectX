@@ -24,6 +24,9 @@ public:
 	//Settter
 	void SetMemo(XMVECTOR Memo) { Warp = Memo; }
 
+	void SetMemo2(XMVECTOR Memo) { Warpblue = Memo; }
+
+
 	//Gettter
 	XMVECTOR GetMove() { return moveCamera; }
 
@@ -32,6 +35,9 @@ public:
 	bool Getground() { return onGround; }
 
 	bool GetredTeleport() { return redTeleport; }
+
+	bool GetblueTeleport() { return blueTeleport; }
+
 
 private:
 
@@ -52,6 +58,8 @@ private:
 
 	bool redTeleport = false;//赤への転送
 
+	bool blueTeleport = false;//青への転送
+
 	float acceleration_g = 9.81 / 60;//加速度
 
 	float JumpVel = 2;//Jumpの初速
@@ -63,6 +71,8 @@ private:
 	XMVECTOR memory;//記憶用変数
 
 	XMVECTOR Warp;//ワープするための移動変数（Vector）
+
+	XMVECTOR Warpblue;//ワープするための移動変数（Vector）
 
 	XMFLOAT3 Warp2;//ワープするための移動変数（Float）
 };

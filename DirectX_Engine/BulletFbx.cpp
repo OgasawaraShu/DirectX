@@ -44,6 +44,9 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 		//マウスの左が押されない限りカメラの角度を覚え続ける
 		angleX1 = angleX;
 		angleY1 = angleY;
+
+		oldBlueX += angleX1;
+		oldBlueY += angleY1;
 	}
 	else
 	{
@@ -105,9 +108,9 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	}
 
-	memory.m128_f32[0] += move.m128_f32[0];
-	memory.m128_f32[1] += move.m128_f32[1];
-	memory.m128_f32[2] += move.m128_f32[2];
+	memory.m128_f32[0] = position.x;
+	memory.m128_f32[1] = position.y;
+	memory.m128_f32[2] = position.z;
 
 
 	matWorld = XMMatrixIdentity();

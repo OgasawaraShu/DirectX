@@ -11,7 +11,7 @@ using namespace DirectX;
 
 void PlayerFbx::OnCollision(const CollisionInfo& info)
 {
-	onGround = true;
+	//onGround = true;
 }
 
 void PlayerFbx::Initialize_Bullet()
@@ -117,6 +117,23 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	else
 	{
 		redTeleport = false;
+	}
+
+	if (input->TriggerKey(DIK_B))
+	{
+
+		Warp2.x = Warpblue.m128_f32[0];
+		Warp2.y = Warpblue.m128_f32[1];
+		Warp2.z = Warpblue.m128_f32[2];
+
+
+		position = Warp2;
+
+		blueTeleport = true;
+	}
+	else
+	{
+		blueTeleport = false;
 	}
 
 	//onGround‚ªtrue‚È‚ç—Ž‰ºƒxƒNƒgƒ‹‚ð0

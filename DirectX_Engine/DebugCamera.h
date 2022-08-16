@@ -41,6 +41,9 @@ public:
 	void SetAngleRedX(float x) { angle_RedX = x;}
 	void SetAngleRedY(float y) { angle_RedY = y;}
 	void SetRedTeleport(bool teleport) { redTeleport = teleport;}
+	void SetAngleBlueX(float x) { angle_BlueX = x; }
+	void SetAngleBlueY(float y) { angle_BlueY = y; }
+	void SetBlueTeleport(bool teleport) { blueTeleport = teleport; }
 
 
 private:
@@ -71,9 +74,14 @@ private:
 	bool onGround_ ;
 
 	bool redTeleport;
+	bool blueTeleport;
 
 	float angle_RedX;
 	float angle_RedY;
+
+	float angle_BlueX;
+	float angle_BlueY;
+
 
 	XMVECTOR move_;
 	XMFLOAT3 Warp_;

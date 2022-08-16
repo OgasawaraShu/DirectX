@@ -24,11 +24,13 @@ public://関数
 	///Getter,Setter
 	void SetMove(XMVECTOR move) { move_ = move; }
 
+	XMVECTOR GetMemo2() { return memory; }
+
 	XMVECTOR GetMemo() { return memory3; }
 
-	float GetAngleX1() { return angleX1; }
+	float GetAngleX1() { return oldBlueX; }
 
-	float GetAngleY1() { return angleY1; }
+	float GetAngleY1() { return oldBlueY; }
 
 	float GetAngleX2() { return oldRedX; }
 
@@ -46,6 +48,10 @@ private://変数
 	float oldRedX;//赤の累計角度
 
 	float oldRedY;//赤の累計角度
+
+	float oldBlueX;//青の累計角度
+
+	float oldBlueY;//青の累計角度
 
 	bool reset_Blue = true;//球の座標リセット
 

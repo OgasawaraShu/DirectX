@@ -87,7 +87,7 @@ void DebugCamera::Update()
 		dirty = true;
 	}
 
-	if (input->PushKey(DIK_SPACE))
+	if (input->PushKey(DIK_SPACE)||input->PushKey(DIK_B))
 	{
 		SetEye(Warp_);
 	}
@@ -116,7 +116,14 @@ void DebugCamera::Update()
 		dirty = true;
 	}
 
+	//テレポートしたら角度を球の逆にする
+	if (blueTeleport == true)
+	{
+		angleX = angle_BlueX;
+		angleY = angle_BlueY - Ras;
 
+		dirty = true;
+	}
 
 	if (dirty || viewDirty) {
 		// 追加回転分の回転行列を生成

@@ -444,6 +444,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d3->SetMove(fbx3d9->GetMove());
         fbx3d4->SetMove(fbx3d9->GetMove());
         fbx3d9->SetMemo(fbx3d4->GetMemo());
+        fbx3d9->SetMemo2(fbx3d3->GetMemo2());
         camera->SetMove(fbx3d9->GetMove());
         camera->SetWarpPosition(fbx3d9->GetPosition());
         camera->SetGround(fbx3d9->Getground());
@@ -485,6 +486,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         camera->SetAngleRedX(fbx3d4->GetAngleX2());
         camera->SetAngleRedY(fbx3d4->GetAngleY2());
         camera->SetRedTeleport(fbx3d9->GetredTeleport());
+        camera->SetAngleBlueX(fbx3d3->GetAngleX1());
+        camera->SetAngleBlueY(fbx3d3->GetAngleY1());
+        camera->SetBlueTeleport(fbx3d9->GetblueTeleport());
 
 
         //レンダ―テクスチャの描画
@@ -524,7 +528,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         ////スプライト共通コマンド
         spriteCommon->PreDraw();
-        debugtext->Print(moji, 100, 100);
+      //  debugtext->Print(moji, 100, 100);
         debugtext->DrawAll();//的カウント
 
         //スプライト表示
