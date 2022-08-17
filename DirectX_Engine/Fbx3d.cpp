@@ -413,5 +413,16 @@ void Fbx3d::SetVer()
 	collider->SetAttribute(COLLISION_ATTR_PLAYER);
 }
 
+void Fbx3d::SetVerBulletBlue()
+{
+	collider->SetAttribute(COLLISION_ATTR_BULLET_BLUE);
+}
+
+void Fbx3d::SetVerBulletRed()
+{
+	collider->SetAttribute(COLLISION_ATTR_BULLET_RED);
+}
+
+
 
 

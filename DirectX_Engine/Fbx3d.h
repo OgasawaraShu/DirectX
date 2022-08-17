@@ -110,6 +110,11 @@ public:
 
 	void SetVer();
 
+	void SetVerBulletBlue();
+
+	void SetVerBulletRed();
+
+
 	void SetWorld(XMMATRIX matrot_) { matrot = matrot_; }
 
 	XMMATRIX matrot;

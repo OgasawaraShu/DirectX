@@ -65,10 +65,13 @@ public:
 
 
 protected:
-	unsigned short attribute= 0b1111111111111111;
-
+	
 	Fbx3d* fbx3d = nullptr;
 	// 形状タイプ
 	CollisionShapeType shapeType = SHAPE_UNKNOWN;
+
+public:
+	unsigned short attribute = 0b1111111111111111;
+
 };
 

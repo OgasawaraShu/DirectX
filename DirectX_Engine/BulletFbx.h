@@ -36,6 +36,8 @@ public://関数
 
 	float GetAngleY2() { return oldRedY; }
 
+	bool GetWarpFlag() { return warpFlag; }
+
 
 private://変数
 
@@ -56,6 +58,8 @@ private://変数
 	bool reset_Blue = true;//球の座標リセット
 
 	bool reset_Red = true;//球の座標リセット
+
+	bool warpFlag = false;//両方の球が撃たれたらワープできるようにする
 
 	XMVECTOR move_;//自機の座標
 

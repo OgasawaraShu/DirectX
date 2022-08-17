@@ -424,8 +424,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d9->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
   
   //当たり判定の属性
-  fbx3d3->SetVer();
-  fbx3d4->SetVer();
+  fbx3d3->SetVerBulletRed();
+  fbx3d4->SetVerBulletBlue();
   fbx3d9->SetVer();
 
     while (true)  // ゲームループ
@@ -445,6 +445,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d4->SetMove(fbx3d9->GetMove());
         fbx3d9->SetMemo(fbx3d4->GetMemo());
         fbx3d9->SetMemo2(fbx3d3->GetMemo2());
+        fbx3d9->SetWarpFlag(fbx3d3->GetWarpFlag());
         camera->SetMove(fbx3d9->GetMove());
         camera->SetWarpPosition(fbx3d9->GetPosition());
         camera->SetGround(fbx3d9->Getground());

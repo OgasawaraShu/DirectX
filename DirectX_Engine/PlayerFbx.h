@@ -5,7 +5,7 @@
 #include "BulletFbx.h"
 
 class PlayerFbx :
-	public Fbx3d
+	public Fbx3d 
 {
 public:
 
@@ -25,6 +25,8 @@ public:
 	void SetMemo(XMVECTOR Memo) { Warp = Memo; }
 
 	void SetMemo2(XMVECTOR Memo) { Warpblue = Memo; }
+
+	void SetWarpFlag(bool flag) { warpFlag = flag; }
 
 
 	//Gettter
@@ -48,6 +50,8 @@ private:
 
 
 	//変数
+
+
 	float angleX;//角度X
 
 	float angleY;//角度Y
@@ -59,6 +63,12 @@ private:
 	bool redTeleport = false;//赤への転送
 
 	bool blueTeleport = false;//青への転送
+
+	bool blueCollision = false;//青への転送フラッグ
+
+	bool redCollision = false;//赤への転送フラッグ
+
+	bool warpFlag = false;//trueになったらwarp出来るようにする
 
 	float acceleration_g = 9.81 / 60;//加速度
 

@@ -11,7 +11,15 @@ using namespace DirectX;
 
 void PlayerFbx::OnCollision(const CollisionInfo& info)
 {
-	//onGround = true;
+	//2進法で表現しているため4は赤球8は蒼球
+	if(info.collider->attribute==4&&warpFlag==true)
+	{
+		//blueCollision = true;
+	}
+	else if (info.collider->attribute == 8 && warpFlag == true)
+	{
+		redCollision = true;
+	}
 }
 
 void PlayerFbx::Initialize_Bullet()
@@ -102,7 +110,7 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	}
 
 	
-	if (input->TriggerKey(DIK_SPACE))
+	if (redCollision==true && warpFlag == true)
 	{
 		
 		Warp2.x = Warp.m128_f32[0];
@@ -114,12 +122,15 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 
 		redTeleport = true;
 	}
-	else
+	else if(redCollision == false)
 	{
 		redTeleport = false;
 	}
 
-	if (input->TriggerKey(DIK_B))
+	redCollision = false;
+
+
+	if (blueCollision==true && warpFlag == true)
 	{
 
 		Warp2.x = Warpblue.m128_f32[0];
@@ -131,11 +142,13 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 
 		blueTeleport = true;
 	}
-	else
+	else if (blueCollision == false)
 	{
 		blueTeleport = false;
 	}
 
+	blueCollision = false;
+	
 	//onGroundがtrueなら落下ベクトルを0
 	//falseなら徐々に重力に従って加速する
 	if (onGround != true)

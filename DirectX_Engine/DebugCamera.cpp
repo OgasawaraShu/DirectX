@@ -87,10 +87,6 @@ void DebugCamera::Update()
 		dirty = true;
 	}
 
-	if (input->PushKey(DIK_SPACE)||input->PushKey(DIK_B))
-	{
-		SetEye(Warp_);
-	}
 	
 	//ゲームパッドアナログスティックL入力時処理(場所移動)
 	if (GP->state.Gamepad.sThumbLX != 0 || GP->state.Gamepad.sThumbLY != 0)
@@ -106,6 +102,11 @@ void DebugCamera::Update()
 		dirty = true;
 	}
 
+	//テレポートしたら座標を合わせる
+	if (blueTeleport == true || redTeleport == true)
+	{
+		SetEye(Warp_);
+	}
 
 	//テレポートしたら角度を球の逆にする
 	if (redTeleport == true)

@@ -11,8 +11,11 @@ using namespace DirectX;
 
 void BulletFbx::OnCollision(const CollisionInfo& info)
 {
-	if (debug == 0 && TriggerFlag == 1)debug = 1;
-	if (debug2 == 0 && TriggerFlag2 == 1)debug2 = 1;
+	if (info.collider->attribute != 2)
+	{
+		if (debug == 0 && TriggerFlag == 1)debug = 1;
+		if (debug2 == 0 && TriggerFlag2 == 1)debug2 = 1;
+	}
 }
 
 BulletFbx::BulletFbx(Input* input)
@@ -81,6 +84,12 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 		move = XMVector3Transform(move, matRot);
 	}
 	
+
+	//両方の球が撃たれたらワープできるフラグをTRUEにする
+	if (debug == 1)
+	{
+		warpFlag = true;
+	}
 
 	XMVECTOR moveCamera = move_;
 	moveCamera = XMVector3Transform(moveCamera, matRot);
