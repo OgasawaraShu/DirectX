@@ -20,6 +20,10 @@ void PlayerFbx::OnCollision(const CollisionInfo& info)
 	{
 		redCollision = true;
 	}
+	else
+	{
+		onGround = true;
+	}
 }
 
 void PlayerFbx::Initialize_Bullet()
@@ -110,6 +114,7 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	}
 
 	
+	//Ô‚É“–‚½‚Á‚Ä‚©‚Â‚Ç‚¿‚ç‚à”ò‚Î‚µ‚Ä‚¢‚éê‡
 	if (redCollision==true && warpFlag == true)
 	{
 		
@@ -129,7 +134,7 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 
 	redCollision = false;
 
-
+	//Â‚É“–‚½‚Á‚Ä‚©‚Â‚Ç‚¿‚ç‚à”ò‚Î‚µ‚Ä‚¢‚éê‡
 	if (blueCollision==true && warpFlag == true)
 	{
 
@@ -160,7 +165,7 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 		fallV.m128_f32[1] = 0;
 	}
 
-	moveCamera = { dx1, fallV.m128_f32[1], dz, 0};
+	moveCamera = { dx1+fallV.m128_f32[0], dy + fallV.m128_f32[1], dz + fallV.m128_f32[2], 0};
 
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 	
@@ -235,6 +240,8 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	if (collider) {
 		collider->Update();
 	}
+
+//	onGround = false;
 }
 
 
