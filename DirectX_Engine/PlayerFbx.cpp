@@ -3,6 +3,7 @@
 #include "BaseCollider.h"
 #include "CollisionAttribute.h"
 #include <d3dcompiler.h>
+#include "PortalfallV.h"
 
 #pragma comment(lib,"d3dcompiler.lib")
 
@@ -22,7 +23,7 @@ void PlayerFbx::OnCollision(const CollisionInfo& info)
 	}
 	else
 	{
-		onGround = true;
+		//onGround = true;
 	}
 }
 
@@ -42,6 +43,7 @@ PlayerFbx::PlayerFbx(Input* input,Physics* physics)
 
 void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 {
+
 	// マウスの入力を取得
 	Input::MouseMove mouseMove = input->GetMouseMove();
 
@@ -126,11 +128,16 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 		position = Warp2;
 
 		redTeleport = true;
+
+		onGround = false;
+		//fallV.m128_f32[2] = 2.0f;
+
 	}
 	else if(redCollision == false)
 	{
 		redTeleport = false;
 	}
+
 
 	redCollision = false;
 
@@ -165,7 +172,7 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 		fallV.m128_f32[1] = 0;
 	}
 
-	moveCamera = { dx1+fallV.m128_f32[0], dy + fallV.m128_f32[1], dz + fallV.m128_f32[2], 0};
+	moveCamera = { dx1+=fallV.m128_f32[0], dy+=fallV.m128_f32[1], dz+=fallV.m128_f32[2], 0};
 
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 	
@@ -173,6 +180,8 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	position.x += moveCamera.m128_f32[0];
 	position.y += moveCamera.m128_f32[1];
 	position.z += moveCamera.m128_f32[2];
+
+
 
 	//平行移動
 	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
@@ -235,13 +244,70 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	}
 	constBuffSkin->Unmap(0, nullptr);
 
-
 	//当たり判定更新
 	if (collider) {
 		collider->Update();
 	}
+}
 
-//	onGround = false;
+void PlayerFbx::Fall()
+{
+	// 落下処理
+	if (!onGround) {
+		// 下向き加速度
+		const float fallAcc = -0.01f;
+		const float fallVYMin = -0.5f;
+		// 加速
+		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
+		// 移動
+		position.x += fallV.m128_f32[0];
+		position.y += fallV.m128_f32[1];
+		position.z += fallV.m128_f32[2];
+	}
+	// ジャンプ操作
+	else if (input->TriggerKey(DIK_SPACE)) {
+		onGround = false;
+		const float jumpVYFist = 0.2f;
+		fallV = { 0, jumpVYFist, 0, 0 };
+	}
+}
+
+void PlayerFbx::Landing()
+{
+
+	SphereCollider* sphereCollider = dynamic_cast<SphereCollider*>(collider);
+	assert(sphereCollider);
+
+	// 球の上端から球の下端までのレイキャスト
+	Ray ray;
+	ray.start = sphereCollider->center;
+	ray.start.m128_f32[1] += sphereCollider->GetRadius();
+	ray.dir = { 0,-1,0,0 };
+	RaycastHit raycastHit;
+
+	// 接地状態
+	if (onGround) {
+		// スムーズに坂を下る為の吸着距離
+		const float adsDistance = 0.2f;
+		// 接地を維持
+		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereCollider->GetRadius() * 2.0f + adsDistance)) {
+			onGround = true;
+			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);	
+		}
+		// 地面がないので落下
+		else {
+			onGround = false;
+			fallV = {};
+		}
+	}
+	// 落下状態
+	else if (fallV.m128_f32[1] <= 0.0f) {
+		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereCollider->GetRadius() * 2.0f)) {
+			// 着地
+			onGround = true;
+			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
+		}
+	}
 }
 
 

@@ -133,8 +133,10 @@ bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDis
 			inter = tempInter;
 			it_hit = it;
 		}
-		
+	*/	
+/*
 	}
+	
 
 	if (result && hitInfo) {
 		hitInfo->distance = distance;
@@ -147,7 +149,7 @@ bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDis
 }
 */
 
-/*
+
 bool CollisionManager::Raycast(const Ray& ray, RaycastHit* hitInfo, float maxDistance)
 {
 	return Raycast(ray, 0xffff, hitInfo, maxDistance);
@@ -185,6 +187,8 @@ bool CollisionManager::Raycast(const Ray& ray, unsigned short attribute, Raycast
 			inter = tempInter;
 			it_hit = it;
 		}
+
+		/*
 		else if (colA->GetShapeType() == COLLISIONSHAPE_MESH) {
 			MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(colA);
 
@@ -198,18 +202,19 @@ bool CollisionManager::Raycast(const Ray& ray, unsigned short attribute, Raycast
 			inter = tempInter;
 			it_hit = it;
 		}
+		*/
 	}
 
 	if (result && hitInfo) {
 		hitInfo->distance = distance;
 		hitInfo->inter = inter;
 		hitInfo->collider = *it_hit;
-		hitInfo->object = hitInfo->collider->GetObject3d();
+		hitInfo->fbx = hitInfo->collider->GetObject3d();
 	}
 
 	return result;
 }
-*/
+
 
 /*
 void CollisionManager::QuerySphere(const Sphere& sphere, QueryCallback* callback, unsigned short attribute)

@@ -4,6 +4,10 @@
 
 class PortalfallV
 {
+public:
+	void conversion(float yuan, float rear);
+
+private:
 
 };
 

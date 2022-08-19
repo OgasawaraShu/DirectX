@@ -4,6 +4,7 @@
 #include "Physics.h"
 #include "BulletFbx.h"
 
+
 class PlayerFbx :
 	public Fbx3d 
 {
@@ -20,6 +21,10 @@ public:
 	void Initialize_Bullet();
 
 	void PlayerUpdate(double angleX, double angleY);//XVˆ—
+
+	void Fall();//—‰ºˆ—
+
+	void Landing();//’…’n
 
 	//Settter
 	void SetMemo(XMVECTOR Memo) { Warp = Memo; }

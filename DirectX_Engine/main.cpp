@@ -418,7 +418,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   float radius = 5.0f;
 
   fbx3d1->SetColider(new BoxCollider(XMVECTOR{80,80,80,0}));
-  fbx3d3->SetColider(new SphereCollider(XMVECTOR{0,radius,0,0},radius));
+  fbx3d3->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
   fbx3d4->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
   fbx3d6->SetColider(new PlaneCollider);
   fbx3d9->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
@@ -432,11 +432,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     {
      //3d更新   
      //スプライト
+
+        /*
         Ray ray;
         ray.start = { 10,0.5,0.0,1 };
         ray.dir = { -1,0,0,0 };
-       // RaycastHit raycastHit;
+        RaycastHit raycastHit;
 
+        if (collisionManager->Raycast(ray, &raycastHit)) {
+
+          
+        }
+        */
        // if (collisionManager->Raycast(ray, &raycastHit)) {
 
         //座標Set関連

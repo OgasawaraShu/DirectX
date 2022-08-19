@@ -68,14 +68,14 @@ void DebugCamera::Update()
 	}
 	
 	// WASD‚ª‰Ÿ‚³‚ê‚Ä‚¢‚½‚çƒJƒƒ‰‚ğ•ÀsˆÚ“®‚³‚¹‚é
-	if (input->PushKey(DIK_A)||input->PushKey(DIK_D)|| input->PushKey(DIK_W) || input->PushKey(DIK_S)||input->TriggerKey(DIK_SPACE))
-	{
+	//if (input->PushKey(DIK_A)||input->PushKey(DIK_D)|| input->PushKey(DIK_W) || input->PushKey(DIK_S)||input->TriggerKey(DIK_SPACE))
+	//{
 		XMVECTOR move = move_;
 		move = XMVector3Transform(move, matRot);
 
 		MoveVectorNotY(move);
 		dirty = true;
-	}
+	//}
 
 	//onGround‚ªfalse‚È‚çY²‚àQÆ‚µ‚½vectorˆÚ“®‚·‚é
 	if (onGround_ != true)
