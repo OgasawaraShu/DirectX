@@ -202,7 +202,7 @@ public:
 
 	const XMMATRIX& GetModelTransform() { return meshNode->globalTransform; }
 
-	inline  const std::vector<Node>& GetMeshes() { return  nodes;}
+    //inline  const std::vector<Mesh>& GetMeshes() { return  ;}
 
 	
 	//std::vector<unsigned short>indices;

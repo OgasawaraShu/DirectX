@@ -26,6 +26,8 @@ public:
 
 	void Landing();//’…’n
 
+	void RayCheck(float angleX,float angleY);
+
 	//Settter
 	void SetMemo(XMVECTOR Memo) { Warp = Memo; }
 

@@ -114,6 +114,8 @@ public:
 
 	void SetVerBulletRed();
 
+	void SetVerLand();
+
 
 	void SetWorld(XMMATRIX matrot_) { matrot = matrot_; }
 

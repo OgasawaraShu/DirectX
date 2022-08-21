@@ -130,8 +130,6 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 		redTeleport = true;
 
 		onGround = false;
-		//fallV.m128_f32[2] = 2.0f;
-
 	}
 	else if(redCollision == false)
 	{
@@ -160,18 +158,13 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	}
 
 	blueCollision = false;
-	
-	//onGroundがtrueなら落下ベクトルを0
-	//falseなら徐々に重力に従って加速する
-	if (onGround != true)
-	{
-		fallV.m128_f32[1] = physics->Gravity(0, fallV.m128_f32[1]);
-	}
-	else
-	{
-		fallV.m128_f32[1] = 0;
-	}
 
+	Fall();
+
+
+	//Landing();
+
+	
 	moveCamera = { dx1+=fallV.m128_f32[0], dy+=fallV.m128_f32[1], dz+=fallV.m128_f32[2], 0};
 
 	moveCamera = XMVector3Transform(moveCamera, matRot);
@@ -181,7 +174,10 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	position.y += moveCamera.m128_f32[1];
 	position.z += moveCamera.m128_f32[2];
 
+	
+	
 
+	RayCheck(angleX, angleY);
 
 	//平行移動
 	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
@@ -275,13 +271,10 @@ void PlayerFbx::Fall()
 void PlayerFbx::Landing()
 {
 
-	SphereCollider* sphereCollider = dynamic_cast<SphereCollider*>(collider);
-	assert(sphereCollider);
-
-	// 球の上端から球の下端までのレイキャスト
+	// レイのスタート地点を設定
 	Ray ray;
-	ray.start = sphereCollider->center;
-	ray.start.m128_f32[1] += sphereCollider->GetRadius();
+	ray.start = { position.x,position.y,position.z,0 };
+	ray.start.m128_f32[1] += 5.0f;
 	ray.dir = { 0,-1,0,0 };
 	RaycastHit raycastHit;
 
@@ -290,9 +283,9 @@ void PlayerFbx::Landing()
 		// スムーズに坂を下る為の吸着距離
 		const float adsDistance = 0.2f;
 		// 接地を維持
-		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereCollider->GetRadius() * 2.0f + adsDistance)) {
+		if (!CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, 5.0 * 2.0f + adsDistance)) {
 			onGround = true;
-			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);	
+			position.y -= (raycastHit.distance - 5.0 * 2.0f);	
 		}
 		// 地面がないので落下
 		else {
@@ -302,12 +295,38 @@ void PlayerFbx::Landing()
 	}
 	// 落下状態
 	else if (fallV.m128_f32[1] <= 0.0f) {
-		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, sphereCollider->GetRadius() * 2.0f)) {
+		if (!CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit,5.0 * 2.0f)) {
 			// 着地
 			onGround = true;
-			position.y -= (raycastHit.distance - sphereCollider->GetRadius() * 2.0f);
+			position.y -= (raycastHit.distance - 5.0 * 2.0f);
 		}
 	}
+}
+
+void PlayerFbx::RayCheck(float angleX, float angleY)
+{
+	// レイのスタート地点を設定
+	Ray ray;
+	ray.start = { position.x,position.y,position.z,0 };
+	ray.start.m128_f32[1] += 2.5f;
+	ray.dir = { 0,0,1,0};
+	RaycastHit raycastHit;
+
+	XMMATRIX matRot;
+
+	matRot = XMMatrixIdentity();
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(0));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(-angleX));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(-angleY));
+
+ 	ray.dir = XMVector3Transform(ray.dir, matRot);
+
+
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_BULLET_RED, &raycastHit)) {
+	//	onGround = false;
+	}
+
+	
 }
 
 

@@ -420,7 +420,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d1->SetColider(new BoxCollider(XMVECTOR{80,80,80,0}));
   fbx3d3->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
   fbx3d4->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
-  fbx3d6->SetColider(new PlaneCollider);
+  fbx3d6->SetColider(new PlaneCollider(XMVECTOR{ 0,1,0,0 }, 1));
   fbx3d9->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
   
   //当たり判定の属性

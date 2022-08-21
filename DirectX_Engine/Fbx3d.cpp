@@ -423,6 +423,12 @@ void Fbx3d::SetVerBulletRed()
 	collider->SetAttribute(COLLISION_ATTR_BULLET_RED);
 }
 
+void Fbx3d::SetVerLand()
+{
+	collider->SetAttribute(COLLISION_ATTR_LANDSHAPE);
+}
+
+
 
 
 
