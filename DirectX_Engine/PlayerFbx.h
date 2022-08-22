@@ -22,11 +22,19 @@ public:
 
 	void PlayerUpdate(double angleX, double angleY);//更新処理
 
-	void Fall();//落下処理
+	void FallJump();//落下処理
 
 	void Landing();//着地
 
 	void RayCheck(float angleX,float angleY);
+
+	void PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTrans);//行列後更新
+
+	void WarpUpdate();//ワープ処理
+
+	void AddRotateMatrixUpdate(float angleX,float angleY,XMMATRIX matRot);//追加回転処理
+
+	void MoveMatrixUpdate(XMMATRIX matRot);//キー入力による動作
 
 	//Settter
 	void SetMemo(XMVECTOR Memo) { Warp = Memo; }
@@ -35,11 +43,14 @@ public:
 
 	void SetWarpFlag(bool flag) { warpFlag = flag; }
 
+	void SetCameraAxis(XMVECTOR z) { CammeraZAxis = z; }
 
 	//Gettter
 	XMVECTOR GetMove() { return moveCamera; }
 
 	XMFLOAT3 GetPosition() { return Warp2; }
+
+	XMFLOAT3 GetMyPosition() { return position; }
 
 	bool Getground() { return onGround; }
 
@@ -92,5 +103,7 @@ private:
 	XMVECTOR Warpblue;//ワープするための移動変数（Vector）
 
 	XMFLOAT3 Warp2;//ワープするための移動変数（Float）
+
+	XMVECTOR CammeraZAxis;
 };
 

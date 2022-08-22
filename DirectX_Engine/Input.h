@@ -92,6 +92,12 @@ public:
 	// キーの右ボタントリガーをチェック
 	bool TriggerMouseRight();
 
+	// キーの真ん中ボタン押下をチェック
+	bool PushMouseMid();
+
+	// キーの真ん中トリガー押下をチェック
+	bool TriggerMouseMid();
+
 
 	// マウス移動量を取得
 	MouseMove GetMouseMove();

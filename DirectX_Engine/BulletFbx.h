@@ -21,6 +21,8 @@ public://ŠÖ”
 
 	void RedBulletUpdate(double angleX, double angleY);//Ô‚Ì‹…XV
 
+	void PostMatrixUpdate();
+
 	///Getter,Setter
 	void SetMove(XMVECTOR move) { move_ = move; }
 

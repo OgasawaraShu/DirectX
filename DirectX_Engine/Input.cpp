@@ -168,6 +168,25 @@ bool Input::TriggerMouseRight()
     return false;
 }
 
+bool Input::PushMouseMid()
+{
+    // 0でなければ押している
+    if (mouseState.rgbButtons[2]) {
+        return true;
+    }
+    return false;
+}
+
+bool Input::TriggerMouseMid()
+{
+    // 前回が0で、今回が0でなければトリガー
+    if (!mouseStatePre.rgbButtons[2] && mouseState.rgbButtons[2]) {
+        return true;
+    }
+
+    return false;
+}
+
 Input::MouseMove Input::GetMouseMove()
 {
     MouseMove tmp;

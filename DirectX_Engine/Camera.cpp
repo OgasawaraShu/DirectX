@@ -56,6 +56,8 @@ void Camera::UpdateViewMatrix()
 	// ベクトルを正規化
 	cameraAxisZ = XMVector3Normalize(cameraAxisZ);
 
+	CameraAxisGet = cameraAxisZ;
+
 	// カメラのX軸（右方向）
 	XMVECTOR cameraAxisX;
 	// X軸は上方向→Z軸の外積で求まる

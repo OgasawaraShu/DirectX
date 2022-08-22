@@ -119,6 +119,8 @@ public: // メンバ関数
     /// Y軸を除いたベクトルの移動 
 	void MoveVectorNotY(const XMVECTOR& move);
 
+	XMVECTOR GetCameraZAxis() { return CameraAxisGet; }
+
 protected: // メンバ変数
 	// ビュー行列
 	XMMATRIX matView = DirectX::XMMatrixIdentity();
@@ -142,6 +144,7 @@ protected: // メンバ変数
 	XMFLOAT3 up = { 0, 1, 0 };
 	// アスペクト比
 	float aspectRatio = 1.0f;
+	XMVECTOR CameraAxisGet;
 };
 
 

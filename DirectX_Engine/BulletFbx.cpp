@@ -121,7 +121,6 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 	memory.m128_f32[1] = position.y;
 	memory.m128_f32[2] = position.z;
 
-
 	matWorld = XMMatrixIdentity();
 	matWorld *= matScale;
 	matWorld *= matRot;
@@ -133,64 +132,7 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 		matWorld *= matrot;
 	}
 
-	//ビュープロジェクション行列
-	const XMMATRIX& matViewProjection =
-		camera->GetViewProjectionMatrix();
-	//メッシュtランスフォーム
-	const XMMATRIX& modelTransform = model->GetModelTransform();
-	//カメラ座標
-	const XMFLOAT3& cameraPos = camera->GetEye();
-
-	HRESULT result;
-
-	//定数バッファへ転送
-
-	ConstBufferDataTransform* constMap = nullptr;
-	result = constBuffTransform->Map(0, nullptr, (void**)&constMap);
-	if (SUCCEEDED(result))
-	{
-		constMap->viewproj = matViewProjection;
-		constMap->world = modelTransform * matWorld;
-		constMap->cameraPos = cameraPos;
-		constBuffTransform->Unmap(0, nullptr);
-	}
-
-	//アニメーション
-	if (isPlay) {
-		//1フレーム進める
-		currentTime += frameTime;
-
-		//最後まで行ったら先頭に戻す
-		if (currentTime > endTime) {
-			currentTime = startTime;
-		}
-
-	}
-
-
-
-	std::vector<Model::Bone>& bones = model->GetBones();
-
-	ConstBufferDataSkin* constMapSkin = nullptr;
-	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
-	for (int i = 0; i < bones.size(); i++)
-	{
-		XMMATRIX matCurrentPose;
-
-		FbxAMatrix fbxCurrentPose =
-			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
-
-		FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
-
-		constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
-	}
-	constBuffSkin->Unmap(0, nullptr);
-
-
-	//当たり判定更新
-	if (collider) {
-		collider->Update();
-	}
+	PostMatrixUpdate();
 }
 
 void BulletFbx::RedBulletUpdate(double angleX, double angleY)
@@ -251,6 +193,8 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 	XMVECTOR moveCamera = move_;
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 
+
+
 	if (input->TriggerMouseRight())
 	{
 		TriggerFlag2 = 1;
@@ -281,6 +225,18 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 	matWorld *= matRot;
 	matWorld *= matTrans;
 
+	//カメラの行列をかける
+	if (TriggerFlag2 == 0 && debug2 == 0)
+	{
+		matWorld *= matrot;
+	}
+
+	PostMatrixUpdate();
+}
+
+void BulletFbx::PostMatrixUpdate()
+{
+	
 	//ビュープロジェクション行列
 	const XMMATRIX& matViewProjection =
 		camera->GetViewProjectionMatrix();

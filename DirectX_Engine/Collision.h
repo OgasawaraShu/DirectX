@@ -30,7 +30,7 @@ public:
 	/// <summary>
 	/// 球と球の当たり判定
 	/// </summary>
-	/// <param name="sphereA">球A</param>
+	/// <param name="sphereA">球A</param>li
 	/// <param name="sphereB">球B</param>
 	/// <param name="inter">交点（出力用）</param>
 	/// <returns></returns>

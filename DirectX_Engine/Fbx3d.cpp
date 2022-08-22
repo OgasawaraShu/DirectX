@@ -428,6 +428,11 @@ void Fbx3d::SetVerLand()
 	collider->SetAttribute(COLLISION_ATTR_LANDSHAPE);
 }
 
+void Fbx3d::SetVerObj()
+{
+	collider->SetAttribute(COLLISION_ATTR_OBJ);
+}
+
 
 
 

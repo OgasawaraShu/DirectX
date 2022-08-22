@@ -63,6 +63,7 @@ using namespace Microsoft::WRL;
 #include "PlayerFbx.h"
 #include "BulletFbx.h"
 #include "Physics.h" 
+#include"ObjFbx.h"
 
 Model* modelPlane = nullptr;
 Model* modelBox = nullptr;
@@ -304,7 +305,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Fbx3d* fbx3d1 = nullptr;
 
    Model* model2 = nullptr;
-   Fbx3d* fbx3d2 = nullptr;
+   ObjFbx* fbx3d2 = nullptr;
 
    Model* model3 = nullptr;
    BulletFbx* fbx3d3 = nullptr;
@@ -327,9 +328,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Model* model9 = nullptr;
    PlayerFbx* fbx3d9 = nullptr;
 
+   Fbx3d* wall1 = nullptr;
+   Fbx3d* wall2 = nullptr;
+   Fbx3d* wall3 = nullptr;
+   Fbx3d* wall4 = nullptr;
+
 
    model1 = FbxLoader::GetInstance()->LoadModelFromFile("wall1");
-   model2 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
+   model2 = FbxLoader::GetInstance()->LoadModelFromFile("cubebox");
    model3 = FbxLoader::GetInstance()->LoadModelFromFile("blueBall");
    model4 = FbxLoader::GetInstance()->LoadModelFromFile("redBall");
    model5 = FbxLoader::GetInstance()->LoadModelFromFile("wall2");
@@ -354,7 +360,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d1->SetModel(model1);
   
 
-  fbx3d2 = new Fbx3d(input);
+  fbx3d2 = new ObjFbx(input, physics);
   fbx3d2->Initialize();
   fbx3d2->SetModel(model2);
 
@@ -386,13 +392,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d9->Initialize();
   fbx3d9->SetModel(model9);
 
+  wall1 = new Fbx3d(input);
+  wall1->Initialize();
+  wall1->SetModel(model8);
+
+  wall2 = new Fbx3d(input);
+  wall2->Initialize();
+  wall2->SetModel(model8);
+
+  wall3 = new Fbx3d(input);
+  wall3->Initialize();
+  wall3->SetModel(model8);
+
+  wall4 = new Fbx3d(input);
+  wall4->Initialize();
+  wall4->SetModel(model8);
+
+  wall1->SetPosition({ -40, 0, 0 });
+  wall2->SetPosition({ +40, 0, 0 });
+  wall3->SetPosition({  0, 0,-40 });
+  wall4->SetPosition({  0, 0,0 });
+
   fbx3d1->SetPosition({ 0, -10, 0 });
   fbx3d1->SetRotate({ 0,0,0 });
+
+  fbx3d2->SetPosition({ -30, 60,0 });
+  fbx3d2->SetScale({ 0.05, 0.05,0.05 });
 
   fbx3d3->SetScale({ 0.05, 0.05,0.05 });
   fbx3d4->SetScale({ 0.05, 0.05,0.05 });
 
-  fbx3d4->SetPosition({ 20, 0, 0 });
   fbx3d3->SetPosition({ 0, 0, -20 });
   fbx3d9->SetPosition({ 0, 0, -20 });
 
@@ -418,12 +447,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   float radius = 5.0f;
 
   fbx3d1->SetColider(new BoxCollider(XMVECTOR{80,80,80,0}));
+  fbx3d2->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
+
   fbx3d3->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
   fbx3d4->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
-  fbx3d6->SetColider(new PlaneCollider(XMVECTOR{ 0,1,0,0 }, 1));
+  fbx3d6->SetColider(new PlaneCollider(XMVECTOR{ 0,1,0,0 }, 0));
   fbx3d9->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
   
+  wall1->SetColider(new BoxCollider(XMVECTOR{ 20,80,80,0 }));
+  wall2->SetColider(new BoxCollider(XMVECTOR{ 20,80,80,0 }));
+  wall3->SetColider(new BoxCollider(XMVECTOR{ 80,80,20,0 }));
+  wall4->SetColider(new BoxCollider(XMVECTOR{ 80,80,20,0 }));
   //当たり判定の属性
+  fbx3d2->SetVerObj();
   fbx3d3->SetVerBulletRed();
   fbx3d4->SetVerBulletBlue();
   fbx3d9->SetVer();
@@ -447,12 +483,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
        // if (collisionManager->Raycast(ray, &raycastHit)) {
 
         //座標Set関連
+        fbx3d2->SetMyPosition(fbx3d9->GetMyPosition());
+        fbx3d2->SetCameraAxisZ(camera->GetCameraZAxis());
         fbx3d3->SetWorld(camera->GetRot());
         fbx3d3->SetMove(fbx3d9->GetMove());
         fbx3d4->SetMove(fbx3d9->GetMove());
         fbx3d9->SetMemo(fbx3d4->GetMemo());
         fbx3d9->SetMemo2(fbx3d3->GetMemo2());
         fbx3d9->SetWarpFlag(fbx3d3->GetWarpFlag());
+        fbx3d9->SetCameraAxis(camera->GetCameraZAxis());
         camera->SetMove(fbx3d9->GetMove());
         camera->SetWarpPosition(fbx3d9->GetPosition());
         camera->SetGround(fbx3d9->Getground());
@@ -481,7 +520,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         camera->Update();
         fbx3d1->Update();
-        fbx3d2->Update();
+        fbx3d2->ObjUpdate(camera->GetAngleX(), camera->GetAngleY());
         fbx3d3->BlueBulletUpdate(camera->GetAngleX(), camera->GetAngleY());
         fbx3d4->RedBulletUpdate(camera->GetAngleX(), camera->GetAngleY());
         fbx3d5->Update();
@@ -489,6 +528,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d7->Update();
         fbx3d8->Update();
         fbx3d9->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
+
+        wall1->Update();
+        wall2->Update();
+        wall3->Update();
+        wall4->Update();
+
 
 
         camera->SetAngleRedX(fbx3d4->GetAngleX2());

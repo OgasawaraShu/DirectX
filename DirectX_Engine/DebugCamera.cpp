@@ -66,16 +66,27 @@ void DebugCamera::Update()
 		angleY = -dy * XM_PI;
 		dirty = true;
 	}
-	
-	// WASDが押されていたらカメラを並行移動させる
-	//if (input->PushKey(DIK_A)||input->PushKey(DIK_D)|| input->PushKey(DIK_W) || input->PushKey(DIK_S)||input->TriggerKey(DIK_SPACE))
-	//{
-		XMVECTOR move = move_;
-		move = XMVector3Transform(move, matRot);
 
-		MoveVectorNotY(move);
-		dirty = true;
-	//}
+	XMVECTOR move = move_;
+
+	// WASDが押されていたらカメラを並行移動させる
+	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
+	{
+		Wark = true;
+	}
+	else
+	{
+		Wark = false;
+	}
+
+	
+
+	move = XMVector3Transform(move, matRot);
+
+	MoveVectorNotY(move);
+	dirty = true;
+	
+	
 
 	//onGroundがfalseならY軸も参照したvector移動する
 	if (onGround_ != true)
@@ -85,6 +96,26 @@ void DebugCamera::Update()
 
 		MoveVector(move);
 		dirty = true;
+	}
+
+	if (Wark == true)
+	{
+		/*
+		XMVECTOR move = move_;
+		move = XMVector3Transform(move, matRot);
+		if (JumpV.m128_f32[1] <= 0)
+		{
+			JumpV.m128_f32[1] = 4.0f;
+			move.m128_f32[1] += JumpV.m128_f32[1];
+		}
+
+		fallV.m128_f32[1] = -0.2f;
+
+		JumpV.m128_f32[1] += fallV.m128_f32[1];
+		move.m128_f32[1] += fallV.m128_f32[1];
+		MoveVector(move);
+		dirty = true;
+		*/
 	}
 
 	
