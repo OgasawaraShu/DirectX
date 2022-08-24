@@ -485,6 +485,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //座標Set関連
         fbx3d2->SetMyPosition(fbx3d9->GetMyPosition());
         fbx3d2->SetCameraAxisZ(camera->GetCameraZAxis());
+        fbx3d2->SetTarget(camera->GetTargetPos());
         fbx3d3->SetWorld(camera->GetRot());
         fbx3d3->SetMove(fbx3d9->GetMove());
         fbx3d4->SetMove(fbx3d9->GetMove());

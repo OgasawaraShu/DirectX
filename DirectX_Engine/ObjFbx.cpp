@@ -38,9 +38,9 @@ void ObjFbx::ObjUpdate(float angleX, float angleY)
 
 	if (cursorOn == true)
 	{
-		position.x = MyPosition.x;
-		position.y = MyPosition.y;
-		position.z = MyPosition.z + 60;
+		position.x = Target.m128_f32[0];
+		position.y = Target.m128_f32[1];
+		position.z = Target.m128_f32[2]+20;
 	}
 	//çsóÒå„çXêV
 	PostMatrixUpdate(matScale, matRot, matTrans);

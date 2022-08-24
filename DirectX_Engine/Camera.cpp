@@ -57,6 +57,7 @@ void Camera::UpdateViewMatrix()
 	cameraAxisZ = XMVector3Normalize(cameraAxisZ);
 
 	CameraAxisGet = cameraAxisZ;
+	Target = targetPosition;
 
 	// カメラのX軸（右方向）
 	XMVECTOR cameraAxisX;

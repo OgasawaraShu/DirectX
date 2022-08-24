@@ -71,7 +71,7 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	//Jumpと落下の処理
 	FallJump();
 
-	//Landing();
+	Landing();
 
 	//動く処理
 	MoveMatrixUpdate(matRot);
@@ -117,13 +117,13 @@ void PlayerFbx::Landing()
 		// スムーズに坂を下る為の吸着距離
 		const float adsDistance = 0.2f;
 		// 接地を維持
-		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, 5.0 * 2.0f + adsDistance)) {
+		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ, &raycastHit, 5.0 * 2.0f + adsDistance)) {
 			onGround = true;
 			position.y -= (raycastHit.distance - 5.0 * 2.0f);	
 		}
 		// 地面がないので落下
 		else {
-			onGround = false;
+			//onGround = false;
 			fallV = {};
 		}
 	}

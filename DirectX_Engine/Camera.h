@@ -120,6 +120,7 @@ public: // メンバ関数
 	void MoveVectorNotY(const XMVECTOR& move);
 
 	XMVECTOR GetCameraZAxis() { return CameraAxisGet; }
+	XMVECTOR GetTargetPos() { return Target; }
 
 protected: // メンバ変数
 	// ビュー行列
@@ -145,6 +146,7 @@ protected: // メンバ変数
 	// アスペクト比
 	float aspectRatio = 1.0f;
 	XMVECTOR CameraAxisGet;
+	XMVECTOR Target;
 };
 
 
