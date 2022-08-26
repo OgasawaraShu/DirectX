@@ -189,16 +189,22 @@ bool CollisionManager::Raycast(const Ray& ray, unsigned short attribute, Raycast
 		}
 
 		//ŽlŠp(‹…‚ªŽlŠp‚©‚ço‚½‚ç)
-		/*
-		else if (colA->GetShapeType() == COLLISIONSHAPE_BOX) {
-			Box* box = dynamic_cast<Box*>(colA);
-			DirectX::XMVECTOR inter;
-			if (Collision::CheckSphere2Box(*SphereA, *BoxB, &inter)) {
-				colA->OnCollision(CollisionInfo(colB->GetObject3d(), colB, inter));
-				colB->OnCollision(CollisionInfo(colA->GetObject3d(), colA, inter));
-			}
+		
+		else if (colA->GetShapeType() == COLLISIONSHAPE_PLANE) {
+			Plane* plane = dynamic_cast<Plane*>(colA);
+
+			float tempDistance;
+			XMVECTOR tempInter;
+
+			if (!Collision::CheckRay2Plane(ray, *plane, &tempDistance, &tempInter)) continue;
+			if (tempDistance >= distance) continue;
+
+			result = true;
+			distance = tempDistance;
+			inter = tempInter;
+			it_hit = it;
 		}
-		*/
+		
 		/*
 		else if (colA->GetShapeType() == COLLISIONSHAPE_MESH) {
 			MeshCollider* meshCollider = dynamic_cast<MeshCollider*>(colA);

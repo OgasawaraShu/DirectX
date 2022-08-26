@@ -86,6 +86,7 @@ void DebugCamera::Update()
 	MoveVectorNotY(move);
 	dirty = true;
 	
+	//eye=
 	
 
 	//onGround‚ªfalse‚È‚çY²‚àQÆ‚µ‚½vectorˆÚ“®‚·‚é
@@ -209,7 +210,7 @@ float DebugCamera::GetPositionX()
 
 float DebugCamera::GetPositionY()
 {
-	return oldy;
+	return eye.y;
 }
 
 

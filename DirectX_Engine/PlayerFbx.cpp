@@ -4,6 +4,7 @@
 #include "CollisionAttribute.h"
 #include <d3dcompiler.h>
 #include "PortalfallV.h"
+#include "Collision.h"
 
 #pragma comment(lib,"d3dcompiler.lib")
 
@@ -90,10 +91,6 @@ void PlayerFbx::FallJump()
 		const float fallVYMin = -0.5f;
 		// 加速
 		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
-		// 移動
-		position.x += fallV.m128_f32[0];
-		position.y += fallV.m128_f32[1];
-		position.z += fallV.m128_f32[2];
 	}
 	// ジャンプ操作
 	else if (input->TriggerKey(DIK_SPACE)) {
@@ -107,10 +104,31 @@ void PlayerFbx::Landing()
 {
 	// レイのスタート地点を設定
 	Ray ray;
-	ray.start = { position.x,position.y,position.z,0 };
-	ray.start.m128_f32[2] += 5.0f;
-	ray.dir = { 0,0,-1,0 };
+	ray.start = { position.x,position.y+1.0f,position.z,0 };
+	ray.start.m128_f32[1] += 5.0f;
+	ray.dir = { 0,-1,0,0 };
 	RaycastHit raycastHit;
+
+	
+    Plane plane;
+
+    plane.normal = XMVectorSet(0, 1, 0, 0);
+    plane.distance = 0.0f;
+   
+        
+        XMVECTOR inter;
+        float distance;
+        bool hit = Collision::CheckRay2Plane(ray, plane, &distance, &inter);
+	
+        if (hit&&distance<=5.0f) {
+
+			onGround = true;
+        }
+		else
+		{
+			onGround = false;
+		}
+        
 
 	// 接地状態
 	if (onGround) {
@@ -118,12 +136,12 @@ void PlayerFbx::Landing()
 		const float adsDistance = 0.2f;
 		// 接地を維持
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ, &raycastHit, 5.0 * 2.0f + adsDistance)) {
-			onGround = true;
+			//onGround = false;
 			position.y -= (raycastHit.distance - 5.0 * 2.0f);	
 		}
 		// 地面がないので落下
 		else {
-			//onGround = false;
+		//	onGround = true;
 			fallV = {};
 		}
 	}
@@ -131,7 +149,7 @@ void PlayerFbx::Landing()
 	else if (fallV.m128_f32[1] <= 0.0f) {
 		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit,5.0 * 2.0f)) {
 			// 着地
-			onGround = true;
+		//	onGround = true;
 			position.y -= (raycastHit.distance - 5.0 * 2.0f);
 		}
 	}
@@ -161,10 +179,6 @@ void PlayerFbx::RayCheck(float angleX, float angleY)
 	// ※回転行列を累積していくと、誤差でスケーリングがかかる危険がある為
 	// クォータニオンを使用する方が望ましい
 	matRot = matRotNew * matRot;
-
-	//ray.dir = XMVector3Normalize(ray.dir);
-
- 	//ray.dir = XMVector3Transform(ray.dir, matRot);
 
 	ray.dir = CammeraZAxis;
 
@@ -256,7 +270,7 @@ void PlayerFbx::WarpUpdate()
 
 		redTeleport = true;
 
-		onGround = false;
+		//onGround = false;
 	}
 	else if (redCollision == false)
 	{

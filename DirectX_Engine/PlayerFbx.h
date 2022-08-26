@@ -58,6 +58,8 @@ public:
 
 	bool GetblueTeleport() { return blueTeleport; }
 
+	float GetPos(){return position.y;}
+
 
 private:
 

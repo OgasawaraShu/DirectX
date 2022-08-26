@@ -235,6 +235,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     DebugText* debugtext=nullptr;
     debugtext = new DebugText();
 
+    DebugText* debugtext2 = nullptr;
+    debugtext2 = new DebugText();
+
 
     const int debugTextTexNumber = 2;
 
@@ -242,14 +245,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //SpriteCommonLoadTexture(spriteCommon, debugTextTexNumber, L"Resources/ASC_white1280.png", dxCommon->GetDev());
 
     debugtext->debugTextInit(spriteCommon,debugTextTexNumber);
+    debugtext2->debugTextInit(spriteCommon, debugTextTexNumber);
 
- //   DebugText debugtext2;
 
- //   const int debugTextTexNumber2 = 3;
-
- //   SpriteCommonLoadTexture(spriteCommon, debugTextTexNumber2, L"Resources/ASC_white1280.png", dxCommon->GetDev());
-
- //   debugtext2.debugTextInit(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height, debugTextTexNumber2, spriteCommon);
 
     // DirectX初期化処理　ここまで
 
@@ -460,9 +458,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   wall4->SetColider(new BoxCollider(XMVECTOR{ 80,80,20,0 }));
   //当たり判定の属性
   fbx3d2->SetVerObj();
+  fbx3d6->SetVerObj();
   fbx3d3->SetVerBulletRed();
   fbx3d4->SetVerBulletBlue();
   fbx3d9->SetVer();
+
+
 
     while (true)  // ゲームループ
     {
@@ -471,15 +472,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         /*
         Ray ray;
-        ray.start = { 10,0.5,0.0,1 };
-        ray.dir = { -1,0,0,0 };
-        RaycastHit raycastHit;
+        Plane plane;
 
-        if (collisionManager->Raycast(ray, &raycastHit)) {
-
-          
+        plane.normal = XMVectorSet(0, 1, 0, 0);
+        plane.distance = 0.0f;
+        ray.start = { 0,1,0,1 };
+        ray.dir = { 0,-1,0,0 };
+        
+        XMVECTOR inter;
+        float distance;
+        bool hit = Collision::CheckRay2Plane(ray, plane, &distance, &inter);
+        if (hit) {
+            break;
         }
         */
+        
        // if (collisionManager->Raycast(ray, &raycastHit)) {
 
         //座標Set関連
@@ -494,13 +501,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d9->SetWarpFlag(fbx3d3->GetWarpFlag());
         fbx3d9->SetCameraAxis(camera->GetCameraZAxis());
         camera->SetMove(fbx3d9->GetMove());
-        camera->SetWarpPosition(fbx3d9->GetPosition());
+        camera->SetWarpPosition(fbx3d9->GetMyPosition());
         camera->SetGround(fbx3d9->Getground());
      
 
      // sprite2->SpriteTransVertexBuffer();
      
-      sprintf_s(moji, "%f", camera->GetPositionY());
+      sprintf_s(moji, "%f", fbx3d9->GetPos());
+      sprintf_s(moji2, "%f", camera->GetPositionY());
       //sprintf_s(moji2,"%d",camera->GetAngleY());
      
         if (winApp->ProcessMessage())
@@ -582,8 +590,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         ////スプライト共通コマンド
         spriteCommon->PreDraw();
-      //  debugtext->Print(moji, 100, 100);
+        debugtext->Print(moji, 100, 100);
         debugtext->DrawAll();//的カウント
+
+        debugtext2->Print(moji2, 100, 200);
+        debugtext2->DrawAll();//的カウント
+
 
         //スプライト表示
 
