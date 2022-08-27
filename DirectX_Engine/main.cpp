@@ -200,10 +200,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //スプライト
     Sprite* sprite = Sprite::Create(spriteCommon,0);
 
-   spriteCommon-> SpriteCommonLoadTexture(0, L"Resources/Red.png"); 
-   //sprite->SetPosition({ Central_x,Central_y,0 });
-   sprite->SetSize({ 60,60 });
-   sprite->SettexSize({ 60,60 });
+   spriteCommon-> SpriteCommonLoadTexture(0, L"Resources/Aiming.png"); 
+   sprite->SetPosition({ 640,362.5,0 });
+   sprite->SetSize({ 127,141 });
+   sprite->SettexSize({ 127,141 });
 
    //
    Sprite* sprite2 = Sprite::Create(spriteCommon, 1);
@@ -507,8 +507,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
      // sprite2->SpriteTransVertexBuffer();
      
-      sprintf_s(moji, "%f", fbx3d9->GetPos());
-      sprintf_s(moji2, "%f", camera->GetPositionY());
+      sprintf_s(moji, "X=%f", camera->GetPositionX());
+      sprintf_s(moji2, "Y=%f", camera->GetPositionY());
       //sprintf_s(moji2,"%d",camera->GetAngleY());
      
         if (winApp->ProcessMessage())
@@ -568,6 +568,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d7->Draw2(dxCommon->GetCmdList());
         fbx3d8->Draw2(dxCommon->GetCmdList());
 
+       
         //ポストエフェクトここまで
         sprite100->PostDrawScene(dxCommon->GetCmdList());
 
@@ -607,8 +608,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
        // if (enemy1.Enemy1[0].Flag == 1)sprite3->SpriteDraw();
 
         //自キャラ
-      //  sprite->SpriteDraw();
-      //  sprite2->SpriteDraw();
+        sprite->SpriteTransVertexBuffer();
+        sprite->Update();
+        sprite->SpriteDraw();
        
         
         // ４．描画コマンドここまで

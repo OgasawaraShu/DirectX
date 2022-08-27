@@ -26,7 +26,7 @@ void DebugCamera::Update()
 	GamePad* GP = nullptr;
 	GP = new GamePad();
 
-	 //パッドの更新
+	//パッドの更新
 	GP->Update();
 
 	float dy = mouseMove.lX * scaleY;
@@ -35,8 +35,8 @@ void DebugCamera::Update()
 	angleX = -dx * XM_PI;
 	angleY = -dy * XM_PI;
 
-	
-	
+
+
 
 	dirty = true;
 
@@ -44,16 +44,18 @@ void DebugCamera::Update()
 	oldy += angleY;
 
 	//カメラのX軸ベクトルが後ろに行きそうなら押し戻す
-	if (oldx > 0.98)
+	if (oldx > 1.00)
 	{
 		angleX -= 0.02;
 		oldx -= 0.02;
 	}
-	else if (oldx < -0.98)
+	else if (oldx < -1.00)
 	{
 		angleX += 0.02;
 		oldx += 0.02;
 	}
+
+	
 
 
 	//ゲームパッドアナログスティックR入力時処理(視点移動)
@@ -69,26 +71,11 @@ void DebugCamera::Update()
 
 	XMVECTOR move = move_;
 
-	// WASDが押されていたらカメラを並行移動させる
-	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
-	{
-		Wark = true;
-	}
-	else
-	{
-		Wark = false;
-	}
-
-	
-
 	move = XMVector3Transform(move, matRot);
 
 	MoveVectorNotY(move);
 	dirty = true;
 	
-	//eye=
-	
-
 	//onGroundがfalseならY軸も参照したvector移動する
 	if (onGround_ != true)
 	{
@@ -97,26 +84,6 @@ void DebugCamera::Update()
 
 		MoveVector(move);
 		dirty = true;
-	}
-
-	if (Wark == true)
-	{
-		/*
-		XMVECTOR move = move_;
-		move = XMVector3Transform(move, matRot);
-		if (JumpV.m128_f32[1] <= 0)
-		{
-			JumpV.m128_f32[1] = 4.0f;
-			move.m128_f32[1] += JumpV.m128_f32[1];
-		}
-
-		fallV.m128_f32[1] = -0.2f;
-
-		JumpV.m128_f32[1] += fallV.m128_f32[1];
-		move.m128_f32[1] += fallV.m128_f32[1];
-		MoveVector(move);
-		dirty = true;
-		*/
 	}
 
 	
@@ -161,6 +128,7 @@ void DebugCamera::Update()
 	if (dirty || viewDirty) {
 		// 追加回転分の回転行列を生成
 		XMMATRIX matRotNew = XMMatrixIdentity();
+	//	matRotNew *= XMMatrixRotationZ(0);
 		matRotNew *= XMMatrixRotationX(-angleX);
 		matRotNew *= XMMatrixRotationY(-angleY);
 		// 累積の回転行列を合成
@@ -210,7 +178,7 @@ float DebugCamera::GetPositionX()
 
 float DebugCamera::GetPositionY()
 {
-	return eye.y;
+	return oldy;
 }
 
 

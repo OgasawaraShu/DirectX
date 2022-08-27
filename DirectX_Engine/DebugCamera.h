@@ -82,7 +82,9 @@ private:
 	float angle_BlueX;
 	float angle_BlueY;
 
-	bool Wark = false;
+	bool AngleRimit = false;
+
+
 	
 	XMVECTOR fallV{};
 	XMVECTOR JumpV{};
