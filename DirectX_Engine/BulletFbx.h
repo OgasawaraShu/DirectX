@@ -30,7 +30,7 @@ public://ä÷êî
 
 	XMVECTOR GetMemo() { return memory3; }
 
-	float GetAngleX1() { return oldBlueX; }
+	float GetAngleX1() { return move_.m128_f32[0]; }
 
 	float GetAngleY1() { return oldBlueY; }
 

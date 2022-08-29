@@ -53,6 +53,9 @@ float4 main(VSOutput input):SV_TARGET
 
   //	return step(0.4, intensity) * LightColor+(1 - step(0.4, intensity)) * DarkColor;
 
+
+
+
   return LightToon * LightColor + DarkToon * DarkColor;
  
   //return shadecolor * texcolor;

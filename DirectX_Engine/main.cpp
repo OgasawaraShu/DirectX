@@ -497,6 +497,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d3->SetMove(fbx3d9->GetMove());
         fbx3d4->SetMove(fbx3d9->GetMove());
         fbx3d9->SetMemo(fbx3d4->GetMemo());
+        fbx3d9->SetWorld(camera->GetRot());
         fbx3d9->SetMemo2(fbx3d3->GetMemo2());
         fbx3d9->SetWarpFlag(fbx3d3->GetWarpFlag());
         fbx3d9->SetCameraAxis(camera->GetCameraZAxis());
@@ -507,8 +508,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
      // sprite2->SpriteTransVertexBuffer();
      
-      sprintf_s(moji, "X=%f", camera->GetPositionX());
-      sprintf_s(moji2, "Y=%f", camera->GetPositionY());
+      sprintf_s(moji, "X=%f", fbx3d9->GetPos());
+      sprintf_s(moji2, "camera=%f", fbx3d3->GetAngleX1());
       //sprintf_s(moji2,"%d",camera->GetAngleY());
      
         if (winApp->ProcessMessage())
@@ -551,6 +552,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         camera->SetAngleBlueX(fbx3d3->GetAngleX1());
         camera->SetAngleBlueY(fbx3d3->GetAngleY1());
         camera->SetBlueTeleport(fbx3d9->GetblueTeleport());
+        camera->SetEyePos(fbx3d9->GetMyPosition());
 
 
         //レンダ―テクスチャの描画

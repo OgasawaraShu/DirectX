@@ -54,19 +54,21 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	//パッドの更新
 	GP->Update();
 	//マウス角度出力Ver
-	angleX = angleX;
-	angleY = angleY;
+	angleX_ = angleX;
+	angleY_ = angleY;
 	
-	XMMATRIX matScale, matRot, matTrans{};
+	XMMATRIX matScale, matRot, matTrans;
 
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	matRot = XMMatrixIdentity();
 	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
 	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
 	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+	//平行移動
+	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 
 	//追加の回転行列処理
-	AddRotateMatrixUpdate(angleX, angleY, matRot);
+	AddRotateMatrixUpdate(angleX_, angleY_, matRot);
 	//ワープ処理
 	WarpUpdate();
 	//Jumpと落下の処理
@@ -75,7 +77,7 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	Landing();
 
 	//動く処理
-	MoveMatrixUpdate(matRot);
+	MoveMatrixUpdate(matRot,matTrans);
 	//Matrix後更新
 	PostMatrixUpdate(matScale, matRot, matTrans);
 	//
@@ -190,13 +192,13 @@ void PlayerFbx::RayCheck(float angleX, float angleY)
 
 void PlayerFbx::PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTrans)
 {
-	//平行移動
-	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
-
+	
 	matWorld = XMMatrixIdentity();
 	matWorld *= matScale;
 	matWorld *= matRot;
 	matWorld *= matTrans;
+
+	matWorld *= matrot;
 
 	//ビュープロジェクション行列
 	const XMMATRIX& matViewProjection =
@@ -313,7 +315,7 @@ void PlayerFbx::AddRotateMatrixUpdate(float angleX, float angleY, XMMATRIX matRo
 	matRot = matRotNew * matRot;
 }
 
-void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot)
+void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 {
 	float dx = 0;
 	float dz = 0;
@@ -350,10 +352,14 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot)
 
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 
+
+
 	//positionにVectorを足す
-	position.x += moveCamera.m128_f32[0];
-	position.y += moveCamera.m128_f32[1];
-	position.z += moveCamera.m128_f32[2];
+	//position.x += moveCamera.m128_f32[0];
+	//position.y += moveCamera.m128_f32[1];
+	//position.z += moveCamera.m128_f32[2];
+
+	matTrans = XMMatrixTranslation(position.x += moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
 }
 
 

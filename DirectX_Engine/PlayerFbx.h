@@ -34,7 +34,7 @@ public:
 
 	void AddRotateMatrixUpdate(float angleX,float angleY,XMMATRIX matRot);//追加回転処理
 
-	void MoveMatrixUpdate(XMMATRIX matRot);//キー入力による動作
+	void MoveMatrixUpdate(XMMATRIX matRot, XMMATRIX matTrans);//キー入力による動作
 
 	//Settter
 	void SetMemo(XMVECTOR Memo) { Warp = Memo; }
@@ -58,7 +58,7 @@ public:
 
 	bool GetblueTeleport() { return blueTeleport; }
 
-	float GetPos() { return position.z; }
+	float GetPos() { return moveCamera.m128_f32[1]; }
 
 
 private:
@@ -72,9 +72,9 @@ private:
 	//変数
 
 
-	float angleX;//角度X
+	float angleX_;//角度X
 
-	float angleY;//角度Y
+	float angleY_;//角度Y
 
 	float Momentum;//
 

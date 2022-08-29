@@ -44,6 +44,7 @@ public:
 	void SetAngleBlueX(float x) { angle_BlueX = x; }
 	void SetAngleBlueY(float y) { angle_BlueY = y; }
 	void SetBlueTeleport(bool teleport) { blueTeleport = teleport; }
+	void SetEyePos(XMFLOAT3 eye) { eye_ = eye; }
 
 
 private:
@@ -91,5 +92,6 @@ private:
 
 	XMVECTOR move_;
 	XMFLOAT3 Warp_;
+	XMFLOAT3 eye_;
 };
 

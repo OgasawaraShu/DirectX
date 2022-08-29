@@ -35,9 +35,6 @@ void DebugCamera::Update()
 	angleX = -dx * XM_PI;
 	angleY = -dy * XM_PI;
 
-
-
-
 	dirty = true;
 
 	oldx += angleX;
@@ -57,7 +54,6 @@ void DebugCamera::Update()
 
 	
 
-
 	//ゲームパッドアナログスティックR入力時処理(視点移動)
 	if (GP->state.Gamepad.sThumbRX != 0 || GP->state.Gamepad.sThumbRY != 0)
 	{
@@ -69,12 +65,11 @@ void DebugCamera::Update()
 		dirty = true;
 	}
 
-	XMVECTOR move = move_;
+	//XMVECTOR move = move_;
 
-	move = XMVector3Transform(move, matRot);
+	//move = XMVector3Transform(move, matRot);
 
-	MoveVectorNotY(move);
-	dirty = true;
+	//MoveVectorNotY(move);
 	
 	//onGroundがfalseならY軸も参照したvector移動する
 	if (onGround_ != true)
@@ -86,8 +81,10 @@ void DebugCamera::Update()
 		dirty = true;
 	}
 
+	SetEye(eye_);
 	
 	//ゲームパッドアナログスティックL入力時処理(場所移動)
+	/*
 	if (GP->state.Gamepad.sThumbLX != 0 || GP->state.Gamepad.sThumbLY != 0)
 	{
 		float dx = static_cast<FLOAT>(GP->state.Gamepad.sThumbLX / 32767.0 * (1.0f));
@@ -100,7 +97,7 @@ void DebugCamera::Update()
 		MoveVector(move);
 		dirty = true;
 	}
-
+	*/
 	//テレポートしたら座標を合わせる
 	if (blueTeleport == true || redTeleport == true)
 	{
@@ -178,7 +175,7 @@ float DebugCamera::GetPositionX()
 
 float DebugCamera::GetPositionY()
 {
-	return oldy;
+	return eye.z;
 }
 
 
