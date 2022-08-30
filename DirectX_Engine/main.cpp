@@ -493,16 +493,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d2->SetMyPosition(fbx3d9->GetMyPosition());
         fbx3d2->SetCameraAxisZ(camera->GetCameraZAxis());
         fbx3d2->SetTarget(camera->GetTargetPos());
-        fbx3d3->SetWorld(camera->GetRot());
-        fbx3d3->SetMove(fbx3d9->GetMove());
-        fbx3d4->SetMove(fbx3d9->GetMove());
+    //    fbx3d3->SetWorld(camera->GetRot());
+    
         fbx3d9->SetMemo(fbx3d4->GetMemo());
         fbx3d9->SetWorld(camera->GetRot());
         fbx3d9->SetMemo2(fbx3d3->GetMemo2());
         fbx3d9->SetWarpFlag(fbx3d3->GetWarpFlag());
         fbx3d9->SetCameraAxis(camera->GetCameraZAxis());
+        fbx3d9->SetPos(camera->GetPos());
+        fbx3d3->SetMove(fbx3d9->GetMove());
+        fbx3d4->SetMove(fbx3d9->GetMove());
+        fbx3d3->SetPos(camera->GetPos());
+        fbx3d4->SetPos(camera->GetPos());
         camera->SetMove(fbx3d9->GetMove());
-        camera->SetWarpPosition(fbx3d9->GetMyPosition());
+        camera->SetWarpPosition(fbx3d9->GetPosition());
         camera->SetGround(fbx3d9->Getground());
      
 
@@ -510,6 +514,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
      
       sprintf_s(moji, "X=%f", fbx3d9->GetPos());
       sprintf_s(moji2, "camera=%f", fbx3d3->GetAngleX1());
+     // sprintf_s(moji2, "camera=%f", camera->GetPositionY());
       //sprintf_s(moji2,"%d",camera->GetAngleY());
      
         if (winApp->ProcessMessage())

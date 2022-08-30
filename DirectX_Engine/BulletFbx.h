@@ -26,11 +26,13 @@ public://ä÷êî
 	///Getter,Setter
 	void SetMove(XMVECTOR move) { move_ = move; }
 
+	void SetPos(XMFLOAT3 pos) { position_ = pos; }
+
 	XMVECTOR GetMemo2() { return memory; }
 
 	XMVECTOR GetMemo() { return memory3; }
 
-	float GetAngleX1() { return move_.m128_f32[0]; }
+	float GetAngleX1() { return position.x; }
 
 	float GetAngleY1() { return oldBlueY; }
 
@@ -68,4 +70,6 @@ private://ïœêî
 	XMVECTOR memory;//äpìxÇÃï€ë∂
 
 	XMVECTOR memory3;//äpìxÇÃï€ë∂
+
+	XMFLOAT3 position_ = position;
 };

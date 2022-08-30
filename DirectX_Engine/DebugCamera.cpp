@@ -65,11 +65,11 @@ void DebugCamera::Update()
 		dirty = true;
 	}
 
-	//XMVECTOR move = move_;
+	XMVECTOR move = move_;
 
-	//move = XMVector3Transform(move, matRot);
+	move = XMVector3Transform(move, matRot);
 
-	//MoveVectorNotY(move);
+	MoveVectorNotY(move);
 	
 	//onGroundがfalseならY軸も参照したvector移動する
 	if (onGround_ != true)
@@ -81,7 +81,7 @@ void DebugCamera::Update()
 		dirty = true;
 	}
 
-	SetEye(eye_);
+	//SetEye(eye_);
 	
 	//ゲームパッドアナログスティックL入力時処理(場所移動)
 	/*
@@ -98,11 +98,7 @@ void DebugCamera::Update()
 		dirty = true;
 	}
 	*/
-	//テレポートしたら座標を合わせる
-	if (blueTeleport == true || redTeleport == true)
-	{
-		SetEye(Warp_);
-	}
+
 
 	//テレポートしたら角度を球の逆にする
 	if (redTeleport == true)
@@ -120,6 +116,13 @@ void DebugCamera::Update()
 		angleY = angle_BlueY - Ras;
 
 		dirty = true;
+	}
+
+	//テレポートしたら座標を合わせる
+	if (blueTeleport == true || redTeleport == true)
+	{
+		SetEye(Warp_);
+
 	}
 
 	if (dirty || viewDirty) {
@@ -175,7 +178,7 @@ float DebugCamera::GetPositionX()
 
 float DebugCamera::GetPositionY()
 {
-	return eye.z;
+	return eye.x;
 }
 
 

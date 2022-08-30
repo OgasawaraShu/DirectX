@@ -33,6 +33,8 @@ public:
 	float GetPositionY();
 
 
+	XMFLOAT3 GetPos() { return eye; }
+
 	XMMATRIX GetRot() { return matRot; }
 
 	void SetMove(XMVECTOR move) { move_ = move; }

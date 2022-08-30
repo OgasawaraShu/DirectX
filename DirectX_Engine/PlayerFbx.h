@@ -45,6 +45,8 @@ public:
 
 	void SetCameraAxis(XMVECTOR z) { CammeraZAxis = z; }
 
+	void SetPos(XMFLOAT3 pos) { position = pos; }
+
 	//Gettter
 	XMVECTOR GetMove() { return moveCamera; }
 
@@ -58,7 +60,7 @@ public:
 
 	bool GetblueTeleport() { return blueTeleport; }
 
-	float GetPos() { return moveCamera.m128_f32[1]; }
+	float GetPos() { return position.x; }
 
 
 private:

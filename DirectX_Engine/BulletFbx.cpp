@@ -108,8 +108,10 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 	}
 	else if (TriggerFlag == 0 && debug == 0)
 	{
+		position = position_;
+		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 		//ïΩçsà⁄ìÆ
-		matTrans = XMMatrixTranslation(position.x += moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
+		//matTrans = XMMatrixTranslation(position.x += moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
 	}
 	else
 	{
@@ -207,8 +209,10 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 	}
 	else if (TriggerFlag2 == 0 && debug2 == 0)
 	{
+		position = position_;
+		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 		//ïΩçsà⁄ìÆ
-		matTrans = XMMatrixTranslation(position.x +=moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
+		//matTrans = XMMatrixTranslation(position.x +=moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
 	}
 	else
 	{

@@ -69,13 +69,12 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 
 	//追加の回転行列処理
 	AddRotateMatrixUpdate(angleX_, angleY_, matRot);
+
+    Landing();
 	//ワープ処理
 	WarpUpdate();
 	//Jumpと落下の処理
 	FallJump();
-
-	Landing();
-
 	//動く処理
 	MoveMatrixUpdate(matRot,matTrans);
 	//Matrix後更新
@@ -97,7 +96,7 @@ void PlayerFbx::FallJump()
 	// ジャンプ操作
 	else if (input->TriggerKey(DIK_SPACE)) {
 		onGround = false;
-		const float jumpVYFist = 0.2f;
+		const float jumpVYFist = 6.0f;
 		fallV = { 0, jumpVYFist, 0, 0 };
 	}
 }
@@ -197,10 +196,7 @@ void PlayerFbx::PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX ma
 	matWorld *= matScale;
 	matWorld *= matRot;
 	matWorld *= matTrans;
-
-	matWorld *= matrot;
-
-	//ビュープロジェクション行列
+//ビュープロジェクション行列
 	const XMMATRIX& matViewProjection =
 		camera->GetViewProjectionMatrix();
 	//メッシュtランスフォーム
@@ -268,7 +264,7 @@ void PlayerFbx::WarpUpdate()
 		Warp2.z = Warp.m128_f32[2];
 
 
-		position = Warp2;
+		//position = Warp2;
 
 		redTeleport = true;
 
@@ -290,9 +286,6 @@ void PlayerFbx::WarpUpdate()
 		Warp2.y = Warpblue.m128_f32[1];
 		Warp2.z = Warpblue.m128_f32[2];
 
-
-		position = Warp2;
-
 		blueTeleport = true;
 	}
 	else if (blueCollision == false)
@@ -313,6 +306,7 @@ void PlayerFbx::AddRotateMatrixUpdate(float angleX, float angleY, XMMATRIX matRo
 	// ※回転行列を累積していくと、誤差でスケーリングがかかる危険がある為
 	// クォータニオンを使用する方が望ましい
 	matRot = matRotNew * matRot;
+
 }
 
 void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
@@ -324,42 +318,50 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 	// WASDが押されていたら並行移動させる
 	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
-		if (onGround == true)
-		{
+		//if (onGround == true)
+		//{
 			if (input->PushKey(DIK_A))
 			{
-				dx -= 0.6f;
+				dx -= 0.3f;
 			}
 
 			if (input->PushKey(DIK_D))
 			{
-				dx += 0.6f;
+				dx += 0.3f;
 			}
 
 			if (input->PushKey(DIK_W))
 			{
-				dz += 0.6f;
+				dz += 0.3f;
 			}
 
 			if (input->PushKey(DIK_S))
 			{
-				dz -= 0.6f;
+				dz -= 0.3f;
 			}
-		}
+		//}
+				// 落下処理
+			// 落下処理
+			if (!onGround) {
+				
+			}
+			// ジャンプ操作
+			else if (onGround) {
+				onGround = false;
+				const float jumpVYFist = 0.2f;
+				fallV = { 0, jumpVYFist, 0, 0 };
+			}
+	
+
 	}
 
 	moveCamera = { dx += fallV.m128_f32[0], dy += fallV.m128_f32[1], dz += fallV.m128_f32[2], 0 };
 
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 
+//	matTrans = XMMatrixTranslation(position.x += moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
 
 
-	//positionにVectorを足す
-	//position.x += moveCamera.m128_f32[0];
-	//position.y += moveCamera.m128_f32[1];
-	//position.z += moveCamera.m128_f32[2];
-
-	matTrans = XMMatrixTranslation(position.x += moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
 }
 
 
