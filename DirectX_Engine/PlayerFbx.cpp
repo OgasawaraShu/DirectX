@@ -348,7 +348,7 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 			// ƒWƒƒƒ“ƒv‘€ì
 			else if (onGround) {
 				onGround = false;
-				const float jumpVYFist = 0.2f;
+				const float jumpVYFist = 0.16f;
 				fallV = { 0, jumpVYFist, 0, 0 };
 			}
 	
