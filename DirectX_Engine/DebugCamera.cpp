@@ -65,7 +65,7 @@ void DebugCamera::Update()
 		dirty = true;
 	}
 
-	XMVECTOR move = move_;
+    move = move_;
 
 	move = XMVector3Transform(move, matRot);
 
@@ -81,6 +81,7 @@ void DebugCamera::Update()
 		dirty = true;
 	}
 
+	
 	//SetEye(eye_);
 	
 	//ゲームパッドアナログスティックL入力時処理(場所移動)
@@ -158,8 +159,13 @@ void DebugCamera::Update()
 		SetUp({ vUp.m128_f32[0], vUp.m128_f32[1], vUp.m128_f32[2] });
 	}
 
+	up.x = 0;
+	up.y = 1;
+
 	Camera::Update();
 }
+
+
 
 float DebugCamera::GetAngleX()
 {

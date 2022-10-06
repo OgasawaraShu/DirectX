@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #include <wrl.h>
 #include <d3d12.h>
 #include <DirectXMath.h>
@@ -77,6 +78,7 @@ protected:
     //”ñ•\Ž¦
     bool isInvisible_ = false;
 
+    float Yure = 0;
 public:
     void Initialize(SpriteCommon* spriteCommon, UINT texnumber,
         DirectX::XMFLOAT2 anchorpoint, bool isFlagX, bool isFlagY);
@@ -85,6 +87,7 @@ public:
 
     void  SpriteDraw();
 
+    void SetYure(float a) { Yure = a; }
 
     //ˆÊ’u
     void SetPosition(const DirectX::XMFLOAT3& position) { position_ = position; }

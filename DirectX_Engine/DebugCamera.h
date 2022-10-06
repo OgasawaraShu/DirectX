@@ -32,8 +32,12 @@ public:
 	float GetPositionX();
 	float GetPositionY();
 
+	float GetUpx() { return up.x; }
+	float GetUpy() { return up.y; }
+
 
 	XMFLOAT3 GetPos() { return eye; }
+
 
 	XMMATRIX GetRot() { return matRot; }
 
@@ -47,7 +51,7 @@ public:
 	void SetAngleBlueY(float y) { angle_BlueY = y; }
 	void SetBlueTeleport(bool teleport) { blueTeleport = teleport; }
 	void SetEyePos(XMFLOAT3 eye) { eye_ = eye; }
-
+	void SetScene(int scene_) { scene = scene_; }
 
 private:
 	// 入力クラスのポインタ
@@ -85,12 +89,16 @@ private:
 	float angle_BlueX;
 	float angle_BlueY;
 
+	float t = 0;
+
 	bool AngleRimit = false;
 
+	int scene;
 
-	
+
 	XMVECTOR fallV{};
 	XMVECTOR JumpV{};
+	XMVECTOR move;
 
 	XMVECTOR move_;
 	XMFLOAT3 Warp_;

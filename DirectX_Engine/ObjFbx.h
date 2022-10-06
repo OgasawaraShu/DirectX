@@ -17,8 +17,8 @@ public:
 
     void SetCameraAxisZ(XMVECTOR z) { CammeraZAxis = z; }
     void SetMyPosition(XMFLOAT3 pos) { MyPosition = pos; }
-    void SetTarget(XMVECTOR pos) { Target = pos; }
-
+    void SetTarget(XMFLOAT3 pos) { Target = pos; }
+    void SetScene(int scene_) { scene = scene_; }
 
 private:
     //クラスのポインタ
@@ -27,9 +27,9 @@ private:
 
     //変数
     bool cursorOn = false;
-
+    int scene;
     XMVECTOR CammeraZAxis;
-    XMVECTOR Target;
+    XMFLOAT3 Target;
 
     XMFLOAT3 MyPosition;
 };

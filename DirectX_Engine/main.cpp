@@ -197,6 +197,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Sprite* sprite100 = Sprite::PostCreate(spriteCommon, 100);
    spriteCommon->SpriteCommonLoadTexture(100, L"Resources/Red.png");
 
+   Sprite* sprite101 = Sprite::PostCreate(spriteCommon, 101);
+   spriteCommon->SpriteCommonLoadTexture(101, L"Resources/Red.png");
+
+
     //スプライト
     Sprite* sprite = Sprite::Create(spriteCommon,0);
 
@@ -333,7 +337,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
    model1 = FbxLoader::GetInstance()->LoadModelFromFile("wall1");
-   model2 = FbxLoader::GetInstance()->LoadModelFromFile("cubebox");
+   model2 = FbxLoader::GetInstance()->LoadModelFromFile("redRobot");
    model3 = FbxLoader::GetInstance()->LoadModelFromFile("blueBall");
    model4 = FbxLoader::GetInstance()->LoadModelFromFile("redBall");
    model5 = FbxLoader::GetInstance()->LoadModelFromFile("wall2");
@@ -414,8 +418,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d1->SetPosition({ 0, -10, 0 });
   fbx3d1->SetRotate({ 0,0,0 });
 
-  fbx3d2->SetPosition({ -30, 60,0 });
-  fbx3d2->SetScale({ 0.05, 0.05,0.05 });
+  fbx3d2->SetPosition({ 0, 0,0 });
+  fbx3d2->SetScale({ 2,2, 2 });
+  fbx3d2->SetRotate({ 0,180,0 });
 
   fbx3d3->SetScale({ 0.05, 0.05,0.05 });
   fbx3d4->SetScale({ 0.05, 0.05,0.05 });
@@ -464,7 +469,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d9->SetVer();
 
 
-
+  fbx3d2->PlayAnimation2();
     while (true)  // ゲームループ
     {
      //3d更新   
@@ -512,8 +517,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
      // sprite2->SpriteTransVertexBuffer();
      
-      sprintf_s(moji, "X=%f", fbx3d9->GetPos());
-      sprintf_s(moji2, "camera=%f", fbx3d3->GetAngleX1());
+      sprintf_s(moji, "X=%f", camera->GetUpx());
+      sprintf_s(moji2, "Y=%f", camera->GetUpy());
      // sprintf_s(moji2, "camera=%f", camera->GetPositionY());
       //sprintf_s(moji2,"%d",camera->GetAngleY());
      
@@ -560,6 +565,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         camera->SetEyePos(fbx3d9->GetMyPosition());
 
 
+        //FBX描画
+        fbx3d1->Draw2(dxCommon->GetCmdList());
+        fbx3d2->Draw2(dxCommon->GetCmdList());
+        fbx3d3->Draw2(dxCommon->GetCmdList());
+        fbx3d4->Draw2(dxCommon->GetCmdList());
+        fbx3d5->Draw2(dxCommon->GetCmdList());
+        fbx3d6->Draw2(dxCommon->GetCmdList());
+        fbx3d7->Draw2(dxCommon->GetCmdList());
+        fbx3d8->Draw2(dxCommon->GetCmdList());
+
+
         //レンダ―テクスチャの描画
         sprite100->PreDrawScene(dxCommon->GetCmdList());
         ////スプライト共通コマンド
@@ -575,6 +591,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d7->Draw2(dxCommon->GetCmdList());
         fbx3d8->Draw2(dxCommon->GetCmdList());
 
+     
        
         //ポストエフェクトここまで
         sprite100->PostDrawScene(dxCommon->GetCmdList());
@@ -584,8 +601,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
         spriteCommon->PreDraw_Post();
-         sprite100->Update();
+        sprite100->Update();
         sprite100->PostDraw();
+
+        
         
         //3D描画前処理
       //  Object3d::PreDraw(dxCommon->GetCmdList());

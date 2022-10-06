@@ -15,12 +15,12 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 	{
 		if (debug == 0 && TriggerFlag == 1)
 		{
-			TriggerFlag = 0;
+			//TriggerFlag = 0;
 			debug = 1;
 		}
 		if (debug2 == 0 && TriggerFlag2 == 1)
 		{
-			TriggerFlag2 = 0;
+		//	TriggerFlag2 = 0;
 			debug2 = 1;
 		}
 	}
@@ -110,16 +110,10 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 
 	if (input->TriggerMouseLeft()&&debug==1)
 	{
-		position = position_;
-		warpFlag = false;
-		TriggerFlag = 1;
-		debug = 0;
-
-		angleX1 = 0;
-		angleY1 = 0;
-
-		oldBlueX =0;
-		oldBlueY =0;
+		//position = position_;
+		////warpFlag = false;
+		//TriggerFlag = 1;
+		//debug = 0;
 	}
 
 
@@ -177,10 +171,10 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 
 	if (input->TriggerMouseRight() && debug2 == 1)
 	{
-		position = position_;
-		warpFlag = false;
-		TriggerFlag2 = 1;
-		debug2 = 0;
+		////position = position_;
+	//	warpFlag = false;
+	//	TriggerFlag2 = 1;
+	//	debug2 = 0;
 
 	}
 

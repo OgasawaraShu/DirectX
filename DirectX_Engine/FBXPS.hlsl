@@ -20,6 +20,11 @@ float4 main(VSOutput input):SV_TARGET
   PSOutput output;
   float4 texcolor = tex.Sample(smp,input.uv);
 
+ // float2 offset = float2(0.6, 0);
+
+//  float4 Outlinetexcolor = tex.Sample(smp, input.uv+offset);
+
+
   float3 light = normalize(float3(1, -1, 1));
 
   float diffuse = saturate(dot(-light, input.normal));
@@ -28,16 +33,18 @@ float4 main(VSOutput input):SV_TARGET
 
 
   float4 blendcolor = shadecolor * texcolor;
+ // float4 Outlineblendcolor = shadecolor * Outlinetexcolor;
 
 
   output.target0= shadecolor * texcolor;
   output.target1= float4(0.7*(shadecolor * texcolor).rgb,1);
+ // output.target1= shadecolor*Outlinetexcolor;
 
 
 
 
 
-  //return output;
+  //return output.target0*output.target1;
 
 
   //トゥーンシェーダ

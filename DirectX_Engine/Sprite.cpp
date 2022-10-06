@@ -284,6 +284,7 @@ Sprite* Sprite::PostCreate(SpriteCommon* spriteCommon, UINT texnumber, DirectX::
     return instance;
 }
 
+
 void Sprite::PostInitialize(SpriteCommon* spriteCommon, UINT texnumber,
     DirectX::XMFLOAT2 anchorpoint, bool isFlagX, bool isFlagY)
 {
@@ -490,6 +491,7 @@ void Sprite::PostInitialize(SpriteCommon* spriteCommon, UINT texnumber,
 
 
 }
+
 
 void Sprite::CreateGraphicsPipelineState_Post()
 {

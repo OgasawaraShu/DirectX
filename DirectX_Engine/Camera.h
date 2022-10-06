@@ -120,7 +120,7 @@ public: // メンバ関数
 	void MoveVectorNotY(const XMVECTOR& move);
 
 	XMVECTOR GetCameraZAxis() { return CameraAxisGet; }
-	XMVECTOR GetTargetPos() { return Target; }
+	XMFLOAT3 GetTargetPos() { return target; }
 
 protected: // メンバ変数
 	// ビュー行列

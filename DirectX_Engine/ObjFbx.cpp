@@ -31,16 +31,17 @@ void ObjFbx::ObjUpdate(float angleX, float angleY)
 	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
 	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
 	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
-	//追加の回転行列処理
-	AddRotateMatrixUpdate(angleX, angleY, matRot);
 	
 	RayCheck();
 
 	if (cursorOn == true)
 	{
-		position.x = Target.m128_f32[0];
-		position.y = Target.m128_f32[1];
-		position.z = Target.m128_f32[2]+20;
+		//追加の回転行列処理
+		AddRotateMatrixUpdate(angleX, angleY, matRot);
+
+		position.x = Target.x;
+		position.y = Target.y;
+		position.z = Target.z;
 	}
 	//行列後更新
 	PostMatrixUpdate(matScale, matRot, matTrans);

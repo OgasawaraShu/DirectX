@@ -62,7 +62,7 @@ public:
 
 	float GetPos() { return position.x; }
 
-
+	void SetScene(int scene_) { scene = scene_; }
 private:
 
 	//クラスのポインタ
@@ -79,6 +79,8 @@ private:
 	float angleY_;//角度Y
 
 	float Momentum;//
+
+	int scene;
 
 	bool onGround = true;//地面の判定
 
