@@ -64,6 +64,7 @@ using namespace Microsoft::WRL;
 #include "BulletFbx.h"
 #include "Physics.h" 
 #include"ObjFbx.h"
+#include "SceneSelect.h"
 
 Model* modelPlane = nullptr;
 Model* modelBox = nullptr;
@@ -127,6 +128,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     Audio* audio = nullptr;
     GamePad* gamepad = nullptr;
     Physics* physics=nullptr;
+    SceneSelect* scene = nullptr;
     //WindowsAPIの初期化
     winApp = new WinApp();
     winApp->Initialize();
@@ -147,6 +149,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
      input = new Input();
      physics = new Physics();
+     scene = new SceneSelect(WinApp::window_width, WinApp::window_height, input);
 
     //入力の初期化
   //  Input* input = Input::GetInstance();
@@ -330,14 +333,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Model* model9 = nullptr;
    PlayerFbx* fbx3d9 = nullptr;
 
+   Model* model10 = nullptr;
+   Fbx3d* fbx3d10 = nullptr;
+
+
    Fbx3d* wall1 = nullptr;
    Fbx3d* wall2 = nullptr;
    Fbx3d* wall3 = nullptr;
    Fbx3d* wall4 = nullptr;
 
 
-   model1 = FbxLoader::GetInstance()->LoadModelFromFile("wall1");
-   model2 = FbxLoader::GetInstance()->LoadModelFromFile("redRobot");
+   model1 = FbxLoader::GetInstance()->LoadModelFromFile("rengaWall_1");
+   model2 = FbxLoader::GetInstance()->LoadModelFromFile("Door");
    model3 = FbxLoader::GetInstance()->LoadModelFromFile("blueBall");
    model4 = FbxLoader::GetInstance()->LoadModelFromFile("redBall");
    model5 = FbxLoader::GetInstance()->LoadModelFromFile("wall2");
@@ -345,6 +352,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    model7 = FbxLoader::GetInstance()->LoadModelFromFile("wall3");
    model8 = FbxLoader::GetInstance()->LoadModelFromFile("wall4");
    model9 = FbxLoader::GetInstance()->LoadModelFromFile("blueBall");
+   model10 = FbxLoader::GetInstance()->LoadModelFromFile("robot");
 
 
    //モデル読み込み
@@ -394,6 +402,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d9->Initialize();
   fbx3d9->SetModel(model9);
 
+  fbx3d10 = new Fbx3d(input);
+  fbx3d10->Initialize();
+  fbx3d10->SetModel(model10);
+
+
   wall1 = new Fbx3d(input);
   wall1->Initialize();
   wall1->SetModel(model8);
@@ -418,9 +431,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d1->SetPosition({ 0, -10, 0 });
   fbx3d1->SetRotate({ 0,0,0 });
 
-  fbx3d2->SetPosition({ 0, 0,0 });
-  fbx3d2->SetScale({ 2,2, 2 });
-  fbx3d2->SetRotate({ 0,180,0 });
+  fbx3d2->SetPosition({ 0,40,98 });
+  fbx3d2->SetScale({ 0.08,0.08, 0.08 });
+  fbx3d2->SetRotate({ 0,0,180 });
 
   fbx3d3->SetScale({ 0.05, 0.05,0.05 });
   fbx3d4->SetScale({ 0.05, 0.05,0.05 });
@@ -442,6 +455,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
   fbx3d8->SetPosition({ 0, -10, 0 });
   fbx3d8->SetRotate({ 0,0,0 });
+
+  fbx3d10->SetPosition({ 0, 50, 0 });
+  fbx3d10->SetScale({ 0.1,0.1,0.1 });
 
   //衝突マネージャー
   CollisionManager* collisionManager = nullptr;
@@ -469,32 +485,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d9->SetVer();
 
 
-  fbx3d2->PlayAnimation2();
+  //fbx3d2->PlayAnimation2();
     while (true)  // ゲームループ
     {
-     //3d更新   
-     //スプライト
-
-        /*
-        Ray ray;
-        Plane plane;
-
-        plane.normal = XMVectorSet(0, 1, 0, 0);
-        plane.distance = 0.0f;
-        ray.start = { 0,1,0,1 };
-        ray.dir = { 0,-1,0,0 };
-        
-        XMVECTOR inter;
-        float distance;
-        bool hit = Collision::CheckRay2Plane(ray, plane, &distance, &inter);
-        if (hit) {
-            break;
-        }
-        */
-        
-       // if (collisionManager->Raycast(ray, &raycastHit)) {
-
-        //座標Set関連
+        //座標Set関連   
         fbx3d2->SetMyPosition(fbx3d9->GetMyPosition());
         fbx3d2->SetCameraAxisZ(camera->GetCameraZAxis());
         fbx3d2->SetTarget(camera->GetTargetPos());
@@ -513,7 +507,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         camera->SetMove(fbx3d9->GetMove());
         camera->SetWarpPosition(fbx3d9->GetPosition());
         camera->SetGround(fbx3d9->Getground());
-     
+        camera->SetScene(scene->GetScene());
 
      // sprite2->SpriteTransVertexBuffer();
      
@@ -539,22 +533,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         input->Update();
 
         camera->Update();
+
+        if (scene->GetScene() == 0)
+        {
+            scene->Title();
+
+           
+        }
+
+
+        if (scene->GetScene() == 1)
+        {
+            fbx3d2->ObjUpdate(camera->GetAngleX(), camera->GetAngleY());
+            fbx3d3->BlueBulletUpdate(camera->GetAngleX(), camera->GetAngleY());
+            fbx3d4->RedBulletUpdate(camera->GetAngleX(), camera->GetAngleY());  
+            fbx3d9->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
+        }
+
         fbx3d1->Update();
-        fbx3d2->ObjUpdate(camera->GetAngleX(), camera->GetAngleY());
-        fbx3d3->BlueBulletUpdate(camera->GetAngleX(), camera->GetAngleY());
-        fbx3d4->RedBulletUpdate(camera->GetAngleX(), camera->GetAngleY());
         fbx3d5->Update();
         fbx3d6->Update();
         fbx3d7->Update();
         fbx3d8->Update();
-        fbx3d9->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
+        fbx3d10->Update();
 
         wall1->Update();
         wall2->Update();
         wall3->Update();
         wall4->Update();
-
-
 
         camera->SetAngleRedX(fbx3d4->GetAngleX2());
         camera->SetAngleRedY(fbx3d4->GetAngleY2());
@@ -574,6 +580,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d6->Draw2(dxCommon->GetCmdList());
         fbx3d7->Draw2(dxCommon->GetCmdList());
         fbx3d8->Draw2(dxCommon->GetCmdList());
+        fbx3d10->Draw2(dxCommon->GetCmdList());
 
 
         //レンダ―テクスチャの描画
@@ -590,6 +597,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d6->Draw2(dxCommon->GetCmdList());
         fbx3d7->Draw2(dxCommon->GetCmdList());
         fbx3d8->Draw2(dxCommon->GetCmdList());
+        fbx3d10->Draw2(dxCommon->GetCmdList());
+
 
      
        

@@ -22,6 +22,10 @@ public:
 	// 更新
 	void Update() override;
 
+	void MainSceneUpdate();
+
+	void TitleSceneUpdate();
+
 	void SetDistance(float distance) {
 		this->distance = distance; viewDirty = true;
 	}
@@ -52,7 +56,6 @@ public:
 	void SetBlueTeleport(bool teleport) { blueTeleport = teleport; }
 	void SetEyePos(XMFLOAT3 eye) { eye_ = eye; }
 	void SetScene(int scene_) { scene = scene_; }
-
 private:
 	// 入力クラスのポインタ
 	Input* input;
