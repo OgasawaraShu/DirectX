@@ -181,9 +181,13 @@ void DebugCamera::MainSceneUpdate()
 
 void DebugCamera::TitleSceneUpdate()
 {
-	//eye.x = 30;
-	//.y = -60;
-	//eye.z = 200;
+
+	//angleY -=3.1f;;
+
+	//dirty = true;
+
+	//oldx += angleX;
+	//oldy += angleY;
 }
 
 

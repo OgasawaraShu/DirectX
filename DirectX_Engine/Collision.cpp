@@ -67,6 +67,50 @@ bool Collision::CheckSphere2Box(const Sphere& sphere, unsigned short attribute, 
 	return false;
 }
 
+bool Collision::CheckSphere2Box2(const Sphere& sphere, const Wall& wall, DirectX::XMVECTOR* inter)
+{
+	float sqDistance = 0.0f;
+	float pos;
+
+	pos = sphere.center.m128_f32[0];
+	if (pos < wall.minPos.m128_f32[0])
+	{
+		sqDistance += (wall.minPos.m128_f32[0] - pos) * (wall.minPos.m128_f32[0] - pos);
+	}
+	else if (pos > wall.maxPos.m128_f32[0])
+	{
+		sqDistance += (pos - wall.maxPos.m128_f32[0]) * (pos - wall.maxPos.m128_f32[0]);
+	}
+
+
+	pos = sphere.center.m128_f32[1];
+	if (pos < wall.minPos.m128_f32[1])
+	{
+		sqDistance += (wall.minPos.m128_f32[1] - pos) * (wall.minPos.m128_f32[1] - pos);
+	}
+	else if (pos > wall.maxPos.m128_f32[1])
+	{
+		sqDistance += (pos - wall.maxPos.m128_f32[1]) * (pos - wall.maxPos.m128_f32[1]);
+	}
+
+	pos = sphere.center.m128_f32[2];
+	if (pos < wall.minPos.m128_f32[2])
+	{
+		sqDistance += (wall.minPos.m128_f32[2] - pos) * (wall.minPos.m128_f32[2] - pos);
+	}
+	else if (pos > wall.maxPos.m128_f32[2])
+	{
+		sqDistance += (pos - wall.maxPos.m128_f32[2]) * (pos - wall.maxPos.m128_f32[2]);
+	}
+
+	return sqDistance <=sphere.redius * sphere.redius;
+}
+
+bool Collision::CheckSphere2Box2(const Sphere& sphere, unsigned short attribute, const Wall& wall, DirectX::XMVECTOR* inter)
+{
+	return false;
+}
+
 
 void Collision::ClosestPtPoint2Triangle(const DirectX::XMVECTOR& point, const Triangle& triangle, DirectX::XMVECTOR* closest)
 {

@@ -59,6 +59,7 @@ using namespace Microsoft::WRL;
 #include "SphereCollider.h"
 #include "PlaneCollider.h"
 #include "BoxCollider.h"
+#include "Wallcolider.h"
 #include "CollisionManager.h"
 #include "PlayerFbx.h"
 #include "BulletFbx.h"
@@ -212,30 +213,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    sprite->SetSize({ 127,141 });
    sprite->SettexSize({ 127,141 });
 
-   //
-   Sprite* sprite2 = Sprite::Create(spriteCommon, 1);
-
-   spriteCommon->SpriteCommonLoadTexture(1, L"Resources/Blue.png");
-   sprite2->SetPosition({ 0,360,0 });
-   sprite2->SetSize({ 70,70 });
-   sprite2->SettexSize({ 70,70 });
-
-    sprite2->SpriteTransVertexBuffer();
-
-   //
-   Sprite* sprite3 = Sprite::Create(spriteCommon, 3);
-
-   spriteCommon->SpriteCommonLoadTexture(3, L"Resources/Enemy1.png");
-   sprite3->SetPosition({ 0,360,0 });
-   sprite3->SetSize({ 60,60 });
-   sprite3->SettexSize({ 60,60 });
-   //
-   Sprite* sprite4 = Sprite::Create(spriteCommon, 4);
-
-   spriteCommon->SpriteCommonLoadTexture(4, L"Resources/LEG.png");
-   sprite4->SetPosition({ 0,360,0 });
-   sprite4->SetSize({ 60,60 });
-   sprite4->SettexSize({ 60,60 });
 
 
     //デバックテキスト
@@ -269,8 +246,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     audio = new Audio();
     audio->Initialize();
 
-    audio->SoundLoadWave("Resources/Shot.wav");//正解の音
-    audio->SoundLoadWave("Resources/Push.wav");
+ //   audio->SoundLoadWave("Resources/Shot.wav");//正解の音
+  //  audio->SoundLoadWave("Resources/Push.wav");
 
     //パイプライン生成
  
@@ -334,7 +311,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    PlayerFbx* fbx3d9 = nullptr;
 
    Model* model10 = nullptr;
-   Fbx3d* fbx3d10 = nullptr;
+   ObjFbx* fbx3d10 = nullptr;
+
+   Fbx3d* fbx3d11 = nullptr;
+   Fbx3d* fbx3d12 = nullptr;
+   Fbx3d* fbx3d13 = nullptr;
+   Fbx3d* fbx3d14 = nullptr;
+   Fbx3d* fbx3d15 = nullptr;
+
+   Fbx3d* fbx3d16 = nullptr;
+   Fbx3d* fbx3d17 = nullptr;
+   Fbx3d* fbx3d18 = nullptr;
+   Fbx3d* fbx3d19 = nullptr;
+
+
+   Model* model11 = nullptr;
+   Fbx3d* fbx3d20 = nullptr;
 
 
    Fbx3d* wall1 = nullptr;
@@ -343,16 +335,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Fbx3d* wall4 = nullptr;
 
 
-   model1 = FbxLoader::GetInstance()->LoadModelFromFile("rengaWall_1");
+   model1 = FbxLoader::GetInstance()->LoadModelFromFile("wall1");
    model2 = FbxLoader::GetInstance()->LoadModelFromFile("Door");
    model3 = FbxLoader::GetInstance()->LoadModelFromFile("blueBall");
    model4 = FbxLoader::GetInstance()->LoadModelFromFile("redBall");
    model5 = FbxLoader::GetInstance()->LoadModelFromFile("wall2");
    model6 = FbxLoader::GetInstance()->LoadModelFromFile("wall");
    model7 = FbxLoader::GetInstance()->LoadModelFromFile("wall3");
-   model8 = FbxLoader::GetInstance()->LoadModelFromFile("wall4");
+   model8 = FbxLoader::GetInstance()->LoadModelFromFile("IronWall");
    model9 = FbxLoader::GetInstance()->LoadModelFromFile("blueBall");
-   model10 = FbxLoader::GetInstance()->LoadModelFromFile("robot");
+   model10 = FbxLoader::GetInstance()->LoadModelFromFile("Fence");
+   model11 = FbxLoader::GetInstance()->LoadModelFromFile("drum");
 
 
    //モデル読み込み
@@ -402,7 +395,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d9->Initialize();
   fbx3d9->SetModel(model9);
 
-  fbx3d10 = new Fbx3d(input);
+  fbx3d10 = new ObjFbx(input,physics);
   fbx3d10->Initialize();
   fbx3d10->SetModel(model10);
 
@@ -423,6 +416,46 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   wall4->Initialize();
   wall4->SetModel(model8);
 
+  fbx3d11 = new Fbx3d(input);
+  fbx3d11->Initialize();
+  fbx3d11->SetModel(model10);
+
+  fbx3d12 = new Fbx3d(input);
+  fbx3d12->Initialize();
+  fbx3d12->SetModel(model10);
+
+  fbx3d13 = new Fbx3d(input);
+  fbx3d13->Initialize();
+  fbx3d13->SetModel(model10);
+
+  fbx3d14 = new Fbx3d(input);
+  fbx3d14->Initialize();
+  fbx3d14->SetModel(model10);
+
+  fbx3d15 = new Fbx3d(input);
+  fbx3d15->Initialize();
+  fbx3d15->SetModel(model10);
+
+  fbx3d16 = new Fbx3d(input);
+  fbx3d16->Initialize();
+  fbx3d16->SetModel(model10);
+
+  fbx3d17 = new Fbx3d(input);
+  fbx3d17->Initialize();
+  fbx3d17->SetModel(model10);
+
+  fbx3d18 = new Fbx3d(input);
+  fbx3d18->Initialize();
+  fbx3d18->SetModel(model10);
+
+  fbx3d19 = new Fbx3d(input);
+  fbx3d19->Initialize();
+  fbx3d19->SetModel(model10);
+
+  fbx3d20 = new Fbx3d(input);
+  fbx3d20->Initialize();
+  fbx3d20->SetModel(model11);
+
   wall1->SetPosition({ -40, 0, 0 });
   wall2->SetPosition({ +40, 0, 0 });
   wall3->SetPosition({  0, 0,-40 });
@@ -431,8 +464,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d1->SetPosition({ 0, -10, 0 });
   fbx3d1->SetRotate({ 0,0,0 });
 
-  fbx3d2->SetPosition({ 0,40,98 });
-  fbx3d2->SetScale({ 0.08,0.08, 0.08 });
+  fbx3d2->SetPosition({ -60,11,100 });
+  fbx3d2->SetScale({ 0.1,0.1, 0.1 });
   fbx3d2->SetRotate({ 0,0,180 });
 
   fbx3d3->SetScale({ 0.05, 0.05,0.05 });
@@ -453,11 +486,53 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d7->SetPosition({ 0, -10, 0 });
   fbx3d7->SetRotate({ 0,0,0 });
 
-  fbx3d8->SetPosition({ 0, -10, 0 });
-  fbx3d8->SetRotate({ 0,0,0 });
+  fbx3d8->SetPosition({ 0, 0, 106 });
+  fbx3d8->SetRotate({ 270,0,0 });
 
-  fbx3d10->SetPosition({ 0, 50, 0 });
+  fbx3d10->SetPosition({ 0, 0, 0 });
   fbx3d10->SetScale({ 0.1,0.1,0.1 });
+  fbx3d10->SetRotate({ 90,0,0 });
+
+  fbx3d11->SetPosition({ 20, 0, 0 });
+  fbx3d11->SetScale({ 0.1,0.1,0.1 });
+  fbx3d11->SetRotate({ 90,0,0 });
+
+  fbx3d12->SetPosition({ 40, 0, 0 });
+  fbx3d12->SetScale({ 0.1,0.1,0.1 });
+  fbx3d12->SetRotate({ 90,0,0 });
+
+  fbx3d13->SetPosition({ 60, 0, 0 });
+  fbx3d13->SetScale({ 0.1,0.1,0.1 });
+  fbx3d13->SetRotate({ 90,0,0 });
+
+  fbx3d14->SetPosition({ 80, 0, 0 });
+  fbx3d14->SetScale({ 0.1,0.1,0.1 });
+  fbx3d14->SetRotate({ 90,0,0 });
+
+  fbx3d15->SetPosition({ -20, 0, 0 });
+  fbx3d15->SetScale({ 0.1,0.1,0.1 });
+  fbx3d15->SetRotate({ 90,0,0 });
+
+  fbx3d16->SetPosition({ -40, 0, 0 });
+  fbx3d16->SetScale({ 0.1,0.1,0.1 });
+  fbx3d16->SetRotate({ 90,0,0 });
+
+  fbx3d17->SetPosition({ -60, 0, 0 });
+  fbx3d17->SetScale({ 0.1,0.1,0.1 });
+  fbx3d17->SetRotate({ 90,0,0 });
+
+  fbx3d18->SetPosition({ -80, 0, 0 });
+  fbx3d18->SetScale({ 0.1,0.1,0.1 });
+  fbx3d18->SetRotate({ 90,0,0 });
+
+  fbx3d19->SetPosition({ 0, 0, 0 });
+  fbx3d19->SetScale({ 0.1,0.1,0.1 });
+  fbx3d19->SetRotate({ 90,0,0 });
+
+  fbx3d20->SetPosition({ 60, -6, -30 });
+  fbx3d20->SetScale({ 0.014,0.014,0.014 });
+  fbx3d20->SetRotate({ 0,0,0 });
+
 
   //衝突マネージャー
   CollisionManager* collisionManager = nullptr;
@@ -466,23 +541,38 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   float radius = 5.0f;
 
   fbx3d1->SetColider(new BoxCollider(XMVECTOR{80,80,80,0}));
-  fbx3d2->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
+ // fbx3d2->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
 
   fbx3d3->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
   fbx3d4->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
   fbx3d6->SetColider(new PlaneCollider(XMVECTOR{ 0,1,0,0 }, 0));
   fbx3d9->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
+  fbx3d10->SetColider(new WallCollider(XMVECTOR{ 80,80,80,0 }));
+
   
-  wall1->SetColider(new BoxCollider(XMVECTOR{ 20,80,80,0 }));
-  wall2->SetColider(new BoxCollider(XMVECTOR{ 20,80,80,0 }));
-  wall3->SetColider(new BoxCollider(XMVECTOR{ 80,80,20,0 }));
-  wall4->SetColider(new BoxCollider(XMVECTOR{ 80,80,20,0 }));
+  //wall1->SetColider(new BoxCollider(XMVECTOR{ 20,80,80,0 }));
+  //wall2->SetColider(new BoxCollider(XMVECTOR{ 20,80,80,0 }));
+  //wall3->SetColider(new BoxCollider(XMVECTOR{ 80,80,20,0 }));
+  //wall4->SetColider(new BoxCollider(XMVECTOR{ 80,80,20,0 }));
+
+  fbx3d11->SetColider(new WallCollider(XMVECTOR{ 80,80,80,0 }));
+  fbx3d12->SetColider(new WallCollider(XMVECTOR{ 80,80,80,0 }));
+  fbx3d13->SetColider(new WallCollider(XMVECTOR{ 80,80,80,0 }));
+  fbx3d14->SetColider(new WallCollider(XMVECTOR{ 80,80,80,0 }));
+  fbx3d15->SetColider(new WallCollider(XMVECTOR{ 80,80,80,0 }));
+  fbx3d16->SetColider(new WallCollider(XMVECTOR{ 80,80,80,0 }));
+  fbx3d17->SetColider(new WallCollider(XMVECTOR{ 80,80,80,0 }));
+  fbx3d18->SetColider(new WallCollider(XMVECTOR{ 80,80,80,0 }));
+  fbx3d19->SetColider(new WallCollider(XMVECTOR{ 80,80,80,0 }));
+
   //当たり判定の属性
-  fbx3d2->SetVerObj();
+  //fbx3d2->SetVerObj();
   fbx3d6->SetVerObj();
   fbx3d3->SetVerBulletRed();
   fbx3d4->SetVerBulletBlue();
   fbx3d9->SetVer();
+ // fbx3d10->SetVerObj();
+
 
 
   //fbx3d2->PlayAnimation2();
@@ -492,6 +582,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d2->SetMyPosition(fbx3d9->GetMyPosition());
         fbx3d2->SetCameraAxisZ(camera->GetCameraZAxis());
         fbx3d2->SetTarget(camera->GetTargetPos());
+
+        fbx3d10->SetMyPosition(fbx3d9->GetMyPosition());
+        fbx3d10->SetCameraAxisZ(camera->GetCameraZAxis());
+        fbx3d10->SetTarget(camera->GetTargetPos());
     //    fbx3d3->SetWorld(camera->GetRot());
     
         fbx3d9->SetMemo(fbx3d4->GetMemo());
@@ -544,18 +638,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         if (scene->GetScene() == 1)
         {
-            fbx3d2->ObjUpdate(camera->GetAngleX(), camera->GetAngleY());
+           
             fbx3d3->BlueBulletUpdate(camera->GetAngleX(), camera->GetAngleY());
             fbx3d4->RedBulletUpdate(camera->GetAngleX(), camera->GetAngleY());  
             fbx3d9->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
+
+            fbx3d10->ObjUpdate(camera->GetAngleX(), camera->GetAngleY());
         }
 
         fbx3d1->Update();
+        fbx3d2->Update();
         fbx3d5->Update();
         fbx3d6->Update();
         fbx3d7->Update();
         fbx3d8->Update();
-        fbx3d10->Update();
+        fbx3d11->Update();
+        fbx3d12->Update();
+        fbx3d13->Update();
+        fbx3d14->Update();
+        fbx3d15->Update();
+        fbx3d16->Update();
+        fbx3d17->Update();
+        fbx3d18->Update();
+        fbx3d19->Update();
+        fbx3d20->Update();
 
         wall1->Update();
         wall2->Update();
@@ -598,6 +704,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d7->Draw2(dxCommon->GetCmdList());
         fbx3d8->Draw2(dxCommon->GetCmdList());
         fbx3d10->Draw2(dxCommon->GetCmdList());
+        fbx3d11->Draw2(dxCommon->GetCmdList());
+        fbx3d12->Draw2(dxCommon->GetCmdList());
+        fbx3d13->Draw2(dxCommon->GetCmdList());
+        fbx3d14->Draw2(dxCommon->GetCmdList());
+        fbx3d15->Draw2(dxCommon->GetCmdList());
+        fbx3d16->Draw2(dxCommon->GetCmdList());
+        fbx3d17->Draw2(dxCommon->GetCmdList());
+        fbx3d18->Draw2(dxCommon->GetCmdList());
+        fbx3d19->Draw2(dxCommon->GetCmdList());
+        fbx3d20->Draw2(dxCommon->GetCmdList());
 
 
      

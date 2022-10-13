@@ -17,6 +17,13 @@ public:
 		box, DirectX::XMVECTOR* inter = nullptr);
 
 
+	static bool CheckSphere2Box2(const Sphere& sphere, const Wall&
+		wall, DirectX::XMVECTOR* inter = nullptr);
+
+	static bool CheckSphere2Box2(const Sphere& sphere, unsigned short attribute, const Wall&
+		wall, DirectX::XMVECTOR* inter = nullptr);
+
+
 	static void ClosestPtPoint2Triangle(const DirectX::XMVECTOR& point,
 		const Triangle& triangle, DirectX::XMVECTOR* closest);
 

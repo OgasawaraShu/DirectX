@@ -61,3 +61,16 @@ struct Box
 
 
 };
+
+//ï«
+
+struct Wall
+{
+	//ç≈è¨ç¿ïW
+	DirectX::XMVECTOR minPos = { 0,0,0,1 };
+
+	//ç≈ëÂç¿ïW
+	DirectX::XMVECTOR maxPos = { 0,0,0,1 };
+
+
+};
