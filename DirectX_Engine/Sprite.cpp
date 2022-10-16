@@ -272,7 +272,7 @@ void Sprite::SpriteDivDraw(float& DIVnum, float Divsize, float& sizex, float siz
     }
 }
 
-const float Sprite::clearColor[4] = { 0.25f,0.5f,0.1f,0.0f };
+const float Sprite::clearColor[4] = { 0.0f,0.0f,0.0f,0.0f };
 
 Sprite* Sprite::PostCreate(SpriteCommon* spriteCommon, UINT texnumber, DirectX::XMFLOAT2 anchorpoint, bool isFlagX, bool isFlagY)
 {

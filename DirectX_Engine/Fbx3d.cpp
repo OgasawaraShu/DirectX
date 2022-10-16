@@ -433,6 +433,11 @@ void Fbx3d::SetVerObj()
 	collider->SetAttribute(COLLISION_ATTR_OBJ);
 }
 
+void Fbx3d::SetVerWall()
+{
+	collider->SetAttribute(COLLISION_ATTR_WALL);
+}
+
 
 
 

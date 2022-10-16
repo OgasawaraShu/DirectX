@@ -22,9 +22,15 @@ void PlayerFbx::OnCollision(const CollisionInfo& info)
 	{
 		redCollision = true;
 	}
+	
+	
+	if(info.collider->attribute == 32)
+	{
+		WallCollision = true;
+	}
 	else
 	{
-		//onGround = true;
+		
 	}
 }
 
@@ -40,10 +46,15 @@ PlayerFbx::PlayerFbx(Input* input,Physics* physics)
 
 	this->input = input;
 	this->physics = physics;
+
+	
 }
 
 void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 {
+
+	//前の座標を記録
+	OldPos = position;
 	// マウスの入力を取得
 	Input::MouseMove mouseMove = input->GetMouseMove();
 
@@ -196,6 +207,8 @@ void PlayerFbx::PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX ma
 	matWorld *= matScale;
 	matWorld *= matRot;
 	matWorld *= matTrans;
+
+
 //ビュープロジェクション行列
 	const XMMATRIX& matViewProjection =
 		camera->GetViewProjectionMatrix();
@@ -247,10 +260,14 @@ void PlayerFbx::PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX ma
 	}
 	constBuffSkin->Unmap(0, nullptr);
 
+
+
 	//当たり判定更新
 	if (collider) {
 		collider->Update();
 	}
+
+
 }
 
 void PlayerFbx::WarpUpdate()
@@ -355,9 +372,18 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 
 	}
 
+
+	if (WallCollision == true)
+	{
+
+	}
+
+
 	moveCamera = { dx += fallV.m128_f32[0], dy += fallV.m128_f32[1], dz += fallV.m128_f32[2], 0 };
 
 	moveCamera = XMVector3Transform(moveCamera, matRot);
+
+	
 
 //	matTrans = XMMatrixTranslation(position.x += moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
 

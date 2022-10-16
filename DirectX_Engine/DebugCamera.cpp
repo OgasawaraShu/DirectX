@@ -61,6 +61,7 @@ void DebugCamera::Update()
 		SetUp({ vUp.m128_f32[0], vUp.m128_f32[1], vUp.m128_f32[2] });
 	}
 
+	
 	up.x = 0;
 	up.y = 1;
 
@@ -69,7 +70,7 @@ void DebugCamera::Update()
 
 void DebugCamera::MainSceneUpdate()
 {
-	
+	oldeye = eye;
 	float target_x = 0;
 
 	// ƒ}ƒEƒX‚Ì“ü—Í‚ðŽæ“¾
@@ -177,6 +178,13 @@ void DebugCamera::MainSceneUpdate()
 		SetEye(Warp_);
 
 	}
+
+	if (Wall == true)
+	{
+	//  SetEye(oldeye);
+	//	Wall = false;
+	}
+
 }
 
 void DebugCamera::TitleSceneUpdate()

@@ -26,7 +26,9 @@ float4 main(VSOutput input) : SV_TARGET
 	float2 samplePoint = input.uv;
 	float4 colortex0 = tex0.Sample(smp, floor(input.uv*density)/density);
 	float4 Tex1 = tex1.Sample(smp, input.uv);
-
+	float vignette = length(float2(0.6, 0.6) - input.uv);
+	vignette = clamp(vignette - 0.2, 0, 1);
+	colortex0.rgb -= vignette;
 	//float4 color = Tex0;
 	//if (fmod(input.uv.y, 0.1f) < 0.05f)
 	//{

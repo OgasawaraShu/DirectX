@@ -42,6 +42,10 @@ void ObjFbx::ObjUpdate(float angleX, float angleY)
 		position.x = Target.x;
 		position.y = Target.y;
 		position.z = Target.z;
+
+	////	rotation.x = 0;
+	//	rotation.z = 0;
+
 	}
 	//çsóÒå„çXêV
 	PostMatrixUpdate(matScale, matRot, matTrans);

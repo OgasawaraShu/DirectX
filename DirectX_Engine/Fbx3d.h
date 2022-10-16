@@ -118,6 +118,8 @@ public:
 
 	void SetVerObj();
 
+	void SetVerWall();
+
 	void SetWorld(XMMATRIX matrot_) { matrot = matrot_; }
 
 	XMMATRIX matrot;

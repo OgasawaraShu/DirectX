@@ -45,6 +45,8 @@ public:
 
 	XMMATRIX GetRot() { return matRot; }
 
+	bool GetWall() { return Wall; }
+
 	void SetMove(XMVECTOR move) { move_ = move; }
 	void SetWarpPosition(XMFLOAT3 Warp) { Warp_=Warp; }
 	void SetGround(bool onGround) { onGround_ = onGround; }
@@ -56,11 +58,12 @@ public:
 	void SetBlueTeleport(bool teleport) { blueTeleport = teleport; }
 	void SetEyePos(XMFLOAT3 eye) { eye_ = eye; }
 	void SetScene(int scene_) { scene = scene_; }
+	void SetWall(bool a) { Wall = a; }
 private:
 	// 入力クラスのポインタ
 	Input* input;
 	//
-	
+	bool Wall;
 	// カメラ注視点までの距離
 	float distance = 20;
 	// スケーリング
@@ -106,5 +109,6 @@ private:
 	XMVECTOR move_;
 	XMFLOAT3 Warp_;
 	XMFLOAT3 eye_;
+	XMFLOAT3 oldeye;
 };
 

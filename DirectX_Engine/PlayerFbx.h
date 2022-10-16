@@ -6,7 +6,7 @@
 
 
 class PlayerFbx :
-	public Fbx3d 
+	public Fbx3d
 {
 public:
 
@@ -26,13 +26,13 @@ public:
 
 	void Landing();//着地
 
-	void RayCheck(float angleX,float angleY);
+	void RayCheck(float angleX, float angleY);
 
 	void PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTrans);//行列後更新
 
 	void WarpUpdate();//ワープ処理
 
-	void AddRotateMatrixUpdate(float angleX,float angleY,XMMATRIX matRot);//追加回転処理
+	void AddRotateMatrixUpdate(float angleX, float angleY, XMMATRIX matRot);//追加回転処理
 
 	void MoveMatrixUpdate(XMMATRIX matRot, XMMATRIX matTrans);//キー入力による動作
 
@@ -46,6 +46,8 @@ public:
 	void SetCameraAxis(XMVECTOR z) { CammeraZAxis = z; }
 
 	void SetPos(XMFLOAT3 pos) { position = pos; }
+
+	void SetWall(bool a) { WallCollision = a; }
 
 	//Gettter
 	XMVECTOR GetMove() { return moveCamera; }
@@ -63,6 +65,8 @@ public:
 	float GetPos() { return position.x; }
 
 	void SetScene(int scene_) { scene = scene_; }
+
+	bool GetWall() { return WallCollision;}
 private:
 
 	//クラスのポインタ
@@ -98,6 +102,8 @@ private:
 
 	float JumpVel = 2;//Jumpの初速
 
+	bool WallCollision = false;
+
 	XMVECTOR fallV;//落ちるベクトル
 
 	XMVECTOR moveCamera;//動作ベクトル
@@ -111,5 +117,7 @@ private:
 	XMFLOAT3 Warp2;//ワープするための移動変数（Float）
 
 	XMVECTOR CammeraZAxis;
+
+	XMFLOAT3 OldPos;
 };
 
