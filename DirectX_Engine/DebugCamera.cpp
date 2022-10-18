@@ -157,8 +157,8 @@ void DebugCamera::MainSceneUpdate()
 	//テレポートしたら角度を球の逆にする
 	if (redTeleport == true)
 	{
-		angleX = angle_RedX;
-		angleY = angle_RedY - Ras;
+		//angleX = angle_RedX;
+		//angleY = angle_RedY - Ras;
 
 		//dirty = true;
 	}
@@ -166,8 +166,8 @@ void DebugCamera::MainSceneUpdate()
 	//テレポートしたら角度を球の逆にする
 	if (blueTeleport == true)
 	{
-		angleX = angle_BlueX;
-		angleY = angle_BlueY - Ras;
+		//angleX = angle_BlueX;
+		//angleY = angle_BlueY - Ras;
 
 		//dirty = true;
 	}

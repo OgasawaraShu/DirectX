@@ -67,7 +67,7 @@ void CollisionManager::CheckAllCollisions()
 			}
 			//‹…‚ÆŽlŠp(‹…‚ªŽlŠp‚©‚ç“–‚½‚Á‚½‚ç)
 			
-			if (colA->GetShapeType() == COLLISIONSHAPE_SPHERE &&
+			else if (colA->GetShapeType() == COLLISIONSHAPE_SPHERE &&
 				colB->GetShapeType() == COLLISIONSHAPE_WALL) {
 				Sphere* SphereA = dynamic_cast<Sphere*>(colA);
 				Wall* WallB = dynamic_cast<Wall*>(colB);

@@ -43,8 +43,9 @@ void ObjFbx::ObjUpdate(float angleX, float angleY)
 		position.y = Target.y;
 		position.z = Target.z;
 
-	////	rotation.x = 0;
-	//	rotation.z = 0;
+		rotation.x = 0;
+    	rotation.z = 0;
+		rotation.y -= angleY;
 
 	}
 	//s—ñŒãXV
@@ -62,7 +63,7 @@ void ObjFbx::RayCheck()
 
 	ray.dir = CammeraZAxis;
 
-	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ, &raycastHit)&&input->TriggerMouseMid()&&!cursorOn) {
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ, &raycastHit,1)&&input->TriggerMouseMid()&&!cursorOn) {
 		cursorOn = true;
 	}
 	else if(input->TriggerMouseMid() &&cursorOn==true)

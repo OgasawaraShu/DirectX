@@ -42,10 +42,17 @@ public://関数
 
 	bool GetWarpFlag() { return warpFlag; }
 
+	bool GetWarpFlag2() { return warpFlag2; }
+
+
+	void SetCameraT(XMFLOAT3 z) { Target = z; }
+
 
 private://変数
 
 	Input* input;//入力クラスのポインタ
+
+	int TriggerRe = 0;
 
 	float angleX;//角度X
 
@@ -65,6 +72,9 @@ private://変数
 
 	bool warpFlag = false;//両方の球が撃たれたらワープできるようにする
 
+	bool warpFlag2 = false;//両方の球が撃たれたらワープできるようにする
+
+
 	XMVECTOR move_;//自機の座標
 
 	XMVECTOR memory;//角度の保存
@@ -72,4 +82,10 @@ private://変数
 	XMVECTOR memory3;//角度の保存
 
 	XMFLOAT3 position_ = position;
+
+	XMFLOAT3 Target;
+
+	XMFLOAT3 Target_;
+
+	XMVECTOR Vector;
 };

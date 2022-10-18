@@ -43,14 +43,35 @@ void SceneSelect::Title()
 {
 	if (scene == 0)
 	{
-		if (input->TriggerMouseLeft())
+		if (mouseX >= 412 && mouseX <= 835 && mouseY >= 506 && mouseY <= 568)
 		{
-			scene = 1;
-			push = 1;
+			OverRed = 1;
+			if (input->TriggerMouseLeft())
+			{
+				scene = 1;
+				push = 1;
+			}
+			else
+			{
+				push = 0;
+			}
+		}
+		else if(mouseX >= 540 && mouseX <= 714 && mouseY >= 604 && mouseY <= 662)
+		{
+			OverRed = 2;
+			if (input->TriggerMouseLeft())
+			{
+				scene = 100;
+				push = 1;
+			}
+			else
+			{
+				push = 0;
+			}
 		}
 		else
 		{
-			push = 0;
+			OverRed = 0;
 		}
 	}
 }

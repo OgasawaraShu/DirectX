@@ -58,9 +58,12 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 
 		oldBlueX += angleX1;
 		oldBlueY += angleY1;
+
+		Target_ = Target;
 	}
 	else
 	{
+	
 		//押されたらフラグをtrueにし覚えるのをやめる
 		dirty = true;
 	}
@@ -108,33 +111,38 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 		TriggerFlag = 1;
 	}
 
-	if (input->TriggerMouseLeft()&&debug==1)
-	{
-		//position = position_;
-		////warpFlag = false;
-		//TriggerFlag = 1;
-		//debug = 0;
-	}
 
+	if (input->PushKey(DIK_R) && debug == 1)
+	{
+		position = position_;
+		warpFlag = false;
+		TriggerFlag = 0;
+		debug = 0;
+	}
 
 
 
 	if (TriggerFlag == 1 && debug == 0)
 	{
 		//平行移動(左が押されたら球がカメラの方向に合わせて前に出ていく)
-		matTrans = XMMatrixTranslation(position.x += move.m128_f32[0], position.y += move.m128_f32[1], position.z += move.m128_f32[2]);
+		//matTrans = XMMatrixTranslation(position.x += move.m128_f32[0], position.y += move.m128_f32[1], position.z += move.m128_f32[2]);
+		matTrans = XMMatrixTranslation(position.x += Vector.m128_f32[0], position.y += Vector.m128_f32[1], position.z += Vector.m128_f32[2]);
 	}
 	else if (TriggerFlag == 0 && debug == 0)
 	{
 		position = position_;
+		Vector.m128_f32[0] = Target.x - position.x;
+		Vector.m128_f32[1] = Target.y - position.y;
+		Vector.m128_f32[2] = Target.z - position.z;
+
+		Vector = XMVector3Normalize(Vector) * 2.0f;
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
-		//平行移動
-		//matTrans = XMMatrixTranslation(position.x += moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
 	}
 	else if(debug==1)
 	{
 		//平行移動
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+		TriggerFlag = 0;
 	}
 
 	memory.m128_f32[0] = position.x;
@@ -169,25 +177,19 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 	//角度のフラグ
 	bool dirty = false;
 
-	if (input->TriggerMouseRight() && debug2 == 1)
-	{
-		////position = position_;
-	//	warpFlag = false;
-	//	TriggerFlag2 = 1;
-	//	debug2 = 0;
-
-	}
-
+	
+	//マウスの左が押されない限りカメラの角度を覚え続ける
+	
 	//マウス角度出力Ver
 	if (TriggerFlag2 == 0)
 	{
-		//マウスの左が押されない限りカメラの角度を覚え続ける
 		angleX2 = angleX;
 		angleY2 = angleY;
 
 		oldRedX += angleX2;
 		oldRedY += angleY2;
 
+		Target_ = Target;
 	}
 	else
 	{
@@ -219,6 +221,10 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 		move2 = XMVector3Transform(move2, matRot);
 	}
 	
+	if (debug2 == 1)
+	{
+		warpFlag2 = true;
+	}
 	XMVECTOR moveCamera = move_;
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 
@@ -229,18 +235,29 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 		TriggerFlag2 = 1;
 	}
 
-	
+	if (input->PushKey(DIK_R) && debug2 == 1)
+	{
+		position = position_;
+		warpFlag2 = false;
+		TriggerFlag2 = 0;
+		debug2 = 0;
+	}
 
 
 
 	if (TriggerFlag2 == 1 && debug2 == 0)
 	{
-		//平行移動(左が押されたら球がカメラの方向に合わせて前に出ていく)
-		matTrans = XMMatrixTranslation(position.x += move2.m128_f32[0], position.y += move2.m128_f32[1], position.z += move2.m128_f32[2]);
+		matTrans = XMMatrixTranslation(position.x += Vector.m128_f32[0], position.y += Vector.m128_f32[1], position.z += Vector.m128_f32[2]);
 	}
 	else if (TriggerFlag2 == 0 && debug2 == 0)
 	{
 		position = position_;
+		Vector.m128_f32[0] = Target.x - position.x;
+		Vector.m128_f32[1] = Target.y - position.y;
+		Vector.m128_f32[2] = Target.z - position.z;
+		
+		Vector = XMVector3Normalize(Vector) * 2.0f;
+
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 		//平行移動
 		//matTrans = XMMatrixTranslation(position.x +=moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
@@ -249,6 +266,7 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 	{
 		//平行移動
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+		TriggerFlag2 = 0;
 	}
 
 	memory3.m128_f32[0] = position.x;

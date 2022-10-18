@@ -11,9 +11,12 @@ public:
 	void MouseGet();
 	void Title();
 
+	void SetHwnd(HWND hwnd_) { hwnd = hwnd_; }
+
 	int GetScene() { return scene; }
 	int GetPush() { return push; }
 	int GetTime() { return Time; }
+	int GetRed() { return OverRed; }
 
 private:
 

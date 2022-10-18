@@ -16,7 +16,7 @@ void PlayerFbx::OnCollision(const CollisionInfo& info)
 	//2進法で表現しているため4は赤球8は蒼球
 	if(info.collider->attribute==4&&warpFlag==true)
 	{
-		//blueCollision = true;
+		blueCollision = true;
 	}
 	else if (info.collider->attribute == 8 && warpFlag == true)
 	{
@@ -24,7 +24,7 @@ void PlayerFbx::OnCollision(const CollisionInfo& info)
 	}
 	
 	
-	if(info.collider->attribute == 32)
+	if(info.collider->attribute == 32&&WallCollision==false)
 	{
 		WallCollision = true;
 	}
@@ -272,8 +272,19 @@ void PlayerFbx::PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX ma
 
 void PlayerFbx::WarpUpdate()
 {
+	if (TimeWarpF == false)
+	{
+		WarpTime += 1;
+	}
+
+	if (WarpTime > 300)
+	{
+		WarpTime = 0;
+		TimeWarpF = true;
+	}
+
 	//赤に当たってかつどちらも飛ばしている場合
-	if (redCollision == true && warpFlag == true)
+	if (redCollision == true && warpFlag == true&&TimeWarpF==true && warpFlag2 == true)
 	{
 
 		Warp2.x = Warp.m128_f32[0];
@@ -286,6 +297,7 @@ void PlayerFbx::WarpUpdate()
 		redTeleport = true;
 
 		//onGround = false;
+		TimeWarpF = false;
 	}
 	else if (redCollision == false)
 	{
@@ -296,7 +308,7 @@ void PlayerFbx::WarpUpdate()
 	redCollision = false;
 
 	//青に当たってかつどちらも飛ばしている場合
-	if (blueCollision == true && warpFlag == true)
+	if (blueCollision == true && warpFlag == true && TimeWarpF == true&&warpFlag2==true)
 	{
 
 		Warp2.x = Warpblue.m128_f32[0];
@@ -304,6 +316,7 @@ void PlayerFbx::WarpUpdate()
 		Warp2.z = Warpblue.m128_f32[2];
 
 		blueTeleport = true;
+		TimeWarpF = false;
 	}
 	else if (blueCollision == false)
 	{
@@ -365,21 +378,30 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 			// ジャンプ操作
 			else if (onGround) {
 				onGround = false;
-				const float jumpVYFist = 0.16f;
+				const float jumpVYFist = 0.1f;
 				fallV = { 0, jumpVYFist, 0, 0 };
 			}
+	}
+
+
 	
-
-	}
-
-
-	if (WallCollision == true)
-	{
-
-	}
-
-
+	
+	//moveCamera = { dx += fallV.m128_f32[0], dy += fallV.m128_f32[1], dz += fallV.m128_f32[2], 0 };
 	moveCamera = { dx += fallV.m128_f32[0], dy += fallV.m128_f32[1], dz += fallV.m128_f32[2], 0 };
+
+	if (WallCollision==false)
+	{
+		moveOld = moveCamera;
+	}
+	else
+	{
+		if (moveOld.m128_f32[0] != 0 || moveOld.m128_f32[2] != 0)
+		{
+			moveCamera = -moveOld;
+		}
+		
+		WallCollision = false;
+	}
 
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 

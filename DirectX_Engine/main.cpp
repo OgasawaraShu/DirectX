@@ -213,7 +213,33 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    sprite->SetSize({ 127,141 });
    sprite->SettexSize({ 127,141 });
 
+   Sprite* sprite1 = Sprite::Create(spriteCommon, 1);
 
+   spriteCommon->SpriteCommonLoadTexture(1, L"Resources/UI/NormalOP.png");
+   sprite1->SetPosition({ 640,360,0 });
+   sprite1->SetSize({ 1280,720 });
+   sprite1->SettexSize({ 1280,720 });
+
+   Sprite* sprite2 = Sprite::Create(spriteCommon, 4);
+
+   spriteCommon->SpriteCommonLoadTexture(4, L"Resources/UI/StartOP.png");
+   sprite2->SetPosition({ 640,360,0 });
+   sprite2->SetSize({ 1280,720 });
+   sprite2->SettexSize({ 1280,720 });
+
+   Sprite* sprite3 = Sprite::Create(spriteCommon, 3);
+
+   spriteCommon->SpriteCommonLoadTexture(3, L"Resources/UI/ExitOP.png");
+   sprite3->SetPosition({ 640,360,0 });
+   sprite3->SetSize({ 1280,720 });
+   sprite3->SettexSize({ 1280,720 });
+
+   Sprite* sprite4 = Sprite::Create(spriteCommon, 5);
+
+   spriteCommon->SpriteCommonLoadTexture(5, L"Resources/UI/debug_rule.png");
+   sprite4->SetPosition({ 150,150,0 });
+   sprite4->SetSize({ 300,300 });
+   sprite4->SettexSize({ 300,300 });
 
     //デバックテキスト
     DebugText* debugtext=nullptr;
@@ -327,6 +353,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
    Model* model11 = nullptr;
    Fbx3d* fbx3d20 = nullptr;
+
+   //Model* model11 = nullptr;
+   Fbx3d* fbx3d22 = nullptr;
+
+
 
    Model* model12 = nullptr;
    ObjFbx* fbx3d21 = nullptr;
@@ -463,10 +494,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d21->Initialize();
   fbx3d21->SetModel(model12);
 
-  wall1->SetPosition({ -40, 0, 0 });
-  wall2->SetPosition({ +40, 0, 0 });
-  wall3->SetPosition({  0, 0,-40 });
-  wall4->SetPosition({  0, 0,0 });
+
+  fbx3d22 = new Fbx3d(input);
+  fbx3d22->Initialize();
+  fbx3d22->SetModel(model8);
+
+
+  wall1->SetPosition({ -80, 0, 0 });
+  wall2->SetPosition({ +80, 0, 0 });
+  wall3->SetPosition({  0, 0,-80 });
+  wall4->SetPosition({  0, 0,+80 });
 
   fbx3d1->SetPosition({ 0, -10, 0 });
   fbx3d1->SetRotate({ 0,0,0 });
@@ -485,6 +522,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d5->SetPosition({105, 80, 0 });
   fbx3d5->SetRotate({ 90,270,0 });
 
+  fbx3d22->SetPosition({ -105, 80, 0 });
+  fbx3d22->SetRotate({ 90,90,0 });
+
+
 
   fbx3d6->SetPosition({ 0, -10, 0 });
   fbx3d6->SetRotate({ 0,0,0 });
@@ -496,45 +537,45 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d8->SetPosition({ 0, 0, 106 });
   fbx3d8->SetRotate({ 270,0,0 });
 
-  fbx3d10->SetPosition({ 0, 0, 0 });
+  fbx3d10->SetPosition({ 0, -10, 0 });
   fbx3d10->SetScale({ 0.1,0.1,0.1 });
-  fbx3d10->SetRotate({ 90,0,0 });
+  fbx3d10->SetRotate({ 0,0,0 });
 
-  fbx3d11->SetPosition({ 20, 0, 0 });
+  fbx3d11->SetPosition({ 20, -10, 0 });
   fbx3d11->SetScale({ 0.1,0.1,0.1 });
-  fbx3d11->SetRotate({ 90,0,0 });
+  fbx3d11->SetRotate({ 0,0,0 });
 
-  fbx3d12->SetPosition({ 40, 0, 0 });
+  fbx3d12->SetPosition({ 40, -10, 0 });
   fbx3d12->SetScale({ 0.1,0.1,0.1 });
-  fbx3d12->SetRotate({ 90,0,0 });
+  fbx3d12->SetRotate({ 0,0,0 });
 
-  fbx3d13->SetPosition({ 60, 0, 0 });
+  fbx3d13->SetPosition({ 60, -10, 0 });
   fbx3d13->SetScale({ 0.1,0.1,0.1 });
-  fbx3d13->SetRotate({ 90,0,0 });
+  fbx3d13->SetRotate({ 0,0,0 });
 
-  fbx3d14->SetPosition({ 80, 0, 0 });
+  fbx3d14->SetPosition({ 80, -10, 0 });
   fbx3d14->SetScale({ 0.1,0.1,0.1 });
-  fbx3d14->SetRotate({ 90,0,0 });
+  fbx3d14->SetRotate({ 0,0,0 });
 
-  fbx3d15->SetPosition({ -20, 0, 0 });
+  fbx3d15->SetPosition({ -20, -10, 0 });
   fbx3d15->SetScale({ 0.1,0.1,0.1 });
-  fbx3d15->SetRotate({ 90,0,0 });
+  fbx3d15->SetRotate({ 0,0,0 });
 
-  fbx3d16->SetPosition({ -40, 0, 0 });
+  fbx3d16->SetPosition({ -40, -10, 0 });
   fbx3d16->SetScale({ 0.1,0.1,0.1 });
-  fbx3d16->SetRotate({ 90,0,0 });
+  fbx3d16->SetRotate({ 0,0,0 });
 
-  fbx3d17->SetPosition({ -60, 0, 0 });
+  fbx3d17->SetPosition({ -60, -10, 0 });
   fbx3d17->SetScale({ 0.1,0.1,0.1 });
-  fbx3d17->SetRotate({ 90,0,0 });
+  fbx3d17->SetRotate({ 0,0,0 });
 
-  fbx3d18->SetPosition({ -80, 0, 0 });
+  fbx3d18->SetPosition({ -80, -10, 0 });
   fbx3d18->SetScale({ 0.1,0.1,0.1 });
-  fbx3d18->SetRotate({ 90,0,0 });
+  fbx3d18->SetRotate({ 0,0,0 });
 
-  fbx3d19->SetPosition({ 0, 0, 0 });
+  fbx3d19->SetPosition({ 0, -10, 0 });
   fbx3d19->SetScale({ 0.1,0.1,0.1 });
-  fbx3d19->SetRotate({ 90,0,0 });
+  fbx3d19->SetRotate({ 0,0,0 });
 
   fbx3d20->SetPosition({ 60, -6, -30 });
   fbx3d20->SetScale({ 0.014,0.014,0.014 });
@@ -561,21 +602,22 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d10->SetColider(new WallCollider(XMVECTOR{ 20,10,0.1,0 }));
 
   
-  //wall1->SetColider(new BoxCollider(XMVECTOR{ 20,80,80,0 }));
-  //wall2->SetColider(new BoxCollider(XMVECTOR{ 20,80,80,0 }));
-  //wall3->SetColider(new BoxCollider(XMVECTOR{ 80,80,20,0 }));
-  //wall4->SetColider(new BoxCollider(XMVECTOR{ 80,80,20,0 }));
+  wall1->SetColider(new WallCollider(XMVECTOR{ 0.1,80,80,0 }));
+  wall2->SetColider(new WallCollider(XMVECTOR{ 0.1,80,80,0 }));
+  wall3->SetColider(new WallCollider(XMVECTOR{ 80,80,0.1,0 }));
+  wall4->SetColider(new WallCollider(XMVECTOR{ 80,80,0.1,0 }));
 
-  fbx3d11->SetColider(new WallCollider(XMVECTOR{ 20,10,0.1,0 }));
-  fbx3d12->SetColider(new WallCollider(XMVECTOR{ 20,10,0.1,0 }));
-  fbx3d13->SetColider(new WallCollider(XMVECTOR{ 20,10,0.1,0 }));
-  fbx3d14->SetColider(new WallCollider(XMVECTOR{ 20,10,0.1,0 }));
-  fbx3d15->SetColider(new WallCollider(XMVECTOR{ 20,10,0.1,0 }));
-  fbx3d16->SetColider(new WallCollider(XMVECTOR{ 20,10,0.1,0 }));
-  fbx3d17->SetColider(new WallCollider(XMVECTOR{ 20,10,0.1,0 }));
-  fbx3d18->SetColider(new WallCollider(XMVECTOR{ 20,10,0.1,0 }));
-  fbx3d19->SetColider(new WallCollider(XMVECTOR{ 20,10,0.1,0 }));
+  fbx3d11->SetColider(new WallCollider(XMVECTOR{ 20,15,1,0 }));
+  fbx3d12->SetColider(new WallCollider(XMVECTOR{ 20,15,1,0 }));
+  fbx3d13->SetColider(new WallCollider(XMVECTOR{ 20,15,1,0 }));
+  fbx3d14->SetColider(new WallCollider(XMVECTOR{ 20,15,1,0 }));
+  fbx3d15->SetColider(new WallCollider(XMVECTOR{ 20,15,1,0 }));
+  fbx3d16->SetColider(new WallCollider(XMVECTOR{ 20,15,1,0 }));
+  fbx3d17->SetColider(new WallCollider(XMVECTOR{ 20,15,1,0 }));
+  fbx3d18->SetColider(new WallCollider(XMVECTOR{ 20,15,1,0 }));
+  fbx3d19->SetColider(new WallCollider(XMVECTOR{ 20,15,1,0 }));
 
+  fbx3d20->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
   fbx3d21->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
 
   //当たり判定の属性
@@ -597,8 +639,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d17->SetVerWall();
   fbx3d18->SetVerWall();
   fbx3d19->SetVerWall();
-  fbx3d21->SetVerWall();
+  fbx3d20->SetVerWall();
+//  fbx3d21->SetVerWall();
+
+  wall1->SetVerWall();
+  wall2->SetVerWall();
+  wall3->SetVerWall();
+  wall4->SetVerWall();
   //fbx3d2->PlayAnimation2();
+
+  scene->SetHwnd(winApp->GetHwnd());
+
     while (true)  // ゲームループ
     {
         //座標Set関連   
@@ -620,6 +671,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d9->SetWorld(camera->GetRot());
         fbx3d9->SetMemo2(fbx3d3->GetMemo2());
         fbx3d9->SetWarpFlag(fbx3d3->GetWarpFlag());
+        fbx3d9->SetWarpFlag2(fbx3d4->GetWarpFlag2());
         fbx3d9->SetCameraAxis(camera->GetCameraZAxis());
         fbx3d9->SetPos(camera->GetPos());
         fbx3d3->SetMove(fbx3d9->GetMove());
@@ -653,36 +705,38 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //ゲーム内の動作  
 
         //更新
+       
+        if (scene->GetScene() == 0)
+        {
+
+            scene->MouseGet();
+            scene->Title();
+
+
+        }
+
         input->Update();
+        camera->Update();
+       // fbx3d9->SetWall(camera->GetWall());
 
 
 
         if (scene->GetScene() == 1)
         {
-
+            fbx3d3->SetCameraT(camera->GetTargetPos());
+            fbx3d4->SetCameraT(camera->GetTargetPos());
             fbx3d3->BlueBulletUpdate(camera->GetAngleX(), camera->GetAngleY());
             fbx3d4->RedBulletUpdate(camera->GetAngleX(), camera->GetAngleY());
             fbx3d9->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
-
             fbx3d10->Update();
             fbx3d21->ObjUpdate(camera->GetAngleX(), camera->GetAngleY());
 
         }
-       // camera->SetWall(fbx3d9->GetWall());
+       
+        
 
 
-
-
-        camera->Update();
-        fbx3d9->SetWall(camera->GetWall());
-
-        if (scene->GetScene() == 0)
-        {
-            scene->Title();
-
-           
-        }
-
+      
 
       
         fbx3d1->Update();
@@ -701,7 +755,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d18->Update();
         fbx3d19->Update();
         fbx3d20->Update();
-      
+        fbx3d22->Update();
+
         wall1->Update();
         wall2->Update();
         wall3->Update();
@@ -714,10 +769,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         camera->SetAngleBlueY(fbx3d3->GetAngleY1());
         camera->SetBlueTeleport(fbx3d9->GetblueTeleport());
         camera->SetEyePos(fbx3d9->GetMyPosition());
+        camera->SetWall(fbx3d9->GetWall());
+
 
 
         //FBX描画
-        fbx3d1->Draw2(dxCommon->GetCmdList());
+       // fbx3d1->Draw2(dxCommon->GetCmdList());
         fbx3d2->Draw2(dxCommon->GetCmdList());
         fbx3d3->Draw2(dxCommon->GetCmdList());
         fbx3d4->Draw2(dxCommon->GetCmdList());
@@ -734,7 +791,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         spriteCommon->PreDraw();
        
         //FBX描画
-        fbx3d1->Draw2(dxCommon->GetCmdList());
+       // fbx3d1->Draw2(dxCommon->GetCmdList());
         fbx3d2->Draw2(dxCommon->GetCmdList());
         fbx3d3->Draw2(dxCommon->GetCmdList());
         fbx3d4->Draw2(dxCommon->GetCmdList());
@@ -754,9 +811,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d19->Draw2(dxCommon->GetCmdList());
         fbx3d20->Draw2(dxCommon->GetCmdList());
         fbx3d21->Draw2(dxCommon->GetCmdList());
+        fbx3d22->Draw2(dxCommon->GetCmdList());
 
 
-     
+       
        
         //ポストエフェクトここまで
         sprite100->PostDrawScene(dxCommon->GetCmdList());
@@ -782,28 +840,51 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         ////スプライト共通コマンド
         spriteCommon->PreDraw();
-        debugtext->Print(moji, 100, 100);
-        debugtext->DrawAll();//的カウント
-
-        debugtext2->Print(moji2, 100, 200);
-        debugtext2->DrawAll();//的カウント
+   //     debugtext->Print(moji, 100, 100);
+   //     debugtext->DrawAll();//的カウント
+//
+  //      debugtext2->Print(moji2, 100, 200);
+    //    debugtext2->DrawAll();//的カウント
 
 
         //スプライト表示
+        if (scene->GetScene() == 0)
+        {
+            if (scene->GetRed() == 0)
+            {
+                sprite1->SpriteTransVertexBuffer();
+                sprite1->Update();
+                sprite1->SpriteDraw();
+            }
+            else  if (scene->GetRed() == 1)
+            {
+                sprite2->SpriteTransVertexBuffer();
+                sprite2->Update();
+                sprite2->SpriteDraw();
+            }
+            else  if (scene->GetRed() == 2)
+            {
+                sprite3->SpriteTransVertexBuffer();
+                sprite3->Update();
+                sprite3->SpriteDraw();
+            }
+        }
+        else  if (scene->GetScene() == 1)
+        {
+            //自キャラ
+            sprite->SpriteTransVertexBuffer();
+            sprite->Update();
+            sprite->SpriteDraw();
 
-        //アイテム
-       // if(item->LEG_[0].Flag ==0) sprite4->SpriteDraw();
-
-
-        //敵
-       // if (enemy1.Enemy1[0].Flag == 1)sprite3->SpriteDraw();
-
-        //自キャラ
-        sprite->SpriteTransVertexBuffer();
-        sprite->Update();
-        sprite->SpriteDraw();
-       
-        
+            //debug
+            sprite4->SpriteTransVertexBuffer();
+            sprite4->Update();
+            sprite4->SpriteDraw();
+        }
+        else if (scene->GetScene() == 100)
+        {
+            break;
+        }
         // ４．描画コマンドここまで
      collisionManager->CheckAllCollisions();
         // DirectX毎フレーム処理　ここまで

@@ -43,6 +43,9 @@ public:
 
 	void SetWarpFlag(bool flag) { warpFlag = flag; }
 
+	void SetWarpFlag2(bool flag) { warpFlag2 = flag; }
+
+
 	void SetCameraAxis(XMVECTOR z) { CammeraZAxis = z; }
 
 	void SetPos(XMFLOAT3 pos) { position = pos; }
@@ -76,7 +79,9 @@ private:
 
 
 	//変数
+	int WarpTime = 0;
 
+	bool TimeWarpF = true;
 
 	float angleX_;//角度X
 
@@ -98,6 +103,9 @@ private:
 
 	bool warpFlag = false;//trueになったらwarp出来るようにする
 
+	bool warpFlag2 = false;//trueになったらwarp出来るようにする
+
+
 	float acceleration_g = 9.81 / 60;//加速度
 
 	float JumpVel = 2;//Jumpの初速
@@ -107,6 +115,8 @@ private:
 	XMVECTOR fallV;//落ちるベクトル
 
 	XMVECTOR moveCamera;//動作ベクトル
+
+	XMVECTOR moveOld;
 
 	XMVECTOR memory;//記憶用変数
 

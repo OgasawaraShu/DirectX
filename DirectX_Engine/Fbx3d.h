@@ -100,6 +100,7 @@ public:
 
 
 	const XMMATRIX& GetMatWorld() { return matWorld; }//ワールド行列の取得
+	const XMFLOAT3& GetPosition() { return position; }//ワールド行列の取得
 	void SetColider(BaseCollider* collider);//こらいだーのセット
 	virtual void OnCollision(const CollisionInfo& info);//コールバック関数
 
