@@ -201,8 +201,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Sprite* sprite100 = Sprite::PostCreate(spriteCommon, 100);
    spriteCommon->SpriteCommonLoadTexture(100, L"Resources/Red.png");
 
-   Sprite* sprite101 = Sprite::PostCreate(spriteCommon, 101);
-   spriteCommon->SpriteCommonLoadTexture(101, L"Resources/Red.png");
+   //Sprite* sprite101 = Sprite::PostCreate(spriteCommon, 101);
+   //spriteCommon->SpriteCommonLoadTexture(101, L"Resources/Red.png");
 
 
     //スプライト
@@ -271,7 +271,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //オーディオ初期化
     audio = new Audio();
     audio->Initialize();
-
+  //  audio->SoundLoadWave("Resources/SOUND/Wark_sund.wav");//押す音
  //   audio->SoundLoadWave("Resources/Shot.wav");//正解の音
   //  audio->SoundLoadWave("Resources/Push.wav");
 
@@ -592,7 +592,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
   float radius = 5.0f;
 
-  fbx3d1->SetColider(new BoxCollider(XMVECTOR{80,80,80,0}));
+  fbx3d1->SetColider(new BoxCollider(XMVECTOR{75,75,75,0}));
  // fbx3d2->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
 
   fbx3d3->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
@@ -686,7 +686,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
       
      // sprite2->SpriteTransVertexBuffer();
      
-      sprintf_s(moji, "X=%f", camera->GetUpx());
+      sprintf_s(moji, "%d", fbx3d9->aGet());
       sprintf_s(moji2, "Y=%f", camera->GetUpy());
      // sprintf_s(moji2, "camera=%f", camera->GetPositionY());
       //sprintf_s(moji2,"%d",camera->GetAngleY());
@@ -787,8 +787,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         //レンダ―テクスチャの描画
         sprite100->PreDrawScene(dxCommon->GetCmdList());
+   //     sprite101->PreDrawScene(dxCommon->GetCmdList());
         ////スプライト共通コマンド
-        spriteCommon->PreDraw();
+       // spriteCommon->PreDraw();
        
         //FBX描画
        // fbx3d1->Draw2(dxCommon->GetCmdList());
@@ -818,6 +819,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
        
         //ポストエフェクトここまで
         sprite100->PostDrawScene(dxCommon->GetCmdList());
+   //     sprite101->PostDrawScene(dxCommon->GetCmdList());
 
         //バックバッファの番号を取得（2つなので0番か1番）
         dxCommon->PreDraw();
@@ -825,10 +827,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         spriteCommon->PreDraw_Post();
         sprite100->Update();
-        sprite100->PostDraw();
+    //    sprite101->Update();
 
-        
-        
+        sprite100->PostDraw();
+      //  sprite101->PostDraw();
+
+
+        if (fbx3d9->GetWark() == true)
+        {
+            //audio->SoundPlayWave("Resources/SOUND/Wark_sund.wav");//押す音
+        }
         //3D描画前処理
       //  Object3d::PreDraw(dxCommon->GetCmdList());
           //3D描画
@@ -840,8 +848,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
         ////スプライト共通コマンド
         spriteCommon->PreDraw();
-   //     debugtext->Print(moji, 100, 100);
-   //     debugtext->DrawAll();//的カウント
+       // debugtext->Print(moji, 400, 100);
+       // debugtext->DrawAll();//的カウント
 //
   //      debugtext2->Print(moji2, 100, 200);
     //    debugtext2->DrawAll();//的カウント
@@ -877,9 +885,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             sprite->SpriteDraw();
 
             //debug
-            sprite4->SpriteTransVertexBuffer();
-            sprite4->Update();
-            sprite4->SpriteDraw();
+           // sprite4->SpriteTransVertexBuffer();
+           // sprite4->Update();
+           // sprite4->SpriteDraw();
         }
         else if (scene->GetScene() == 100)
         {

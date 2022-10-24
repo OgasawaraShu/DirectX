@@ -345,29 +345,35 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 	float dz = 0;
 	float dy = 0;
 
+//	wark = false;
 	// WASDÇ™âüÇ≥ÇÍÇƒÇ¢ÇΩÇÁï¿çsà⁄ìÆÇ≥ÇπÇÈ
 	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
 		//if (onGround == true)
 		//{
+
 			if (input->PushKey(DIK_A))
 			{
 				dx -= 0.3f;
+				wark = true;
 			}
 
 			if (input->PushKey(DIK_D))
 			{
 				dx += 0.3f;
+				wark = true;
 			}
 
 			if (input->PushKey(DIK_W))
 			{
 				dz += 0.3f;
+				wark = true;
 			}
 
 			if (input->PushKey(DIK_S))
 			{
 				dz -= 0.3f;
+				wark = true;
 			}
 		//}
 				// óéâ∫èàóù
@@ -377,27 +383,27 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 			}
 			// ÉWÉÉÉìÉvëÄçÏ
 			else if (onGround) {
-				onGround = false;
-				const float jumpVYFist = 0.1f;
-				fallV = { 0, jumpVYFist, 0, 0 };
+				//onGround = false;
+				//const float jumpVYFist = 0.1f;
+				//fallV = { 0, jumpVYFist, 0, 0 };
 			}
 	}
-
-
-	
-	
 	//moveCamera = { dx += fallV.m128_f32[0], dy += fallV.m128_f32[1], dz += fallV.m128_f32[2], 0 };
 	moveCamera = { dx += fallV.m128_f32[0], dy += fallV.m128_f32[1], dz += fallV.m128_f32[2], 0 };
 
 	if (WallCollision==false)
 	{
 		moveOld = moveCamera;
+		a = 0;
 	}
 	else
 	{
+		a = 1;
 		if (moveOld.m128_f32[0] != 0 || moveOld.m128_f32[2] != 0)
 		{
-			moveCamera = -moveOld;
+			a = 2;
+			moveCamera.m128_f32[0] = -moveOld.m128_f32[0];
+			moveCamera.m128_f32[2] = -moveOld.m128_f32[2];
 		}
 		
 		WallCollision = false;
@@ -409,6 +415,11 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 
 //	matTrans = XMMatrixTranslation(position.x += moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
 
+
+}
+
+void PlayerFbx::CollisionAfter(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTrans)
+{
 
 }
 

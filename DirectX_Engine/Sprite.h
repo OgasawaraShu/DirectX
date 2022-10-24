@@ -109,8 +109,15 @@ public:
     static Sprite* PostCreate(SpriteCommon* spriteCommon, UINT texnumber,
         DirectX::XMFLOAT2 anchorpoint = { 0.5f,0.5f }, bool isFlagX = false, bool isFlagY = false);
 
+    static Sprite* PostCreate2(SpriteCommon* spriteCommon, UINT texnumber,
+        DirectX::XMFLOAT2 anchorpoint = { 0.5f,0.5f }, bool isFlagX = false, bool isFlagY = false);
+
+
 
     void PostInitialize(SpriteCommon* spriteCommon, UINT texnumber,
+        DirectX::XMFLOAT2 anchorpoint, bool isFlagX, bool isFlagY);
+
+    void PostInitialize2(SpriteCommon* spriteCommon, UINT texnumber,
         DirectX::XMFLOAT2 anchorpoint, bool isFlagX, bool isFlagY);
 
     Microsoft::WRL::ComPtr<ID3D12Resource> texBuff[2];

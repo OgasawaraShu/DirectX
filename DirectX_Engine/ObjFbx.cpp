@@ -23,7 +23,9 @@ ObjFbx::ObjFbx(Input* input, Physics* physics)
 void ObjFbx::ObjUpdate(float angleX, float angleY)
 {
 	//FBX独自の更新
-	
+	oldangleY += angleY;
+	oldangleX += angleX;
+
 	XMMATRIX matScale, matRot, matTrans{};
 
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -32,6 +34,14 @@ void ObjFbx::ObjUpdate(float angleX, float angleY)
 	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
 	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
 	
+
+
+	Vector.m128_f32[0] = Target.x- MyPosition.x;
+	Vector.m128_f32[1] = Target.y- MyPosition.y;
+	Vector.m128_f32[2] = Target.z+2 - MyPosition.z+2;
+
+	Vector = XMVector3Normalize(Vector) * 2.0f;
+
 	RayCheck();
 
 	if (cursorOn == true)
@@ -39,14 +49,13 @@ void ObjFbx::ObjUpdate(float angleX, float angleY)
 		//追加の回転行列処理
 		AddRotateMatrixUpdate(angleX, angleY, matRot);
 
-		position.x = Target.x;
-		position.y = Target.y;
-		position.z = Target.z;
 
-		rotation.x = 0;
-    	rotation.z = 0;
-		rotation.y -= angleY;
+		position.x = (MyPosition.x + Vector.m128_f32[0] * 3) + 1;
+		position.y = (MyPosition.y + Vector.m128_f32[1] * 3) -1 ;
+		position.z = (MyPosition.z + Vector.m128_f32[2] * 3);
 
+		rotation.y = -oldangleY * 57.4;
+		rotation.x = -oldangleX * 40;
 	}
 	//行列後更新
 	PostMatrixUpdate(matScale, matRot, matTrans);
@@ -65,6 +74,10 @@ void ObjFbx::RayCheck()
 
 	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ, &raycastHit,1)&&input->TriggerMouseMid()&&!cursorOn) {
 		cursorOn = true;
+
+		rotation.x = 0;
+		rotation.z = 0;
+		rotation.y = 180;
 	}
 	else if(input->TriggerMouseMid() &&cursorOn==true)
 	{

@@ -63,7 +63,7 @@ void DebugCamera::Update()
 
 	
 	up.x = 0;
-	up.y = 1;
+//	up.y = 1;
 
 	Camera::Update();
 }

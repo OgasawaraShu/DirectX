@@ -19,6 +19,7 @@ public:
     void SetMyPosition(XMFLOAT3 pos) { MyPosition = pos; }
     void SetTarget(XMFLOAT3 pos) { Target = pos; }
     void SetScene(int scene_) { scene = scene_; }
+   // void SetCameraT(XMFLOAT3 z) { Target = z; }
 
 private:
     //クラスのポインタ
@@ -30,7 +31,10 @@ private:
     int scene;
     XMVECTOR CammeraZAxis;
     XMFLOAT3 Target;
-
     XMFLOAT3 MyPosition;
+    XMVECTOR Vector;
+
+    float oldangleY;
+    float oldangleX;
 };
 

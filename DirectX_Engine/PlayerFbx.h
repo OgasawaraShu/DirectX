@@ -36,6 +36,8 @@ public:
 
 	void MoveMatrixUpdate(XMMATRIX matRot, XMMATRIX matTrans);//キー入力による動作
 
+	void CollisionAfter(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTrans);
+
 	//Settter
 	void SetMemo(XMVECTOR Memo) { Warp = Memo; }
 
@@ -70,6 +72,10 @@ public:
 	void SetScene(int scene_) { scene = scene_; }
 
 	bool GetWall() { return WallCollision;}
+
+	bool GetWark() { return wark; }
+
+	int aGet() { return a; }
 private:
 
 	//クラスのポインタ
@@ -112,6 +118,10 @@ private:
 
 	bool WallCollision = false;
 
+	bool wark = false;
+
+	int a = 0;
+
 	XMVECTOR fallV;//落ちるベクトル
 
 	XMVECTOR moveCamera;//動作ベクトル
@@ -129,5 +139,7 @@ private:
 	XMVECTOR CammeraZAxis;
 
 	XMFLOAT3 OldPos;
+
+
 };
 

@@ -11,7 +11,7 @@ using namespace DirectX;
 
 void BulletFbx::OnCollision(const CollisionInfo& info)
 {
-	if (info.collider->attribute != 2&& info.collider->attribute != 4&& info.collider->attribute != 8)
+	if (info.collider->attribute != 2&& info.collider->attribute != 4&& info.collider->attribute != 8&& info.collider->attribute != 16)
 	{
 		if (debug == 0 && TriggerFlag == 1)
 		{

@@ -130,6 +130,8 @@ void Audio::SoundPlayWave(std::string filename)
 
     result = pSourceVoice->SubmitSourceBuffer(&buf);
     result = pSourceVoice->Start();
+
+   // result = pSourceVoice->Stop();
 }
 
 void Audio::SoundPlayWaveLoop(std::string filename)
