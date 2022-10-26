@@ -349,8 +349,8 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 	// WASD‚ª‰Ÿ‚³‚ê‚Ä‚¢‚½‚ç•ÀsˆÚ“®‚³‚¹‚é
 	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
-		//if (onGround == true)
-		//{
+		if (onGround == true)
+		{
 
 			if (input->PushKey(DIK_A))
 			{
@@ -375,7 +375,7 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 				dz -= 0.3f;
 				wark = true;
 			}
-		//}
+		}
 				// —‰ºˆ—
 			// —‰ºˆ—
 			if (!onGround) {

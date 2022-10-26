@@ -49,13 +49,31 @@ void ObjFbx::ObjUpdate(float angleX, float angleY)
 		//追加の回転行列処理
 		AddRotateMatrixUpdate(angleX, angleY, matRot);
 
+		move = { (4,0,0,0) };
 
-		position.x = (MyPosition.x + Vector.m128_f32[0] * 3) + 1;
-		position.y = (MyPosition.y + Vector.m128_f32[1] * 3) -1 ;
+		position.x = (MyPosition.x + Vector.m128_f32[0] * 3)+move.m128_f32[1];
+		position.y = (MyPosition.y + Vector.m128_f32[1] * 3);
 		position.z = (MyPosition.z + Vector.m128_f32[2] * 3);
 
-		rotation.y = -oldangleY * 57.4;
-		rotation.x = -oldangleX * 40;
+
+		
+		rotation.y = atan2(Vector.m128_f32[0], Vector.m128_f32[2])*60;
+
+		if (Target.z < MyPosition.z)
+		{
+			Vector.m128_f32[2] = MyPosition.z + 2 - Target.z + 2;
+		}
+
+		rotation.x = -atan2(Vector.m128_f32[1], Vector.m128_f32[2])*60;
+
+		if (rotation.x > 90)
+		{
+			rotation.x = rotation.x - 180;
+		}
+		else if (rotation.x < -90)
+		{
+			rotation.x = rotation.x + 180;
+		}
 	}
 	//行列後更新
 	PostMatrixUpdate(matScale, matRot, matTrans);
@@ -154,12 +172,17 @@ void ObjFbx::PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTr
 
 void ObjFbx::AddRotateMatrixUpdate(float angleX, float angleY, XMMATRIX matRot)
 {
+	angleX1 = angleX;
+	angleY1 = angleY;
+
 	// 追加回転分の回転行列を生成
 	XMMATRIX matRotNew = XMMatrixIdentity();
-	matRotNew *= XMMatrixRotationX(-angleX);
-	matRotNew *= XMMatrixRotationY(-angleY);
+	matRotNew *= XMMatrixRotationX(-angleX1);
+	matRotNew *= XMMatrixRotationY(-angleY1);
 	// 累積の回転行列を合成
 	// ※回転行列を累積していくと、誤差でスケーリングがかかる危険がある為
 	// クォータニオンを使用する方が望ましい
 	matRot = matRotNew * matRot;
+
+    move = XMVector3Transform(move, matRot);
 }

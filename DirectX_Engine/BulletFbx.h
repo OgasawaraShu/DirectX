@@ -74,7 +74,9 @@ private://変数
 
 	bool warpFlag2 = false;//両方の球が撃たれたらワープできるようにする
 
+	float oldx2;
 
+	float oldy2;
 	XMVECTOR move_;//自機の座標
 
 	XMVECTOR memory;//角度の保存

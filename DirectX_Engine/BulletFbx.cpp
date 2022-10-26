@@ -197,6 +197,9 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 		dirty = true;
 	}
 
+	oldx2 += angleX;
+	oldy2 += angleY;
+
 	XMMATRIX matScale, matRot, matTrans;
 
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -241,6 +244,10 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 		warpFlag2 = false;
 		TriggerFlag2 = 0;
 		debug2 = 0;
+
+		oldRedX = oldx2;
+		oldRedY = oldy2;
+
 	}
 
 

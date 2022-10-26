@@ -64,6 +64,7 @@ void DebugCamera::Update()
 	
 	up.x = 0;
 //	up.y = 1;
+//	up.z = ;
 
 	Camera::Update();
 }
@@ -94,15 +95,37 @@ void DebugCamera::MainSceneUpdate()
 	oldy += angleY;
 
 	//カメラのX軸ベクトルが後ろに行きそうなら押し戻す
-	if (oldx > 1.00)
+	if (oldx > 1.40)
 	{
 		angleX -= 0.02;
 		oldx -= 0.02;
+
+		if (angleX != 0 && oldy > 0.02)
+		{
+			oldy -= 0.02;
+			angleY -= 0.02;
+		}
+		else if (angleX != 0 && oldy < -0.02)
+		{
+			oldy += 0.02;
+			angleY += 0.02;
+		}
 	}
-	else if (oldx < -1.00)
+	else if (oldx < -1.40)
 	{
 		angleX += 0.02;
 		oldx += 0.02;
+
+		if (angleX != 0&&oldy>0.02)
+		{
+			oldy -= 0.02;
+			angleY -= 0.02;
+		}
+		else if (angleX != 0 && oldy <-0.02)
+		{
+			oldy += 0.02;
+			angleY += 0.02;
+		}
 	}
 
 
@@ -158,7 +181,7 @@ void DebugCamera::MainSceneUpdate()
 	if (redTeleport == true)
 	{
 		//angleX = angle_RedX;
-		//angleY = angle_RedY - Ras;
+		angleY = angle_RedY - Ras;
 
 		//dirty = true;
 	}
@@ -167,7 +190,7 @@ void DebugCamera::MainSceneUpdate()
 	if (blueTeleport == true)
 	{
 		//angleX = angle_BlueX;
-		//angleY = angle_BlueY - Ras;
+		angleY = angle_BlueY - Ras;
 
 		//dirty = true;
 	}
