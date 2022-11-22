@@ -27,6 +27,9 @@ public:
 	//void LoadModelFromFile(const string& modelName);
 	Model* LoadModelFromFile(const string& modelName);
 
+	Model* RenLoadModelFromFile(const string& modelName);
+
+
 	void ParseNodeRecursive(Model* model, FbxNode* fbxNode,Node*parent=nullptr);
 
 	void ParseMesh(Model* model, FbxNode* fbxNode);

@@ -192,11 +192,18 @@ public:
 	/// デスクリプタヒープの初期化
 	/// </summary>
 	/// <returns></returns>
+    void RenderInitialize(ID3D12Device* device);
+
 	bool InitializeDescriptorHeap();
 
 	void Draw3(ID3D12GraphicsCommandList* cmdList);
 
+	void RenderDraw(ID3D12GraphicsCommandList* cmdList);
+
 	void CreateBuffers2(ID3D12Device* device);
+
+	void RenCreateBuffers2(ID3D12Device* device);
+
 
 	void Draw2(ID3D12GraphicsCommandList* cmdList);
 
@@ -227,7 +234,14 @@ public:
 	/// <returns>インデックス配列</returns>
 	inline const std::vector<unsigned short>& GetIndices() { return indices; }
 
-private://メンバ変数
+	void RenPreDrawScene(ID3D12GraphicsCommandList* cmdList);
+
+	void RenPostDrawScene(ID3D12GraphicsCommandList* cmdList);
+
+	static const float clearColor[4];
+
+private
+://メンバ変数
 	
 	
 	//ID3D12Device* device;
@@ -251,7 +265,21 @@ private://メンバ変数
 	// インデックスバッファ
 	ComPtr<ID3D12Resource> indexBuff;
 
+
+	//rendertexture
 	ComPtr<ID3D12DescriptorHeap> descHeapSRV;
+
+	ComPtr<ID3D12Resource> RentexBuff;
+
+	ComPtr<ID3D12DescriptorHeap> RendescHeapSRV;
+
+	ComPtr<ID3D12Resource> RendepthBuff;
+
+	ComPtr<ID3D12DescriptorHeap> RendescHeapRTV;
+
+	ComPtr<ID3D12DescriptorHeap> RendescHeapDSV;
+
+
 
 	//アンビエント係数
 	DirectX::XMFLOAT3 ambient = { 1,1,1 };

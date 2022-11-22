@@ -26,6 +26,10 @@ public:
 
 	void TitleSceneUpdate();
 
+	void IventMainUpdate();
+
+	void LoadUpdate();
+
 	void SetDistance(float distance) {
 		this->distance = distance; viewDirty = true;
 	}
@@ -43,9 +47,12 @@ public:
 	XMFLOAT3 GetPos() { return eye; }
 
 
+	int Gets() { return s; }
+
+
 	XMMATRIX GetRot() { return matRot; }
 
-	bool GetWall() { return Wall; }
+	XMVECTOR GetMove() { return move; }
 
 	void SetMove(XMVECTOR move) { move_ = move; }
 	void SetWarpPosition(XMFLOAT3 Warp) { Warp_=Warp; }
@@ -58,22 +65,29 @@ public:
 	void SetBlueTeleport(bool teleport) { blueTeleport = teleport; }
 	void SetEyePos(XMFLOAT3 eye) { eye_ = eye; }
 	void SetScene(int scene_) { scene = scene_; }
-	void SetWall(bool a) { Wall = a; }
+	void SetColision(bool a) { Colision = a; }
+	void SetColisionVec(XMVECTOR a) { ColisionVec = a; }
+
 private:
 	// 入力クラスのポインタ
 	Input* input;
-	//
-	bool Wall;
+
 	// カメラ注視点までの距離
 	float distance = 20;
 	// スケーリング
 	float scaleX = 1.0f;
 	float scaleY = 1.0f;
+	XMVECTOR ColisionVec;
 	// 回転行列
 	XMMATRIX matRot = DirectX::XMMatrixIdentity();
+	// 回転行列
+	XMMATRIX OldmatRot;
 	//
 	float camera_posX = 0;
 	float camera_posZ = 0;
+
+	bool Colision = false;
+	bool OldColision;
 
 	double angleX = 0;//カメラの角度X
 	double angleY = 0;//カメラの角度Y
@@ -85,6 +99,7 @@ private:
 	int Flag = 0;
 
 	bool onGround_ ;
+int s = 0;
 
 	bool redTeleport;
 	bool blueTeleport;
@@ -99,8 +114,11 @@ private:
 
 	bool AngleRimit = false;
 
-	int scene;
+	int scene=0;
 
+	int IventNumber = 0;
+
+	int IventTime = 0;
 
 	XMVECTOR fallV{};
 	XMVECTOR JumpV{};
@@ -110,5 +128,9 @@ private:
 	XMFLOAT3 Warp_;
 	XMFLOAT3 eye_;
 	XMFLOAT3 oldeye;
+
+	bool trun = false;
+	int time2 = 0;
+	int time3 = 0;
 };
 

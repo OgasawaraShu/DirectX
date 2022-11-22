@@ -49,6 +49,8 @@ void PortalExit::OriginalUpdate(float angleX, float angleY)
 
 	scale = ScaleExit;
 
+	
+
 	if (WarpFlag == true)
 	{
 		if (ScaleExit.x < 0.07)
@@ -56,7 +58,31 @@ void PortalExit::OriginalUpdate(float angleX, float angleY)
 			ScaleExit.x += 0.001;
 			ScaleExit.y += 0.001;
 			ScaleExit.z += 0.001;
-	   }
+
+
+			//‚±‚±‚ÍŠO˜g
+			if (MyPosition.z < position.z)
+			{
+				rotation.y = 0;
+			}
+			else
+			{
+				rotation.y = 180;
+			}
+
+			if (position.x <= -70)
+			{
+				rotation.y = 270;
+			}
+			else if (position.x >= 70)
+			{
+				rotation.y = 90;
+			}
+
+			//‚±‚±‚ÉŒÂ•Ê‚ÌOBJ‚É“–‚½‚Á‚½‚Ì¶‰E‚Ì‰ñ“]‚·‚é
+		}
+
+		
 	}
 	else
 	{

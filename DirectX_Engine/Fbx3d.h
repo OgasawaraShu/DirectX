@@ -13,6 +13,7 @@
 #include "DebugCamera.h"
 #include "CollisionInfo.h"
 #include "CollisionManager.h"
+#include "LightGroup.h"
 //#include "Input.h"
 
 class BaseCollider;
@@ -73,6 +74,13 @@ protected:
 
 public:
 
+	/// <summary>
+	/// ライトグループのセット
+	/// </summary>
+	/// <param name="lightGroup">ライトグループ</param>
+	static void SetLightGroup(LightGroup* lightGroup) {
+		Fbx3d::lightGroup = lightGroup;
+	}
 	static void SetDevice(ID3D12Device* device) { Fbx3d::device = device; }
 	static void SetCamera(Camera*camera ){Fbx3d::camera=camera; }
 
@@ -84,13 +92,23 @@ public:
 
 	virtual void Update();
 
+	virtual void Update2(Camera*camera);
+
+
+	virtual void RenderFbxInitialize();
+
+	
 	void SetModel(Model* model) { this->model = model; }
 
 	virtual void Draw2(ID3D12GraphicsCommandList* cmdList);
 
+	virtual void RenderFbxDraw(ID3D12GraphicsCommandList* cmdList);
+
+
 	static void CreateGraphicsPipeline();
 
-	
+    void PortalCreateGraphicsPipeline();
+
 
 	void PlayAnimation2();
 
@@ -119,9 +137,21 @@ public:
 
 	void SetVerObj();
 
+	void SetVerObj2();
+
+
 	void SetVerWall();
 
+	void SetVerSPHEREOBJ();
+
+	void SetVerExit();
+
+
 	void SetWorld(XMMATRIX matrot_) { matrot = matrot_; }
+
+	void RenPreDraw(ID3D12GraphicsCommandList* cmdList);
+
+	void RenPostDraw(ID3D12GraphicsCommandList* cmdList);
 
 	XMMATRIX matrot;
 
@@ -176,10 +206,14 @@ protected:
 
 	static Camera* camera;
 
+	// ライト
+	static LightGroup* lightGroup;
+
 	static ComPtr<ID3D12RootSignature>rootsignature;
 
 	static ComPtr<ID3D12PipelineState>pipelinestate;
 
+	
 public:
 
 	struct ConstBufferDataTransform

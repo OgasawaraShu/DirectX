@@ -27,10 +27,22 @@ void PlayerFbx::OnCollision(const CollisionInfo& info)
 	if(info.collider->attribute == 32&&WallCollision==false)
 	{
 		WallCollision = true;
+		ColisionPoint=info.inter;
 	}
-	else
+	else if(info.collider->attribute == 64 && WallCollision == false)
 	{
-		
+		WallCollision = true;
+		ColisionPoint = info.inter;
+	}
+	else if (info.collider->attribute == 128 && WallCollision == false)
+	{
+		WallCollision = true;
+		ColisionPoint = info.inter;
+	}
+
+	if (info.collider->attribute == 256)
+	{
+		Exit = true;
 	}
 }
 
@@ -92,6 +104,7 @@ void PlayerFbx::PlayerUpdate(double angleX, double angleY)
 	PostMatrixUpdate(matScale, matRot, matTrans);
 	//
 	//RayCheck(angleX, angleY);
+
 }
 
 void PlayerFbx::FallJump()
@@ -349,73 +362,130 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 	// WASD‚ª‰Ÿ‚³‚ê‚Ä‚¢‚½‚ç•ÀsˆÚ“®‚³‚¹‚é
 	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
-		if (onGround == true)
+		if (onGround == true&&WallCollision==false)
 		{
-
+			wark = true;
 			if (input->PushKey(DIK_A))
 			{
 				dx -= 0.3f;
-				wark = true;
 			}
 
 			if (input->PushKey(DIK_D))
 			{
 				dx += 0.3f;
-				wark = true;
+				
 			}
 
 			if (input->PushKey(DIK_W))
 			{
 				dz += 0.3f;
-				wark = true;
+			
 			}
 
 			if (input->PushKey(DIK_S))
 			{
 				dz -= 0.3f;
-				wark = true;
 			}
 		}
-				// —Ž‰ºˆ—
-			// —Ž‰ºˆ—
-			if (!onGround) {
-				
-			}
-			// ƒWƒƒƒ“ƒv‘€ì
-			else if (onGround) {
-				//onGround = false;
-				//const float jumpVYFist = 0.1f;
-				//fallV = { 0, jumpVYFist, 0, 0 };
-			}
+			
 	}
-	//moveCamera = { dx += fallV.m128_f32[0], dy += fallV.m128_f32[1], dz += fallV.m128_f32[2], 0 };
+	else
+	{
+		wark = false;
+	}
+
+	//moveCamera.m128_f32[0] = 0;
+	//moveCamera.m128_f32[2] = 0;
+	
+
 	moveCamera = { dx += fallV.m128_f32[0], dy += fallV.m128_f32[1], dz += fallV.m128_f32[2], 0 };
 
 	if (WallCollision==false)
 	{
-		moveOld = moveCamera;
-		a = 0;
+	//	moveCamera = { dx += fallV.m128_f32[0], dy += fallV.m128_f32[1], dz += fallV.m128_f32[2], 0 };
+	//	moveOld_ = moveOld;
+
+	//	ColOld = false;
+	//	ColOld2 = false;
 	}
 	else
 	{
-		a = 1;
-		if (moveOld.m128_f32[0] != 0 || moveOld.m128_f32[2] != 0)
+		
+		//if (moveOld_.m128_f32[0] != 0.00f || moveOld_.m128_f32[2] != 0.00f)
+		//{
+			//if (ColOld == false)
+			//{
+			//	moveCamera.m128_f32[0] = -1.0f * (moveOld_.m128_f32[0]);
+			//	moveCamera.m128_f32[2] = -1.0f * (moveOld_.m128_f32[2]);
+
+
+			//}
+	//	}
+		
+		/*
+
+		if (ColOld == true)
 		{
-			a = 2;
-			moveCamera.m128_f32[0] = -moveOld.m128_f32[0];
-			moveCamera.m128_f32[2] = -moveOld.m128_f32[2];
+			
+		//	moveCamera.m128_f32[0] = -1.0f * (moveOld.m128_f32[0]);
+		//	moveCamera.m128_f32[2] = -1.0f * (moveOld.m128_f32[2]);
+			if (moveOld.m128_f32[3] > 0&&ColOld2==false)
+			{
+				moveCamera.m128_f32[0] = 1.0f * (moveOld_.m128_f32[0]);
+				moveCamera.m128_f32[2] = -1.0f * (moveOld_.m128_f32[2]);
+			}
+			else if(moveOld.m128_f32[3] <= 0 && ColOld2 == false)
+			{
+				moveCamera.m128_f32[0] = -1.0f * (moveOld_.m128_f32[0]);
+				moveCamera.m128_f32[2] = 1.0f * (moveOld_.m128_f32[2]);
+			}
+			ColOld2 = true;
+
 		}
 		
+		if (moveOld.m128_f32[0] == 0.00f || moveOld.m128_f32[2] == 0.00f)
+		{
+			if (moveOld_.m128_f32[0] <= 0)
+			{
+				moveCamera.m128_f32[0] = 1.0f * (moveOld_.m128_f32[0]);
+				moveCamera.m128_f32[2] = 1.0f * (moveOld_.m128_f32[2]);
+			}
+			else
+			{
+				if (moveOld_.m128_f32[2] < 0)
+				{
+					moveCamera.m128_f32[0] = -1.0f * (moveOld_.m128_f32[0]);
+					moveCamera.m128_f32[2] = -1.0f * (moveOld_.m128_f32[2]);
+
+					if (ColisionPoint.m128_f32[2]>position.z)
+					{
+						moveCamera.m128_f32[0] = 1.0f * (moveOld_.m128_f32[0]);
+						moveCamera.m128_f32[2] = 1.0f * (moveOld_.m128_f32[2]);
+					}
+
+					if (ColisionPoint.m128_f32[0] < position.x)
+					{
+					
+						moveCamera.m128_f32[0] = 1.0f * (moveOld_.m128_f32[0]);
+						moveCamera.m128_f32[2] = 1.0f * (moveOld_.m128_f32[2]);
+
+						if (moveOld.m128_f32[2] < 0)
+						{
+							moveCamera.m128_f32[0] = -1.0f * (moveOld_.m128_f32[0]);
+							moveCamera.m128_f32[2] = -1.0f * (moveOld_.m128_f32[2]);
+						}
+					}
+				}
+				
+			}
+		}
+		*/
+		ColOld=true;
 		WallCollision = false;
 	}
 
-	moveCamera = XMVector3Transform(moveCamera, matRot);
-
 	
-
-//	matTrans = XMMatrixTranslation(position.x += moveCamera.m128_f32[0], position.y += moveCamera.m128_f32[1], position.z += moveCamera.m128_f32[2]);
-
-
+	//moveCamera = XMVector3Transform(moveCamera, matRot);
 }
 
 void PlayerFbx::CollisionAfter(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTrans)

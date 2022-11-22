@@ -210,10 +210,10 @@ void Sprite::Update()
     matWorld_ = XMMatrixIdentity();
 
     //XŽ²‰ñ“]
-  //  matWorld_ *= XMMatrixRotationX(XMConvertToRadians(rotation_.x));
+    matWorld_ *= XMMatrixRotationX(XMConvertToRadians(rotation_.x));
 
     //YŽ²‰ñ“]
-   // matWorld_ *= XMMatrixRotationY(XMConvertToRadians(rotation_.y));
+    matWorld_ *= XMMatrixRotationY(XMConvertToRadians(rotation_.y));
 
     //ZŽ²‰ñ“]
     matWorld_ *= XMMatrixRotationZ(XMConvertToRadians(rotation_.z));
@@ -229,17 +229,6 @@ void Sprite::Update()
     HRESULT result = constBuff_->Map(0, nullptr, (void**)&constMap);
     constMap->color8 = color_;
     constMap->mat8 = matWorld_ * spriteCommon_->GetMatProjection();
-
-    /*
-    if (constMap->Time8 < 2.0f)
-    {
-        constMap->Time8 += 0.02f;
-    }
-    else
-    {
-        constMap->Time8 = 0.1f;
-    }
-    */
 
     constMap->Time8 += 2.0f;
 

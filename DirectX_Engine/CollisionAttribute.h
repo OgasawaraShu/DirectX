@@ -9,5 +9,10 @@ const unsigned short COLLISION_ATTR_BULLET_BLUE = 0b1 << 2;//‹…
 const unsigned short COLLISION_ATTR_BULLET_RED = 0b1 << 3;//‹…
 const unsigned short COLLISION_ATTR_OBJ= 0b1 << 4;//‹…
 const unsigned short COLLISION_ATTR_WALL = 0b1 << 5;//•Ç.j
+const unsigned short COLLISION_ATTR_SPHEREOBJ = 0b1 << 6;//‰~Œ`‚Ì•Ç
+const unsigned short COLLISION_ATTR_OBJ2 = 0b1 << 7;//‰~Œ`‚Ì•Ç
+const unsigned short COLLISION_ATTR_EXIT = 0b1 << 8;//‰~Œ`‚Ì•Ç
+
+
 
 

@@ -48,7 +48,8 @@ void SceneSelect::Title()
 			OverRed = 1;
 			if (input->TriggerMouseLeft())
 			{
-				scene = 1;
+				changeFlag = true;
+				
 				push = 1;
 			}
 			else
@@ -72,6 +73,74 @@ void SceneSelect::Title()
 		else
 		{
 			OverRed = 0;
+		}
+
+		if (changeFlag == true)
+		{
+			change += 0.005;
+
+			if (change > 1)
+			{
+				scene = 1;
+				
+				changeFlag = false;
+			}
+		}
+	}
+
+	
+}
+
+void SceneSelect::Scene1()
+{
+	if (scene == 1)
+	{
+
+		if (Exit == true)
+		{
+			change += 0.005;
+
+			if (change > 1)
+			{
+				scene = 99;
+			}
+		}
+		else
+		{
+			change = 0;
+		}
+	}
+
+	if (scene == 99)
+	{
+		if (Load == true)
+		{
+			change = 0;
+			LoadTime++;
+
+			if (LoadTime > 140)
+			{
+				if (DoorRotate > -180)
+				{
+					DoorRotate -= 1;
+				}
+			}
+
+			if (LoadTime > 170)
+			{
+				Load = false;
+				LoadTime = 0;
+			}
+		}
+		else
+		{
+			change += 0.005;
+
+			if (change > 1)
+			{
+				scene = 100;
+				DoorRotate = 0;
+			}
 		}
 	}
 }

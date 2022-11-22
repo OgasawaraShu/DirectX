@@ -75,7 +75,15 @@ public:
 
 	bool GetWark() { return wark; }
 
+	bool GetExit() { return Exit; }
+
 	int aGet() { return a; }
+
+	bool GetColision() { return WallCollision; }
+
+	XMVECTOR GetColisionVec() { return ColisionPoint; }
+
+	void GetmoveOld(XMVECTOR a) { moveOld = a; }
 private:
 
 	//クラスのポインタ
@@ -111,6 +119,11 @@ private:
 
 	bool warpFlag2 = false;//trueになったらwarp出来るようにする
 
+	bool ColOld;
+
+	bool ColOld2;
+
+
 
 	float acceleration_g = 9.81 / 60;//加速度
 
@@ -120,6 +133,7 @@ private:
 
 	bool wark = false;
 
+	bool Exit = false;
 	int a = 0;
 
 	XMVECTOR fallV;//落ちるベクトル
@@ -127,6 +141,13 @@ private:
 	XMVECTOR moveCamera;//動作ベクトル
 
 	XMVECTOR moveOld;
+
+	XMVECTOR moveOld_;
+
+
+	XMVECTOR ColisionPoint;
+
+	XMVECTOR Vector;
 
 	XMVECTOR memory;//記憶用変数
 
@@ -139,6 +160,8 @@ private:
 	XMVECTOR CammeraZAxis;
 
 	XMFLOAT3 OldPos;
+
+	XMMATRIX OldMatrot;
 
 
 };

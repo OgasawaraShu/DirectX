@@ -274,7 +274,7 @@ bool Collision::CheckRay2Sphere(const Ray& ray, const Sphere& sphere, float* dis
 
 	float t = -b - sqrtf(discr);
 
-	if (t > 0)t = 0.0f;
+	if (t < 0)t = 0.0f;
 	if (distance) { *distance = t; }
 
 	if (inter) { *inter = ray.start + t * ray.dir; }

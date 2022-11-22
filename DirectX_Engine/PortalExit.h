@@ -21,12 +21,22 @@ public:
 	//Getter,Setter
 	void GetExitPosition(XMFLOAT3 pos_) { position = pos_; }
 
+	XMFLOAT3 GetMyPosition() { return position; }
+
+	XMFLOAT3 GetMyRotate() { return rotation; }
+
+
+	XMFLOAT3 GetMyScale() { return scale; }
 	void GetFlag(bool flag) { WarpFlag = flag; }
+
+	void SetMyposition(XMFLOAT3 pos_) { MyPosition = pos_; }
 private:
 	//クラスのポインタ
 	Input* input;//入力クラス
 
 	bool WarpFlag;
+
+	XMFLOAT3 MyPosition;
 
 	XMFLOAT2 OldAngle;
 

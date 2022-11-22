@@ -58,8 +58,19 @@ void Input::Update()
 
     result = devkeyboard->GetDeviceState(sizeof(key), key);
 
+    if (scene == 1)
+    {
+        SetCursorPos(640, 360);
 
+        // マウスカーソルの非表示
+        ShowCursor(FALSE);
+    }
+    else
+    {
 
+        // マウスカーソルの表示
+        ShowCursor(TRUE);
+    }
     // マウス
     result = devMouse->Acquire();	// マウス動作開始
     // 前回の入力を保存
@@ -84,6 +95,18 @@ bool Input::TriggerKey(BYTE keyNumber)
 {
     //前回押していなく、今回押していればtrueを返す
     if (key[keyNumber] && !oldkey[keyNumber])
+    {
+        return true;
+    }
+
+    //そうでない場合、falseを返す
+    return false;
+}
+
+bool Input::KeepKey(BYTE keyNumber)
+{
+    //前回押していなく、今回押していればtrueを返す
+    if (key[keyNumber] && oldkey[keyNumber])
     {
         return true;
     }

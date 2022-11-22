@@ -14,6 +14,22 @@ struct VSInput
 	float4 boneWeights:BONEWEIGHTS;
 };
 
+// 平行光源の数
+static const int DIRLIGHT_NUM = 3;
+
+struct DirLight
+{
+	float3 lightv;    // ライトへの方向の単位ベクトル
+	float3 lightcolor;    // ライトの色(RGB)
+	uint active;
+};
+
+cbuffer cbuff2 : register(b2)
+{
+	float3 ambientColor;
+	DirLight dirLights[DIRLIGHT_NUM];
+}
+
 struct VSOutput
 {
 	float4 svpos:SV_POSITION;

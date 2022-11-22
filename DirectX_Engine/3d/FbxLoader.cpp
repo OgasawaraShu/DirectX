@@ -77,8 +77,54 @@ Model*FbxLoader::LoadModelFromFile(const string& modelName)
 
     model->CreateBuffers2(device);
 
+   
     return model;
 
+}
+
+Model* FbxLoader::RenLoadModelFromFile(const string& modelName)
+{
+    //同じ名前から読み込む
+    const string directoryPath = baseDirectory + modelName + "/";
+    //拡張子追加
+    const string fileName = modelName + ".fbx";
+    //連結してフルパスを得る
+    const string fullpath = directoryPath + fileName;
+
+    //ファイル名を指定して読み込む
+    if (!fbxImporter->Initialize(fullpath.c_str(), -1, fbxManager->GetIOSettings()))
+    {
+        assert(0);
+    }
+
+    //シーン生成
+    FbxScene* fbxScene =
+        FbxScene::Create(fbxManager, "fbxScene");
+
+    //ファイルから得た情報をシーンにインポート
+    fbxImporter->Import(fbxScene);
+
+    //モデル生成
+    Model* model = new Model();
+    model->name = modelName;
+
+    //
+    int nodeCount = fbxScene->GetNodeCount();
+
+    model->nodes.reserve(nodeCount);
+
+
+
+    //√ノードから準二階席する
+    ParseNodeRecursive(model, fbxScene->GetRootNode());
+    //シーン解放
+   // fbxScene->Destroy();
+    model->fbxScene = fbxScene;
+
+    model->RenCreateBuffers2(device);
+
+    model->RenderInitialize(device);
+    return model;
 }
 
 void FbxLoader::ParseNodeRecursive(Model* model, FbxNode* fbxNode,Node*parent)
@@ -214,7 +260,7 @@ void FbxLoader::ParseMeshFaces(Model* model, FbxMesh* fbxMesh)
     for (int i = 0; i < polygonCount; i++)
     {
         const int polygonSize = fbxMesh->GetPolygonSize(i);
-        assert(polygonSize <= 4);
+        //assert(polygonSize <= 4);
 
         //1頂点ずつ処理
         for (int j = 0; j < polygonSize; j++)

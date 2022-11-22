@@ -63,7 +63,7 @@ float4 main(VSOutput input):SV_TARGET
 
 
 
-  return LightToon * LightColor + DarkToon * DarkColor;
- 
+// return LightToon * LightColor + DarkToon * DarkColor;
+  return LightColor;
   //return shadecolor * texcolor;
 }

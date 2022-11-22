@@ -15,13 +15,43 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 	{
 		if (debug == 0 && TriggerFlag == 1)
 		{
-			//TriggerFlag = 0;
-			debug = 1;
+			if (info.collider->attribute != 64)
+			{
+				//TriggerFlag = 0;
+				debug = 1;
+				BlueCollision = true;
+				BlueAttack = false;
+			}
+			else
+			{
+				position = position_;
+				warpFlag = false;
+				TriggerFlag = 0;
+				debug = 0;
+
+			}
 		}
 		if (debug2 == 0 && TriggerFlag2 == 1)
 		{
 		//	TriggerFlag2 = 0;
-			debug2 = 1;
+			//debug2 = 1;
+			if (info.collider->attribute != 64)
+			{
+				//TriggerFlag = 0;
+				debug2 = 1;
+				RedCollision = true;
+				RedAttack = false;
+			}
+			else
+			{
+				position = position_;
+				warpFlag2 = false;
+				TriggerFlag2 = 0;
+				debug2 = 0;
+
+				oldRedX = oldx2;
+				oldRedY = oldy2;
+			}
 		}
 	}
 }
@@ -106,9 +136,15 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 
 
-	if (input->TriggerMouseLeft())
+	if (input->TriggerMouseLeft()&&getflag==true)
 	{
 		TriggerFlag = 1;
+		BlueAttack = true;
+		ShotFlag2 = true;
+	}
+	else
+	{
+		ShotFlag2 = false;
 	}
 
 
@@ -118,6 +154,8 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 		warpFlag = false;
 		TriggerFlag = 0;
 		debug = 0;
+		BlueAttack = false;
+		BlueCollision = false;
 	}
 
 
@@ -135,7 +173,7 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 		Vector.m128_f32[1] = Target.y - position.y;
 		Vector.m128_f32[2] = Target.z - position.z;
 
-		Vector = XMVector3Normalize(Vector) * 2.0f;
+		Vector = XMVector3Normalize(Vector) * 4.0f;
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	}
 	else if(debug==1)
@@ -165,6 +203,7 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 
 void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 {
+	//RedCollision = false;
 	// ƒ}ƒEƒX‚Ì“ü—Í‚ðŽæ“¾
 	Input::MouseMove mouseMove = input->GetMouseMove();
 
@@ -233,9 +272,15 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 
 
 
-	if (input->TriggerMouseRight())
+	if (input->TriggerMouseRight() && getflag == true)
 	{
 		TriggerFlag2 = 1;
+		RedAttack = true;
+		ShotFlag = true;
+	}
+	else
+	{
+		ShotFlag = false;
 	}
 
 	if (input->PushKey(DIK_R) && debug2 == 1)
@@ -247,7 +292,8 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 
 		oldRedX = oldx2;
 		oldRedY = oldy2;
-
+		RedCollision = false;
+		RedAttack = false;
 	}
 
 

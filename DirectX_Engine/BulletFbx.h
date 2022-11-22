@@ -47,6 +47,16 @@ public://ŠÖ”
 
 	void SetCameraT(XMFLOAT3 z) { Target = z; }
 
+	void SetGet(bool get) { getflag = get; }
+
+	bool RedP_Flag() { return RedCollision; }
+	bool RedP_Attack() { return RedAttack; }
+	
+	bool BlueP_Flag() { return BlueCollision; }
+	bool BlueP_Attack() { return BlueAttack; }
+
+	bool GetShot() { return ShotFlag; }
+	bool GetShot2() { return ShotFlag2; }
 
 private://•Ï”
 
@@ -74,6 +84,19 @@ private://•Ï”
 
 	bool warpFlag2 = false;//—¼•û‚Ì‹…‚ªŒ‚‚½‚ê‚½‚çƒ[ƒv‚Å‚«‚é‚æ‚¤‚É‚·‚é
 
+	bool getflag;
+
+	bool RedCollision = false;
+
+	bool RedAttack = false;
+
+	bool BlueCollision = false;
+
+	bool ShotFlag = false;
+	bool ShotFlag2 = false;
+
+
+	bool BlueAttack = false;
 	float oldx2;
 
 	float oldy2;

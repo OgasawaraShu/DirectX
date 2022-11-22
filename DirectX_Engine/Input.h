@@ -41,6 +41,9 @@ public://メンバ関数
 
 	bool TriggerKey(BYTE keyNumber);
 
+	bool  KeepKey(BYTE keyNumber);
+
+
 //	ゲームパッド
 
 	void PadUpdate();
@@ -103,10 +106,13 @@ public:
 	MouseMove GetMouseMove();
 
 	void MouseSetPosition();
+	void GetScene(int s) { scene = s; }
 
 private://メンバ変数
 	ComPtr<IDirectInputDevice8> devMouse;
 	DIMOUSESTATE2 mouseState = {};
 	DIMOUSESTATE2 mouseStatePre = {};
+
+	int scene;
 };
 
