@@ -290,7 +290,7 @@ void PlayerFbx::WarpUpdate()
 		WarpTime += 1;
 	}
 
-	if (WarpTime > 300)
+	if (WarpTime > 120)
 	{
 		WarpTime = 0;
 		TimeWarpF = true;
@@ -481,16 +481,16 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 		}
 		*/
 		ColOld=true;
-		WallCollision = false;
+		//WallCollision = false;
 	}
 
 	
 	//moveCamera = XMVector3Transform(moveCamera, matRot);
 }
 
-void PlayerFbx::CollisionAfter(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTrans)
+void PlayerFbx::CollisionAfter()
 {
-
+	WallCollision = false;
 }
 
 

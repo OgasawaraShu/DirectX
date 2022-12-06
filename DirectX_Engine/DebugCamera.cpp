@@ -174,6 +174,7 @@ void DebugCamera::MainSceneUpdate()
 	{
 		OldmatRot = matRot;
 		move = XMVector3Transform(move, matRot);
+		oldeye = eye;
 	}
 	else if(Colision==true&&onGround_==true)
 	{
@@ -182,7 +183,7 @@ void DebugCamera::MainSceneUpdate()
 
 		XMVector3Normalize(ColisionVec);
 
-		
+	
 		if (move.m128_f32[0]>0&& move.m128_f32[2] > 0)
 		{
 			//move = XMVector3Normalize(XMVector3Dot(move, ColisionVec));
@@ -202,25 +203,25 @@ void DebugCamera::MainSceneUpdate()
 		{
 			s = 2;
 		}
-		
-	
-	
+			
 		if (move.m128_f32[0] == 0 && move.m128_f32[2] ==0)
 		{
 			s = 3;
 		}
-		if(s==1)move = (XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
-		if(s==2)move = -(XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
-		if (s == 3)move =-(XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
 
-		
+
+		if(s==1)move =  (XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
+		if(s==2)move = -(XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
+		if(s==3)move = -(XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
+
 	//D3DXVec3Normalize(out, &(front - D3DXVec3Dot(&front, &normal_n) * normal_n));
 	}
 
 
 	MoveVectorNotY(move);
+	moveOld = -1*move;
+	moveOld2 =move;
 
-	
 	//onGroundÇ™falseÇ»ÇÁYé≤Ç‡éQè∆ÇµÇΩvectorà⁄ìÆÇ∑ÇÈ
 	if (onGround_ != true)
 	{

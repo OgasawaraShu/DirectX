@@ -45,6 +45,7 @@ public:
 
 
 	XMFLOAT3 GetPos() { return eye; }
+	XMFLOAT3 GetPosOld() { return oldeye; }
 
 
 	int Gets() { return s; }
@@ -53,6 +54,11 @@ public:
 	XMMATRIX GetRot() { return matRot; }
 
 	XMVECTOR GetMove() { return move; }
+
+	XMVECTOR GetMoveOld() { return moveOld; }
+
+	XMVECTOR GetMoveOld2() { return moveOld2; }
+
 
 	void SetMove(XMVECTOR move) { move_ = move; }
 	void SetWarpPosition(XMFLOAT3 Warp) { Warp_=Warp; }
@@ -123,6 +129,8 @@ int s = 0;
 	XMVECTOR fallV{};
 	XMVECTOR JumpV{};
 	XMVECTOR move;
+	XMVECTOR moveOld;
+	XMVECTOR moveOld2;
 
 	XMVECTOR move_;
 	XMFLOAT3 Warp_;

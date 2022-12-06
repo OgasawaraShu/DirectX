@@ -27,6 +27,7 @@ float4 main(VSOutput input):SV_TARGET
 
   float3 light = normalize(float3(1, -1, 1));
 
+  //ƒ‰ƒCƒg
   float diffuse = saturate(dot(-light, input.normal));
   float brightness = diffuse + 0.3f;
   float4 shadecolor = float4(brightness, brightness, brightness, 1.0f);

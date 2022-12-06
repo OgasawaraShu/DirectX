@@ -36,7 +36,7 @@ public:
 
 	void MoveMatrixUpdate(XMMATRIX matRot, XMMATRIX matTrans);//ÉLÅ[ì¸óÕÇ…ÇÊÇÈìÆçÏ
 
-	void CollisionAfter(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTrans);
+	void CollisionAfter();
 
 	//Settter
 	void SetMemo(XMVECTOR Memo) { Warp = Memo; }
