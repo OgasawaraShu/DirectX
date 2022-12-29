@@ -14,6 +14,8 @@
 #include "CollisionInfo.h"
 #include "CollisionManager.h"
 #include "LightGroup.h"
+#include "BlueCamera.h"
+#include "RedCamera.h"
 //#include "Input.h"
 
 class BaseCollider;
@@ -43,6 +45,8 @@ protected:
 	XMFLOAT3 rotation = { 0,0,0 };
 
 	XMFLOAT3 position = { 0,0,0 };
+
+	XMFLOAT3 colisionsize = { 0,0,0 };
 
 	XMMATRIX matWorld;
 
@@ -83,7 +87,8 @@ public:
 	}
 	static void SetDevice(ID3D12Device* device) { Fbx3d::device = device; }
 	static void SetCamera(Camera*camera ){Fbx3d::camera=camera; }
-
+	static void SetBlueCamera(BlueCamera* camera) { Fbx3d::bluecamera = camera; }
+	static void SetRedCamera(RedCamera* camera) { Fbx3d::redcamera = camera; }
 
 	Fbx3d(Input* input);
 	virtual~Fbx3d();
@@ -96,29 +101,39 @@ public:
 
 
 	virtual void RenderFbxInitialize();
+	virtual void RenderFbxInitialize2();
 
 	
 	void SetModel(Model* model) { this->model = model; }
 
 	virtual void Draw2(ID3D12GraphicsCommandList* cmdList);
-
-	virtual void RenderFbxDraw(ID3D12GraphicsCommandList* cmdList);
+	void Draw2Ren(ID3D12GraphicsCommandList* cmdList,XMFLOAT3 pos);
+	virtual void RenderFbxDraw(ID3D12GraphicsCommandList* cmdList );
+	virtual void RenderFbxDraw2(ID3D12GraphicsCommandList* cmdList);
 
 
 	static void CreateGraphicsPipeline();
 
     void PortalCreateGraphicsPipeline();
-
+	void PortalCreateGraphicsPipeline2();
+	void DrawPortalWindow(ID3D12GraphicsCommandList* cmdList, XMMATRIX matWorld2);
+	
+	void DrawPortalWindowRed(ID3D12GraphicsCommandList* cmdList, XMMATRIX matWorld2);
 
 	void PlayAnimation2();
 
 	void SetPosition(const DirectX::XMFLOAT3& position_) { position = position_; }
 	void SetScale(const DirectX::XMFLOAT3& scale_) { scale = scale_; }
 	void SetRotate(const DirectX::XMFLOAT3& rotation_) { rotation = rotation_; }
+	void SetColisionSize(const DirectX::XMFLOAT3& colisionsize_) { colisionsize = colisionsize_; }
+
 
 
 	const XMMATRIX& GetMatWorld() { return matWorld; }//ワールド行列の取得
-	const XMFLOAT3& GetPosition() { return position; }//ワールド行列の取得
+	const XMFLOAT3& GetPosition() { return position; }//ポジションの取得
+	const XMFLOAT3& GetScale() { return scale; }//スケールの取得
+	const XMFLOAT3& GetRotation() { return rotation; }//ローテーションの取得
+	const XMFLOAT3& GetColisionSize() { return colisionsize; }//ローテーションの取得
 	void SetColider(BaseCollider* collider);//こらいだーのセット
 	virtual void OnCollision(const CollisionInfo& info);//コールバック関数
 
@@ -126,6 +141,8 @@ public:
 	inline Model* GetModel() { return model; }
 
 	void UpdateWorldMatix();
+
+	void SetRotateScale(XMMATRIX matworld);
 
 	void SetVer();
 
@@ -149,9 +166,18 @@ public:
 
 	void SetWorld(XMMATRIX matrot_) { matrot = matrot_; }
 
+
+
 	void RenPreDraw(ID3D12GraphicsCommandList* cmdList);
 
 	void RenPostDraw(ID3D12GraphicsCommandList* cmdList);
+
+
+
+
+	void RenPreDraw2(ID3D12GraphicsCommandList* cmdList);
+
+	void RenPostDraw2(ID3D12GraphicsCommandList* cmdList);
 
 	XMMATRIX matrot;
 
@@ -206,6 +232,10 @@ protected:
 
 	static Camera* camera;
 
+	static BlueCamera* bluecamera;
+
+	static RedCamera* redcamera;
+
 	// ライト
 	static LightGroup* lightGroup;
 
@@ -221,6 +251,7 @@ public:
 		XMMATRIX viewproj;
 		XMMATRIX world;
 		XMFLOAT3 cameraPos;
+		XMFLOAT3 cameraPos2;
 	};
 };
 

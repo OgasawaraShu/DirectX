@@ -29,6 +29,8 @@ public:
 	XMFLOAT3 GetMyScale() { return scale; }
 	void GetFlag(bool flag) { WarpFlag = flag; }
 
+	XMMATRIX GetRot() { return a; }
+
 	void SetMyposition(XMFLOAT3 pos_) { MyPosition = pos_; }
 private:
 	//クラスのポインタ
@@ -41,5 +43,7 @@ private:
 	XMFLOAT2 OldAngle;
 
 	XMFLOAT3 ScaleExit;
+
+	XMMATRIX a;
 };
 

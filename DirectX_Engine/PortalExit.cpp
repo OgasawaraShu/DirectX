@@ -24,6 +24,8 @@ void PortalExit::ExitUpdate(float angleX, float angleY)
 {
 	XMMATRIX matScale, matRot, matTrans;
 
+
+
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	matRot = XMMatrixIdentity();
 	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
@@ -40,6 +42,8 @@ void PortalExit::ExitUpdate(float angleX, float angleY)
 
 	//Matrix後更新
 	PostMatrixUpdate(matScale, matRot, matTrans);
+
+	
 }
 
 void PortalExit::OriginalUpdate(float angleX, float angleY)
@@ -103,6 +107,20 @@ void PortalExit::AddMatrixUpdate(float angleX, float angleY, XMMATRIX matRot)
 	// クォータニオンを使用する方が望ましい
 	matRot = matRotNew * matRot;
 
+	XMMATRIX matRot2;
+
+
+	//ワープ後のrotation保存用
+	// 追加回転分の回転行列を生成
+	XMMATRIX matRotNew2 = XMMatrixIdentity();
+	matRotNew2 *= XMMatrixRotationZ(XMConvertToRadians(-rotation.z));
+	matRotNew2 *= XMMatrixRotationX(-260.7);
+	matRotNew2 *= XMMatrixRotationY(0);
+	// 累積の回転行列を合成
+	// ※回転行列を累積していくと、誤差でスケーリングがかかる危険がある為
+	// クォータニオンを使用する方が望ましい
+	matRot2 = matRotNew2 * matRot;
+	a = matRot2;
 }
 
 void PortalExit::PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTrans)

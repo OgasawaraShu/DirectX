@@ -9,7 +9,7 @@ class PlayerFbx :
 	public Fbx3d
 {
 public:
-
+	void Initialize2();
 	/// <summary>
 	/// 衝突時コールバック関数
 	/// </summary>
@@ -20,7 +20,7 @@ public:
 
 	void Initialize_Bullet();
 
-	void PlayerUpdate(double angleX, double angleY);//更新処理
+	void PlayerUpdate(float angleX,float angleY);//更新処理
 
 	void FallJump();//落下処理
 
@@ -37,6 +37,8 @@ public:
 	void MoveMatrixUpdate(XMMATRIX matRot, XMMATRIX matTrans);//キー入力による動作
 
 	void CollisionAfter();
+
+	void VectorChange();
 
 	//Settter
 	void SetMemo(XMVECTOR Memo) { Warp = Memo; }
@@ -79,6 +81,8 @@ public:
 
 	int aGet() { return a; }
 
+	bool GetDebug() { return debugCheck; }
+
 	bool GetColision() { return WallCollision; }
 
 	XMVECTOR GetColisionVec() { return ColisionPoint; }
@@ -93,6 +97,8 @@ private:
 
 
 	//変数
+	bool debugCheck = false;
+
 	int WarpTime = 0;
 
 	bool TimeWarpF = true;
@@ -136,28 +142,28 @@ private:
 	bool Exit = false;
 	int a = 0;
 
-	XMVECTOR fallV;//落ちるベクトル
+	XMVECTOR fallV = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);;//落ちるベクトル
 
-	XMVECTOR moveCamera;//動作ベクトル
+	XMVECTOR moveCamera=DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);//動作ベクトル
 
-	XMVECTOR moveOld;
+	XMVECTOR moveOld = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);;
 
-	XMVECTOR moveOld_;
+	XMVECTOR moveOld_ = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);;
 
 
-	XMVECTOR ColisionPoint;
+	XMVECTOR ColisionPoint = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);;
 
-	XMVECTOR Vector;
+	XMVECTOR Vector = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);;
 
-	XMVECTOR memory;//記憶用変数
+	XMVECTOR memory = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);;//記憶用変数
 
-	XMVECTOR Warp;//ワープするための移動変数（Vector）
+	XMVECTOR Warp = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);;//ワープするための移動変数（Vector）
 
-	XMVECTOR Warpblue;//ワープするための移動変数（Vector）
+	XMVECTOR Warpblue = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);;//ワープするための移動変数（Vector）
 
 	XMFLOAT3 Warp2;//ワープするための移動変数（Float）
 
-	XMVECTOR CammeraZAxis;
+	XMVECTOR CammeraZAxis = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);;
 
 	XMFLOAT3 OldPos;
 

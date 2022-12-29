@@ -6,7 +6,7 @@ class SceneSelect
 public:
 	SceneSelect(int window_width, int window_height, Input* input);
 
-	void Initialize();
+	void Initialize2();
 	void Update();
 	void MouseGet();
 	void Title();
@@ -38,6 +38,7 @@ private:
 	int scene = 0;
 	int push = 0;
 	int Time = 0;
+	int Demo = 0;
 	float a;
 	int Second = 0;
 	float distance;

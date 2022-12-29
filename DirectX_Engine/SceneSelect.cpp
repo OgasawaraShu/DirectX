@@ -9,9 +9,28 @@ SceneSelect::SceneSelect(int window_width, int window_height, Input* input)
 	scaleY = 1.0f / (float)window_height;
 }
 
-void SceneSelect::Initialize()
+void SceneSelect::Initialize2()
 {
+	 Load = true;
+	 scaleX = 1.0f;
+	 scaleY = 1.0f;
+
 	
+	 TitleRed = 0;
+
+
+	 push = 0;
+	 Time = 0;
+	 Demo=0;
+	
+	 Second = 0;
+	
+	 OverRed = 0;
+
+	 change = 0;
+	 changeFlag = false;
+	 LoadTime = 0;
+	 DoorRotate = 0;
 }
 
 void SceneSelect::Update()
@@ -93,6 +112,11 @@ void SceneSelect::Title()
 
 void SceneSelect::Scene1()
 {
+	if (scene == -1)
+	{
+		scene = 0;
+	}
+
 	if (scene == 1)
 	{
 
@@ -102,6 +126,7 @@ void SceneSelect::Scene1()
 
 			if (change > 1)
 			{
+				Exit = false;
 				scene = 99;
 			}
 		}
@@ -138,9 +163,12 @@ void SceneSelect::Scene1()
 
 			if (change > 1)
 			{
-				scene = 100;
+				change = 0;
+				scene = -1;
 				DoorRotate = 0;
 			}
 		}
 	}
+
+	
 }

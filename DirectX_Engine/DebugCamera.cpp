@@ -16,7 +16,36 @@ DebugCamera::DebugCamera(int window_width, int window_height, Input* input)
 	scaleX = 1.0f / (float)window_width;
 	scaleY = 1.0f / (float)window_height;
 }
+void DebugCamera::Initialize2()
+{
+ camera_posX = 0;
+	 camera_posZ = 0;
 
+	 Colision = false;
+
+	 angleX = 0;//カメラの角度X
+	 angleY = 0;//カメラの角度Y
+	 oldx = 0;
+	 oldy = 0;
+
+	 Flag = 0;
+	 s = 0;
+	 t = 0;
+
+ AngleRimit = false;
+
+	 scene = 0;
+
+	 IventNumber = 0;
+
+	 IventTime = 0;
+
+	 trun = false;
+	 time2 = 0;
+	 time3 = 0;
+	 SetTarget({ eye.x, eye.y, eye.z + 20 });
+}
+#pragma optimize("", off)
 void DebugCamera::Update()
 {
 	//bool dirty = false;
@@ -61,16 +90,72 @@ void DebugCamera::Update()
 	if (viewDirty) {
 		// 追加回転分の回転行列を生成
 		XMMATRIX matRotNew = XMMatrixIdentity();
-
-	//	matRotNew *= XMMatrixRotationZ(0);
-
-
+ 
 		matRotNew *= XMMatrixRotationX(-angleX);
 		matRotNew *= XMMatrixRotationY(-angleY);
+		
 		// 累積の回転行列を合成
 		// ※回転行列を累積していくと、誤差でスケーリングがかかる危険がある為
 		// クォータニオンを使用する方が望ましい
+
+
+
 		matRot = matRotNew * matRot;
+
+		FXMVECTOR Quatenion=XMQuaternionRotationMatrix(matRot);
+
+		//テレポートしたら角度を球の逆にする
+		if (redTeleport == true)
+		{
+			matRot = RotRed;
+			RotRedFall = matRot;
+			XMVECTOR movewarp;
+			movewarp = { 0,0,2,0 };
+			movewarp = XMVector3Transform(movewarp, matRot);
+			MoveVectorNotY(movewarp);
+			redfall = true;
+			
+		}
+
+		//テレポートしたら角度を球の逆にする
+		if (blueTeleport == true)
+		{
+			matRot = RotBlue;
+			RotBlueFall = matRot;
+
+			XMVECTOR movewarp;
+			movewarp = { 0,0,2,0 };
+			movewarp = XMVector3Transform(movewarp, matRot);
+			MoveVectorNotY(movewarp);
+			bluefall = true;
+		
+		}
+
+		if (onGround_ != true && redfall == true)
+		{
+			XMVECTOR move = move_;
+			
+			move = XMVector3Transform(move, RotRedFall);
+			MoveVector(move);
+		}
+		else if (onGround_ == true&&redfall==true)
+		{
+			redfall = false;
+		}
+
+
+		if (onGround_ != true && bluefall == true)
+		{
+			XMVECTOR move = move_;
+			move = XMVector3Transform(move, RotBlueFall);
+			MoveVector(move);
+		}
+		else if (onGround_ == true && bluefall == true)
+		{
+			bluefall = false;
+		}
+
+
 
 		// 注視点から視点へのベクトルと、上方向ベクトル  視点
 		//XMVECTOR vTargetEye = { 0.0f, 0.0f, -distance, 1.0f };
@@ -82,6 +167,10 @@ void DebugCamera::Update()
 		vEyeTarget = XMVector3Transform(vEyeTarget, matRot);
 		vUp = XMVector3Transform(vUp, matRot);
 
+	
+		
+		
+		vect = vEyeTarget;
 		// 注視点からずらした位置に視点座標を決定
 		//const XMFLOAT3& target = GetTarget();
 		const XMFLOAT3& target = GetEye();
@@ -91,22 +180,25 @@ void DebugCamera::Update()
 	
 		if (scene != 99)
 		{
-			SetTarget({ target.x + vEyeTarget.m128_f32[0], target.y + vEyeTarget.m128_f32[1], target.z + vEyeTarget.m128_f32[2] });
-			SetUp({ vUp.m128_f32[0], vUp.m128_f32[1], vUp.m128_f32[2] });
+			if (vEyeTarget.m128_f32[1]<19 && vEyeTarget.m128_f32[1]>-19) {
+				SetTarget({ target.x + vEyeTarget.m128_f32[0], target.y + vEyeTarget.m128_f32[1], target.z + vEyeTarget.m128_f32[2] });
+			}
+		
+			//SetUp({ vUp.m128_f32[0], vUp.m128_f32[1], vUp.m128_f32[2] });
 		}
 	}
 
 	if(Colision==false)oldeye = eye;
 
 
-	up.x = 0;
-	up.y = 1;
-	up.z = 0;
+	//up.x = 0;
+	//up.y = 1;
+	//up.z = 0;
 
 	Camera::Update();
 }
 
-void DebugCamera::MainSceneUpdate()
+volatile void DebugCamera::MainSceneUpdate()
 {
 	oldeye = eye;
 
@@ -127,34 +219,9 @@ void DebugCamera::MainSceneUpdate()
 	float dy = mouseMove.lX * scaleY;
 	float dx = mouseMove.lY * scaleX;
 
-
 	angleX = -dx * XM_PI;
 	angleY = -dy * XM_PI;
 
-	//dirty = true;
-
-
-	
-	
-	//カメラのX軸ベクトルが後ろに行きそうなら押し戻す
-	/**/
-	/*
-	if (oldx >= 1.40)
-	{
-		if (angleX > 0)
-		{
-			angleX = 0;
-		}
-	}
-	else if (oldx <= -1.40)
-	{
-		if (angleX < 0)
-		{
-			angleX = 0;
-		}
-	}
-	*/
-	
 	oldx += angleX;
 	oldy += angleY;
 
@@ -168,8 +235,10 @@ void DebugCamera::MainSceneUpdate()
 		angleY = -dy * XM_PI;
 		//dirty = true;
 	}
-	
+	move = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+
 	move = move_;
+
 	if (Colision == false)
 	{
 		OldmatRot = matRot;
@@ -184,11 +253,8 @@ void DebugCamera::MainSceneUpdate()
 		XMVector3Normalize(ColisionVec);
 
 	
-		if (move.m128_f32[0]>0&& move.m128_f32[2] > 0)
+		if (move.m128_f32[0] > 0 && move.m128_f32[2] > 0)
 		{
-			//move = XMVector3Normalize(XMVector3Dot(move, ColisionVec));
-		//	move = (XMVector3Normalize(move - XMVector3Dot(move, ColisionVec) * ColisionVec));
-			//move = (XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec,move) * move));
 			s = 1;
 		}
 		else if (move.m128_f32[0] < 0 && move.m128_f32[2] > 0)
@@ -210,15 +276,25 @@ void DebugCamera::MainSceneUpdate()
 		}
 
 
-		if(s==1)move =  (XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
-		if(s==2)move = -(XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
-		if(s==3)move = -(XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
+		if (s == 1) {
+			move = (XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
+		}
+		else if (s == 2) {
+			move = -(XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
+		}
+		else if (s == 3) {
+			move = -(XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
+		}
+
+		move.m128_f32[1] = 0;
 
 	//D3DXVec3Normalize(out, &(front - D3DXVec3Dot(&front, &normal_n) * normal_n));
 	}
 
-
-	MoveVectorNotY(move);
+	if (Colision == false)
+		MoveVectorNotY(move);
+	else
+		MoveVectorNotY2(move);
 	moveOld = -1*move;
 	moveOld2 =move;
 
@@ -252,23 +328,7 @@ void DebugCamera::MainSceneUpdate()
 	*/
 
 
-	//テレポートしたら角度を球の逆にする
-	if (redTeleport == true)
-	{
-		//angleX = angle_RedX;
-		angleY = angle_RedY - Ras;
-
-		//dirty = true;
-	}
-
-	//テレポートしたら角度を球の逆にする
-	if (blueTeleport == true)
-	{
-		//angleX = angle_BlueX;
-		angleY = angle_BlueY - Ras;
-
-		//dirty = true;
-	}
+	
 
 	//テレポートしたら座標を合わせる
 	if (blueTeleport == true || redTeleport == true)
@@ -279,17 +339,10 @@ void DebugCamera::MainSceneUpdate()
 
 	
 }
-
+#pragma optimize("", on)
 void DebugCamera::TitleSceneUpdate()
 {
 
-	//angleY -=3.1f;;
-
-	//dirty = true;
-
-	//oldx += angleX;
-	//oldy += angleY;
-	
 	
 	eye = { -80,60,-60 };
 	
@@ -393,6 +446,65 @@ void DebugCamera::LoadUpdate()
 
 }
 
+void DebugCamera::ColisionAfterCameraSet(XMFLOAT3 Pos)
+{
+	SetEye(Pos);
+	
+
+	if (viewDirty) {
+		
+
+		// 注視点から視点へのベクトルと、上方向ベクトル  視点
+		//XMVECTOR vTargetEye = { 0.0f, 0.0f, -distance, 1.0f };
+		XMVECTOR vEyeTarget = { 0.0f, 0.0f, distance, 1.0f };
+		XMVECTOR vUp = { 0.0f, 1.0f, 0.0f, 0.0f };
+
+		// ベクトルを回転
+		//vTargetEye = XMVector3Transform(vTargetEye, matRot);
+		vEyeTarget = XMVector3Transform(vEyeTarget, matRot);
+		//vUp = XMVector3Transform(vUp, matRot);
+
+		// 注視点からずらした位置に視点座標を決定
+		//const XMFLOAT3& target = GetTarget();
+		const XMFLOAT3& target = GetEye();
+
+
+		//SetEye({ target.x + vTargetEye.m128_f32[0], target.y + vTargetEye.m128_f32[1], target.z + vTargetEye.m128_f32[2] });
+
+		
+
+		if (scene != 99)
+		{
+			/*
+			if (vEyeTarget.m128_f32[1]<19 && vEyeTarget.m128_f32[1]>-19) {
+				PitchFlag=false;
+				PitchRot = matRot;
+			}
+			else
+			{
+				PitchFlag = true;
+			}
+
+			if (PitchFlag == true)
+			{
+				matRot = PitchRot;
+				vEyeTarget = XMVector3Transform(vEyeTarget, matRot);
+			}
+			*/
+
+		
+				SetTarget({ target.x + vEyeTarget.m128_f32[0], target.y + vEyeTarget.m128_f32[1], target.z + vEyeTarget.m128_f32[2] });
+			
+			//SetTarget({ target.x + vEyeTarget.m128_f32[0], target.y + vEyeTarget.m128_f32[1], target.z + vEyeTarget.m128_f32[2] });
+		//	SetUp({ vUp.m128_f32[0], vUp.m128_f32[1], vUp.m128_f32[2] });
+
+		}
+	}
+
+	if (Colision == false)oldeye = eye;
+	Camera::Update();
+}
+
 
 
 float DebugCamera::GetAngleX()
@@ -407,12 +519,12 @@ float DebugCamera::GetAngleY()
 
 float DebugCamera::GetPositionX()
 {
-	return oldx;
+	return matRot.r[1].m128_f32[0];
 }
 
 float DebugCamera::GetPositionY()
 {
-	return eye.x;
+	return eye.z;
 }
 
 

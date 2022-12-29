@@ -1,5 +1,6 @@
 #include "Collision.h"
-
+#include <string.h>
+#include <cmath>
 using namespace DirectX;
 
 bool Collision::CheckSphere2Plane(const Sphere& sphere,
@@ -240,22 +241,22 @@ bool Collision::CheckRay2Triangle(const Ray& ray, const Triangle& triangle, floa
 	XMVECTOR p1_p2 = triangle.p2 - triangle.p1;
 	m = XMVector3Cross(pt_p1, p1_p2);
 	//編の外側なら打ち切り
-	if (XMVector3Dot(m, triangle.normal).m128_f32[0] < -epsilon) { return false; }
+if (XMVector3Dot(m, triangle.normal).m128_f32[0] < -epsilon) { return false; }
 
-	//p2__p0
-	//XMVECTOR m;
+//p2__p0
+//XMVECTOR m;
 
-	XMVECTOR pt_p2 = triangle.p2 - interPlane;
-	XMVECTOR p2_p0 = triangle.p0 - triangle.p2;
-	m = XMVector3Cross(pt_p1, p2_p0);
-	//外側なら打ち切り
-	if (XMVector3Dot(m, triangle.normal).m128_f32[0] < -epsilon) { return false; }
-	if (inter)
-	{
-		*inter = interPlane;
-	}
+XMVECTOR pt_p2 = triangle.p2 - interPlane;
+XMVECTOR p2_p0 = triangle.p0 - triangle.p2;
+m = XMVector3Cross(pt_p1, p2_p0);
+//外側なら打ち切り
+if (XMVector3Dot(m, triangle.normal).m128_f32[0] < -epsilon) { return false; }
+if (inter)
+{
+	*inter = interPlane;
+}
 
-	return true;
+return true;
 }
 
 bool Collision::CheckRay2Sphere(const Ray& ray, const Sphere& sphere, float* distance, DirectX::XMVECTOR* inter)
@@ -282,6 +283,72 @@ bool Collision::CheckRay2Sphere(const Ray& ray, const Sphere& sphere, float* dis
 	return true;
 
 
+}
+
+bool Collision::CheckRay2Box(const Ray& ray, const Wall& wall, float* distance, DirectX::XMVECTOR* inter)
+{
+
+	/*
+	// 交差判定
+	float p[3]{0}, d[3]{0}, min[3]{0}, max[3]{0};
+
+	memcpy(p, &ray.start, sizeof(XMFLOAT3));
+	memcpy(d, &ray.dir, sizeof(XMFLOAT3));
+	memcpy(min, &wall.minPos, sizeof(XMFLOAT3));
+	memcpy(max, &wall.maxPos, sizeof(XMFLOAT3));
+
+	float t = -FLT_MAX;
+	float t_max = FLT_MAX;
+
+
+
+
+	for (int i = 0; i < 3; ++i) {
+		if (abs(d[i]) < FLT_EPSILON) {
+			if (p[i] < min[i] || p[i] > max[i])
+				return false; // 交差していない
+		}
+		else {
+			// スラブとの距離を算出
+			// t1が近スラブ、t2が遠スラブとの距離
+			float odd = 1.0f / d[i];
+			float t1 = (min[i] - p[i]) * odd;
+			float t2 = (max[i] - p[i]) * odd;
+			if (t1 > t2) {
+				float tmp = t1; t1 = t2; t2 = tmp;
+			}
+
+			if (t1 > t) t = t1;
+			if (t2 < t_max) t_max = t2;
+
+			// スラブ交差チェック
+			if (t >= t_max)
+				return false;
+		}
+	}
+
+
+	if (t < 0)t = 0.0f;
+	if (distance) { *distance = t; }
+
+	// 交差している
+	if (inter) {
+		*inter = ray.start + t * ray.dir;
+	}
+
+	return true;
+	*/
+	if (ray.start.m128_f32[0] >= wall.minPos.m128_f32[0] && ray.start.m128_f32[0] <= wall.maxPos.m128_f32[0] &&
+		ray.start.m128_f32[1] >= wall.minPos.m128_f32[1] && ray.start.m128_f32[1] <= wall.maxPos.m128_f32[1] &&
+		ray.start.m128_f32[2] >= wall.minPos.m128_f32[2] && ray.start.m128_f32[2] <= wall.maxPos.m128_f32[2])
+	{
+
+	}
+	else
+	{
+		return false;
+	}
+	return true;
 }
 
 

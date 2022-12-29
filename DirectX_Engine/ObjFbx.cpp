@@ -13,6 +13,8 @@ using namespace Microsoft::WRL;
 using namespace DirectX;
 
 
+
+
 ObjFbx::ObjFbx(Input* input, Physics* physics)
 	:Fbx3d(input)
 {
@@ -20,6 +22,22 @@ ObjFbx::ObjFbx(Input* input, Physics* physics)
 
 	this->input = input;
 	this->physics = physics;
+}
+
+void ObjFbx::Initialize2()
+{
+	//ïœêî
+	cursorOn = false;
+	cursorOn2 = false;
+
+	Shot = false;
+	Shot2 = false;
+	Recoile = false;
+	Recoile2 = false;
+
+	warkmove = true;
+	warktime = 0;
+	onGround = true;//ínñ ÇÃîªíË
 }
 
 void ObjFbx::ObjUpdate(float angleX, float angleY)

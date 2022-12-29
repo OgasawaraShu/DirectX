@@ -6,6 +6,7 @@ class ObjFbx :
     public Fbx3d
 {
 public:
+    void Initialize2();
     ObjFbx(Input* input, Physics* physics);// ƒ|ƒCƒ“ƒ^
     void ObjUpdate(float angleX, float angleY);
     void RayCheck();

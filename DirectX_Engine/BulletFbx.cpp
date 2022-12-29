@@ -9,6 +9,49 @@
 using namespace Microsoft::WRL;
 using namespace DirectX;
 
+void BulletFbx::Initialize2()
+{
+	 TriggerRe = 0;
+
+	 reset_Blue = true;//球の座標リセット
+
+	 reset_Red = true;//球の座標リセット
+
+	 warpFlag = false;//両方の球が撃たれたらワープできるようにする
+
+	 warpFlag2 = false;//両方の球が撃たれたらワープできるようにする
+
+	
+	 RedCollision = false;
+
+	 RedAttack = false;
+
+	 BlueCollision = false;
+
+	 ShotFlag = false;
+	 ShotFlag2 = false;
+
+
+	BlueAttack = false;
+
+	position = position_;
+	warpFlag = false;
+	TriggerFlag = 0;
+	debug = 0;
+	BlueAttack = false;
+	BlueCollision = false;
+
+	position = position_;
+	warpFlag2 = false;
+	TriggerFlag2 = 0;
+	debug2 = 0;
+
+	oldRedX = oldx2;
+	oldRedY = oldy2;
+	RedCollision = false;
+	RedAttack = false;
+}
+
 void BulletFbx::OnCollision(const CollisionInfo& info)
 {
 	if (info.collider->attribute != 2&& info.collider->attribute != 4&& info.collider->attribute != 8&& info.collider->attribute != 16)
@@ -64,7 +107,7 @@ BulletFbx::BulletFbx(Input* input)
 	this->input = input;
 }
 
-void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
+void BulletFbx::BlueBulletUpdate(float angleX, float angleY)
 {
 	// マウスの入力を取得
 	Input::MouseMove mouseMove = input->GetMouseMove();
@@ -82,12 +125,7 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 	//マウス角度出力Ver
 	if (TriggerFlag == 0)
 	{
-		//マウスの左が押されない限りカメラの角度を覚え続ける
-		angleX1 = angleX;
-		angleY1 = angleY;
-
-		oldBlueX += angleX1;
-		oldBlueY += angleY1;
+	
 
 		Target_ = Target;
 	}
@@ -96,6 +134,19 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 	
 		//押されたらフラグをtrueにし覚えるのをやめる
 		dirty = true;
+	}
+
+	//マウスの左が押されない限りカメラの角度を覚え続ける
+	angleX1 = angleX;
+	angleY1 = angleY;
+
+	oldBlueX += angleX1;
+	oldBlueY += angleY1;
+
+	if (ShotFlag2 == true)
+	{
+		memoB.x = oldBlueX;
+		memoB.y = oldBlueY;
 	}
 
 	XMMATRIX matScale, matRot, matTrans;
@@ -201,7 +252,7 @@ void BulletFbx::BlueBulletUpdate(double angleX, double angleY)
 	PostMatrixUpdate();
 }
 
-void BulletFbx::RedBulletUpdate(double angleX, double angleY)
+void BulletFbx::RedBulletUpdate(float angleX, float angleY)
 {
 	//RedCollision = false;
 	// マウスの入力を取得
@@ -222,11 +273,7 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 	//マウス角度出力Ver
 	if (TriggerFlag2 == 0)
 	{
-		angleX2 = angleX;
-		angleY2 = angleY;
-
-		oldRedX += angleX2;
-		oldRedY += angleY2;
+		
 
 		Target_ = Target;
 	}
@@ -234,6 +281,18 @@ void BulletFbx::RedBulletUpdate(double angleX, double angleY)
 	{
 		//押されたらフラグをtrueにし覚えるのをやめる
 		dirty = true;
+	}
+
+	angleX2 = angleX;
+	angleY2 = angleY;
+
+	oldRedX += angleX2;
+	oldRedY += angleY2;
+
+	if (ShotFlag == true)
+	{
+		memoR.x = oldRedX;
+		memoR.y = oldRedY;
 	}
 
 	oldx2 += angleX;

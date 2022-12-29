@@ -1,8 +1,11 @@
 #pragma once
-#include "Camera.h"
+#include "RedCamera.h"
 
-class RedCameraDebug:
-	public Camera
+/// <summary>
+/// デバッグ用カメラ
+/// </summary>
+class RedCameraDebug :
+	public RedCamera
 {
 	using XMMATRIX = DirectX::XMMATRIX;
 public:
@@ -17,21 +20,17 @@ public:
 	// 更新
 	void Update() override;
 
+	void SetEyePos(XMFLOAT3 eye) { eye_ = eye; }
+
 	void SetDistance(float distance) {
 		this->distance = distance; viewDirty = true;
 	}
 
-	float GetAngleX();
-	float GetAngleY();
-
-	float GetPositionX();
-	float GetPositionY();
+	void SetRot(XMMATRIX a) { matRotPortal = a; }
 
 	XMFLOAT3 GetPos() { return eye; }
 
-
 	XMMATRIX GetRot() { return matRot; }
-
 private:
 	// カメラ注視点までの距離
 	float distance = 20;
@@ -40,5 +39,8 @@ private:
 	float scaleY = 1.0f;
 	// 回転行列
 	XMMATRIX matRot = DirectX::XMMatrixIdentity();
+	XMMATRIX matRotPortal;
+
+	XMFLOAT3 eye_;
 };
 

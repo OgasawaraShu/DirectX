@@ -1,8 +1,8 @@
-#include "Camera.h"
+#include "RedCamera.h"
 
 using namespace DirectX;
 
-Camera::Camera(int window_width, int window_height)
+RedCamera::RedCamera(int window_width, int window_height)
 {
 	aspectRatio = (float)window_width / window_height;
 
@@ -16,7 +16,7 @@ Camera::Camera(int window_width, int window_height)
 	matViewProjection = matView * matProjection;
 }
 
-void Camera::Update()
+void RedCamera::Update()
 {
 	if (viewDirty || projectionDirty) {
 		// 再計算必要なら
@@ -37,7 +37,7 @@ void Camera::Update()
 	}
 }
 
-void Camera::UpdateViewMatrix()
+void RedCamera::UpdateViewMatrix()
 {
 	// 視点座標
 	XMVECTOR eyePosition = XMLoadFloat3(&eye);
@@ -66,14 +66,11 @@ void Camera::UpdateViewMatrix()
 	// ベクトルを正規化
 	cameraAxisX = XMVector3Normalize(cameraAxisX);
 
-	
 	// カメラのY軸（上方向）
 	XMVECTOR cameraAxisY;
 	// Y軸はZ軸→X軸の外積で求まる
 	cameraAxisY = XMVector3Cross(cameraAxisZ, cameraAxisX);
 
-	CameraAxisXGet = cameraAxisY;
-	CameraAxisZGet = cameraAxisZ;
 	// ここまでで直交した3方向のベクトルが揃う
 	//（ワールド座標系でのカメラの右方向、上方向、前方向）	
 
@@ -125,7 +122,7 @@ void Camera::UpdateViewMatrix()
 #pragma endregion
 }
 
-void Camera::UpdateProjectionMatrix()
+void RedCamera::UpdateProjectionMatrix()
 {
 	// 透視投影による射影行列の生成
 	matProjection = XMMatrixPerspectiveFovLH(
@@ -135,7 +132,7 @@ void Camera::UpdateProjectionMatrix()
 	);
 }
 
-void Camera::MoveEyeVector(const XMFLOAT3& move)
+void RedCamera::MoveEyeVector(const XMFLOAT3& move)
 {
 	// 視点座標を移動し、反映
 	XMFLOAT3 eye_moved = GetEye();
@@ -147,7 +144,7 @@ void Camera::MoveEyeVector(const XMFLOAT3& move)
 	SetEye(eye_moved);
 }
 
-void Camera::MoveEyeVector(const XMVECTOR& move)
+void RedCamera::MoveEyeVector(const XMVECTOR& move)
 {
 	// 視点座標を移動し、反映
 	XMFLOAT3 eye_moved = GetEye();
@@ -159,7 +156,7 @@ void Camera::MoveEyeVector(const XMVECTOR& move)
 	SetEye(eye_moved);
 }
 
-void Camera::MoveVector(const XMFLOAT3& move)
+void RedCamera::MoveVector(const XMFLOAT3& move)
 {
 	// 視点と注視点座標を移動し、反映
 	XMFLOAT3 eye_moved = GetEye();
@@ -177,7 +174,7 @@ void Camera::MoveVector(const XMFLOAT3& move)
 	SetTarget(target_moved);
 }
 
-void Camera::MoveVector(const XMVECTOR& move)
+void RedCamera::MoveVector(const XMVECTOR& move)
 {
 	// 視点と注視点座標を移動し、反映
 	XMFLOAT3 eye_moved = GetEye();
@@ -195,7 +192,7 @@ void Camera::MoveVector(const XMVECTOR& move)
 	SetTarget(target_moved);
 }
 
-void Camera::MoveVectorNotY(const XMVECTOR& move)
+void RedCamera::MoveVectorNotY(const XMVECTOR& move)
 {
 	// 視点と注視点座標を移動し、反映
 	XMFLOAT3 eye_moved = GetEye();
@@ -209,20 +206,4 @@ void Camera::MoveVectorNotY(const XMVECTOR& move)
 
 	SetEye(eye_moved);
 	SetTarget(target_moved);
-}
-
-void Camera::MoveVectorNotY2(const XMVECTOR& move)
-{
-	// 視点と注視点座標を移動し、反映
-	XMFLOAT3 eye_moved = GetEye();
-	XMFLOAT3 target_moved = GetTarget();
-
-	eye_moved.x += move.m128_f32[0];
-	eye_moved.z += move.m128_f32[2];
-
-	target_moved.x += move.m128_f32[0];
-	target_moved.z += move.m128_f32[2];
-
-	eye2=eye_moved;
-	//SetTarget(target_moved);
 }

@@ -127,6 +127,51 @@ Model* FbxLoader::RenLoadModelFromFile(const string& modelName)
     return model;
 }
 
+Model* FbxLoader::RenLoadModelFromFile2(const string& modelName)
+{
+    //同じ名前から読み込む
+    const string directoryPath = baseDirectory + modelName + "/";
+    //拡張子追加
+    const string fileName = modelName + ".fbx";
+    //連結してフルパスを得る
+    const string fullpath = directoryPath + fileName;
+
+    //ファイル名を指定して読み込む
+    if (!fbxImporter->Initialize(fullpath.c_str(), -1, fbxManager->GetIOSettings()))
+    {
+        assert(0);
+    }
+
+    //シーン生成
+    FbxScene* fbxScene =
+        FbxScene::Create(fbxManager, "fbxScene");
+
+    //ファイルから得た情報をシーンにインポート
+    fbxImporter->Import(fbxScene);
+
+    //モデル生成
+    Model* model = new Model();
+    model->name = modelName;
+
+    //
+    int nodeCount = fbxScene->GetNodeCount();
+
+    model->nodes.reserve(nodeCount);
+
+
+
+    //√ノードから準二階席する
+    ParseNodeRecursive(model, fbxScene->GetRootNode());
+    //シーン解放
+   // fbxScene->Destroy();
+    model->fbxScene = fbxScene;
+
+    model->RenCreateBuffers22(device);
+
+    model->RenderInitialize2(device);
+    return model;
+}
+
 void FbxLoader::ParseNodeRecursive(Model* model, FbxNode* fbxNode,Node*parent)
 {
     //ノード名を取得

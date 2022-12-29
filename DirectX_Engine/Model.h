@@ -205,6 +205,15 @@ public:
 	void RenCreateBuffers2(ID3D12Device* device);
 
 
+
+	void RenderInitialize2(ID3D12Device* device);
+
+	void RenderDraw2(ID3D12GraphicsCommandList* cmdList);
+
+	void RenCreateBuffers22(ID3D12Device* device);
+
+
+
 	void Draw2(ID3D12GraphicsCommandList* cmdList);
 
 	const XMMATRIX& GetModelTransform() { return meshNode->globalTransform; }
@@ -237,6 +246,10 @@ public:
 	void RenPreDrawScene(ID3D12GraphicsCommandList* cmdList);
 
 	void RenPostDrawScene(ID3D12GraphicsCommandList* cmdList);
+
+	void RenPreDrawScene2(ID3D12GraphicsCommandList* cmdList);
+
+	void RenPostDrawScene2(ID3D12GraphicsCommandList* cmdList);
 
 	static const float clearColor[4];
 
@@ -279,6 +292,18 @@ private
 
 	ComPtr<ID3D12DescriptorHeap> RendescHeapDSV;
 
+	//rendertexture
+	ComPtr<ID3D12DescriptorHeap> descHeapSRV2;
+
+	ComPtr<ID3D12Resource> RentexBuff2;
+
+	ComPtr<ID3D12DescriptorHeap> RendescHeapSRV2;
+
+	ComPtr<ID3D12Resource> RendepthBuff2;
+
+	ComPtr<ID3D12DescriptorHeap> RendescHeapRTV2;
+
+	ComPtr<ID3D12DescriptorHeap> RendescHeapDSV2;
 
 
 	//アンビエント係数

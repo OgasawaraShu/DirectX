@@ -605,6 +605,42 @@ void Model::RenPostDrawScene(ID3D12GraphicsCommandList* cmdList)
 	
 }
 
+void Model::RenPreDrawScene2(ID3D12GraphicsCommandList* cmdList)
+{
+
+	cmdList->ResourceBarrier(1,
+		&CD3DX12_RESOURCE_BARRIER::Transition(RentexBuff2.Get(),
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+			D3D12_RESOURCE_STATE_RENDER_TARGET));
+
+
+
+	D3D12_CPU_DESCRIPTOR_HANDLE rtvH =
+		RendescHeapRTV2->GetCPUDescriptorHandleForHeapStart();
+
+
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvH =
+		RendescHeapDSV2->GetCPUDescriptorHandleForHeapStart();
+
+	cmdList->OMSetRenderTargets(1, &rtvH, false, &dsvH);
+
+	cmdList->RSSetViewports(1, &CD3DX12_VIEWPORT(0.0f, 0.0f,
+		WinApp::window_width, WinApp::window_height));
+
+	cmdList->RSSetScissorRects(1, &CD3DX12_RECT(0, 0, WinApp::window_width, WinApp::window_height));
+
+	cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
+
+	cmdList->ClearDepthStencilView(dsvH, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+
+}
+
+void Model::RenPostDrawScene2(ID3D12GraphicsCommandList* cmdList)
+{
+	cmdList->ResourceBarrier(1, &CD3DX12_RESOURCE_BARRIER::Transition(RentexBuff2.Get(),
+		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE));
+}
+
 
 
 void Model::CreateBuffers2(ID3D12Device* device)
@@ -889,6 +925,308 @@ void Model::RenCreateBuffers2(ID3D12Device* device)
 	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	descHeapDesc.NumDescriptors = 1;
 	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeapSRV));
+
+	//
+	/*
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	D3D12_RESOURCE_DESC resDesc = texbuff->GetDesc();
+
+	srvDesc.Format = resDesc.Format;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture3D.MipLevels = 1;
+
+	device->CreateShaderResourceView(texbuff.Get(),
+		&srvDesc,
+		descHeapSRV->GetCPUDescriptorHandleForHeapStart());
+		*/
+}
+
+void Model::RenderInitialize2(ID3D12Device* device)
+{
+	HRESULT result;
+
+
+	CD3DX12_RESOURCE_DESC texresDesc = CD3DX12_RESOURCE_DESC::Tex2D(
+		DXGI_FORMAT_R8G8B8A8_UNORM,
+		WinApp::window_width,
+		(UINT)WinApp::window_height,
+		1, 0, 1, 0, D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET
+	);
+
+	//テクスチャバッファ生成
+	result = device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK,
+			D3D12_MEMORY_POOL_L0),
+		D3D12_HEAP_FLAG_NONE,
+		&texresDesc,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		&CD3DX12_CLEAR_VALUE(DXGI_FORMAT_R8G8B8A8_UNORM, clearColor),
+		IID_PPV_ARGS(&RentexBuff2));
+
+	assert(SUCCEEDED(result));
+
+	//テクスチャを赤クリア
+	const UINT pixelCount = WinApp::window_width * WinApp::window_height;
+
+	const UINT rowPitch = sizeof(UINT) * WinApp::window_width;
+
+	const UINT depthPitch = rowPitch * WinApp::window_height;
+
+	UINT* img = new UINT[pixelCount];
+	for (int j = 0; j < pixelCount; j++) { img[j] = 0xff0000ff; }
+
+	//テクスチャバッファにデータ転送
+	result = RentexBuff2->WriteToSubresource(0, nullptr,
+		img, rowPitch, depthPitch);
+
+	delete[] img;
+	//デスクリプタ―ヒープ設定
+	D3D12_DESCRIPTOR_HEAP_DESC srvDescHeapDesc = {};
+	srvDescHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	srvDescHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	srvDescHeapDesc.NumDescriptors = 1;
+
+	result = device->CreateDescriptorHeap(&srvDescHeapDesc, IID_PPV_ARGS(&RendescHeapSRV2));
+	assert(SUCCEEDED(result));
+
+	//SRV設定
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+	//デスクリプタ―ヒープにSRV作成
+	device->CreateShaderResourceView(RentexBuff2.Get(),
+		&srvDesc,
+		RendescHeapSRV2->GetCPUDescriptorHandleForHeapStart()
+	);
+
+
+
+	//3-4
+
+	//RTV
+	D3D12_DESCRIPTOR_HEAP_DESC rtvDescHeapDesc{};
+	rtvDescHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+	rtvDescHeapDesc.NumDescriptors = 1;
+
+	result = device->CreateDescriptorHeap(&rtvDescHeapDesc, IID_PPV_ARGS(&RendescHeapRTV2));
+	assert(SUCCEEDED(result));
+
+	//デスクリプタ―ヒープにRTV作成
+	device->CreateRenderTargetView(RentexBuff2.Get(),
+		nullptr,
+		RendescHeapRTV2->GetCPUDescriptorHandleForHeapStart());
+
+	//深度バッファリソース設定
+	CD3DX12_RESOURCE_DESC depthResDesc =
+		CD3DX12_RESOURCE_DESC::Tex2D(
+			DXGI_FORMAT_D32_FLOAT,
+			WinApp::window_width,
+			WinApp::window_height,
+			1, 0,
+			1, 0,
+			D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL
+		);
+
+	//深度バッファ生成
+	result = device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE,
+		&depthResDesc,
+		D3D12_RESOURCE_STATE_DEPTH_WRITE,
+		&CD3DX12_CLEAR_VALUE(DXGI_FORMAT_D32_FLOAT, 1.0f, 0),
+		IID_PPV_ARGS(&RendepthBuff2)
+	);
+
+	//DSV
+	D3D12_DESCRIPTOR_HEAP_DESC DescHeapDesc{};
+	DescHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
+	DescHeapDesc.NumDescriptors = 1;
+
+	result = device->CreateDescriptorHeap(&DescHeapDesc, IID_PPV_ARGS(&RendescHeapDSV2));
+
+	//デスクリプタヒープにDSV作成
+	D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc = {};
+	dsvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	dsvDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+	device->CreateDepthStencilView(RendepthBuff2.Get(),
+		&dsvDesc,
+		RendescHeapDSV2->GetCPUDescriptorHandleForHeapStart());
+}
+
+void Model::RenderDraw2(ID3D12GraphicsCommandList* cmdList)
+{
+	// 頂点バッファの設定
+	cmdList->IASetVertexBuffers(0, 1, &vbView);
+	// インデックスバッファの設定
+	cmdList->IASetIndexBuffer(&ibView);
+
+	//cmdList->SetGraphicsRootConstantBufferView(rootParamIndexMaterial,
+	//	constBuffB1->GetGPUVirtualAddress());
+
+	// デスクリプタヒープの配列
+	ID3D12DescriptorHeap* ppHeaps[] = { RendescHeapSRV2.Get() };
+	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
+
+	// 定数バッファビューをセット
+	//cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0->GetGPUVirtualAddress());
+	// シェーダリソースビューをセット
+	cmdList->SetGraphicsRootDescriptorTable(1, RendescHeapSRV2->GetGPUDescriptorHandleForHeapStart());
+
+	if (material.textureFilename.size() > 0) {
+
+		// シェーダリソースビューをセット
+		//	cmdList->SetGraphicsRootDescriptorTable(1, gpuDescHandleSRV);
+	}
+
+	// 定数バッファビューをセット
+	//cmdList->SetGraphicsRootConstantBufferView(0, constBuffB0->GetGPUVirtualAddress());
+	//cmdList->SetGraphicsRootConstantBufferView(1, constBuffB1->GetGPUVirtualAddress());
+
+	// シェーダリソースビューをセット
+	//cmdList->SetGraphicsRootDescriptorTable(2, gpuDescHandleSRV);
+
+
+	// 描画コマンド
+	//cmdList->DrawIndexedInstanced(_countof(indices), 1, 0, 0, 0);
+	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
+}
+
+void Model::RenCreateBuffers22(ID3D12Device* device)
+{
+	HRESULT result;
+
+
+
+	std::vector<VertexPosNormalUv> realVertices;
+
+	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
+	//UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
+
+
+	// 頂点バッファ生成
+	result = device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		//&CD3DX12_RESOURCE_DESC::Buffer(sizeof(vertices)),
+		&CD3DX12_RESOURCE_DESC::Buffer(sizeVB),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&vertBuff));
+
+	// 頂点バッファへのデータ転送
+	VertexPosNormalUv* vertMap = nullptr;
+	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
+	if (SUCCEEDED(result)) {
+		//memcpy(vertMap, vertices, sizeof(vertices));
+		std::copy(vertices.begin(), vertices.end(), vertMap);
+		vertBuff->Unmap(0, nullptr);
+	}
+
+	// 頂点バッファビューの作成
+	vbView.BufferLocation = vertBuff->GetGPUVirtualAddress();
+	//	vbView.SizeInBytes = sizeof(vertices);
+	vbView.SizeInBytes = sizeVB;
+	vbView.StrideInBytes = sizeof(vertices[0]);
+
+	UINT sizeIB = static_cast<UINT>(sizeof(unsigned short) * indices.size());
+
+	// インデックスバッファ生成
+	result = device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		//&CD3DX12_RESOURCE_DESC::Buffer(sizeof(indices)),
+		&CD3DX12_RESOURCE_DESC::Buffer(sizeIB),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&indexBuff));
+
+	// インデックスバッファへのデータ転送
+	unsigned short* indexMap = nullptr;
+	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
+	if (SUCCEEDED(result)) {
+
+		// 全インデックスに対して
+		//for (int i = 0; i < _countof(indices); i++)
+	//	{
+	//		indexMap[i] = indices[i];	// インデックスをコピー
+	//	}
+		std::copy(indices.begin(), indices.end(), indexMap);
+
+		indexBuff->Unmap(0, nullptr);
+	}
+
+
+	// インデックスバッファビューの作成
+	ibView.BufferLocation = indexBuff->GetGPUVirtualAddress();
+	ibView.Format = DXGI_FORMAT_R16_UINT;
+	//ibView.SizeInBytes = sizeof(indices);
+	ibView.SizeInBytes = sizeIB;
+
+	//定数バッファの生成
+	/**/
+	result = device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD),
+		D3D12_HEAP_FLAG_NONE,
+		&CD3DX12_RESOURCE_DESC::Buffer((sizeof(ConstBufferDataB1) + 0xff) & ~0xff),
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&constBuffB1)
+	);
+
+
+
+	// 定数バッファへデータ転送
+	ConstBufferDataB1* constMap1 = nullptr;
+	result = constBuffB1->Map(0, nullptr, (void**)&constMap1);
+	constMap1->ambient = material.ambient;
+	constMap1->diffuse = material.diffuse;
+	constMap1->specular = material.specular;
+	constMap1->alpha = material.alpha;
+
+	constBuffB1->Unmap(0, nullptr);
+
+	//画像データ
+	const DirectX::Image* img = scratchImg.GetImage(0, 0, 0);
+	assert(img);
+
+
+	// リソース設定
+	/*
+	CD3DX12_RESOURCE_DESC texresDesc = CD3DX12_RESOURCE_DESC::Tex2D(
+		metadata.format,
+		metadata.width,
+		(UINT)metadata.height,
+		(UINT16)metadata.arraySize,
+		(UINT16)metadata.mipLevels
+	);
+
+	// テクスチャ用バッファの生成
+	result = device->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_CPU_PAGE_PROPERTY_WRITE_BACK, D3D12_MEMORY_POOL_L0),
+		D3D12_HEAP_FLAG_NONE,
+		&texresDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ, // テクスチャ用指定
+		nullptr,
+		IID_PPV_ARGS(&texbuff));
+
+	// テクスチャバッファにデータ転送
+	result = texbuff->WriteToSubresource(
+		0,
+		nullptr, // 全領域へコピー
+		img->pixels,    // 元データアドレス
+		(UINT)img->rowPitch,  // 1ラインサイズ
+		(UINT)img->slicePitch // 1枚サイズ
+	);
+	*/
+	//
+	D3D12_DESCRIPTOR_HEAP_DESC descHeapDesc = {};
+	descHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+	descHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+	descHeapDesc.NumDescriptors = 1;
+	result = device->CreateDescriptorHeap(&descHeapDesc, IID_PPV_ARGS(&descHeapSRV2));
 
 	//
 	/*

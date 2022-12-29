@@ -13,13 +13,15 @@ public://関数
 	/// 衝突時コールバック関数
 	/// </summary>
 	/// <param name="info">衝突情報</param>
+	/// 
+	void Initialize2();
 	void OnCollision(const CollisionInfo& info) override;
 
 	BulletFbx(Input* input);// 入力クラスのポインタ
 
-	void BlueBulletUpdate(double angleX, double angleY);//青の球更新
+	void BlueBulletUpdate(float angleX, float angleY);//青の球更新
 
-	void RedBulletUpdate(double angleX, double angleY);//赤の球更新
+	void RedBulletUpdate(float angleX, float angleY);//赤の球更新
 
 	void PostMatrixUpdate();
 
@@ -58,6 +60,9 @@ public://関数
 	bool GetShot() { return ShotFlag; }
 	bool GetShot2() { return ShotFlag2; }
 
+	XMFLOAT2 GetMemoR() { return memoR; }
+	XMFLOAT2 GetMemoB() { return memoB; }
+
 private://変数
 
 	Input* input;//入力クラスのポインタ
@@ -75,6 +80,10 @@ private://変数
 	float oldBlueX;//青の累計角度
 
 	float oldBlueY;//青の累計角度
+
+	XMFLOAT2 memoB;
+
+	XMFLOAT2 memoR;
 
 	bool reset_Blue = true;//球の座標リセット
 

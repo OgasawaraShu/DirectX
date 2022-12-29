@@ -34,6 +34,8 @@ public:
 
 	static bool CheckRay2Sphere(const Ray& ray, const Sphere& sphere, float* distance = nullptr, DirectX::XMVECTOR* inter = nullptr);
 
+	static bool CheckRay2Box(const Ray& ray, const Wall& wall, float* distance = nullptr, DirectX::XMVECTOR* inter = nullptr);
+
 	/// <summary>
 	/// ‹…‚Æ‹…‚Ì“–‚½‚è”»’è
 	/// </summary>

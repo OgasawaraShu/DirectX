@@ -11,6 +11,40 @@
 using namespace Microsoft::WRL;
 using namespace DirectX;
 
+void PlayerFbx::Initialize2()
+{
+
+	//変数
+	 WarpTime = 0;
+
+	 TimeWarpF = true;
+
+	 onGround = true;//地面の判定
+
+	 redTeleport = false;//赤への転送
+
+	 blueTeleport = false;//青への転送
+
+	 blueCollision = false;//青への転送フラッグ
+
+	 redCollision = false;//赤への転送フラッグ
+
+	 warpFlag = false;//trueになったらwarp出来るようにする
+
+	 warpFlag2 = false;//trueになったらwarp出来るようにする
+
+	 acceleration_g = 9.81 / 60;//加速度
+
+	 JumpVel = 2;//Jumpの初速
+
+	 WallCollision = false;
+
+	 wark = false;
+
+	 Exit = false;
+	 a = 0;
+}
+
 void PlayerFbx::OnCollision(const CollisionInfo& info)
 {
 	//2進法で表現しているため4は赤球8は蒼球
@@ -62,7 +96,7 @@ PlayerFbx::PlayerFbx(Input* input,Physics* physics)
 	
 }
 
-void PlayerFbx::PlayerUpdate(double angleX, double angleY)
+void PlayerFbx::PlayerUpdate(float angleX, float angleY)
 {
 
 	//前の座標を記録
@@ -119,9 +153,9 @@ void PlayerFbx::FallJump()
 	}
 	// ジャンプ操作
 	else if (input->TriggerKey(DIK_SPACE)) {
-		onGround = false;
-		const float jumpVYFist = 6.0f;
-		fallV = { 0, jumpVYFist, 0, 0 };
+		//onGround = false;
+	//	const float jumpVYFist = 6.0f;
+	//	fallV = { 0, jumpVYFist, 0, 0 };
 	}
 }
 
@@ -134,11 +168,22 @@ void PlayerFbx::Landing()
 	ray.dir = { 0,-1,0,0 };
 	RaycastHit raycastHit;
 
+
+	Ray ray2;
+	ray2.start = { position.x,position.y-5.0f,position.z,0 };
+	//ray2.start.m128_f32[1] += 5;
+	ray2.dir = { 0,-1,0,0 };
+	RaycastHit raycastHit2;
+
 	
     Plane plane;
 
     plane.normal = XMVectorSet(0, 1, 0, 0);
     plane.distance = 0.0f;
+
+	Sphere sphere;
+	sphere.center= { position.x,position.y-6,position.z,0 };
+	sphere.redius = 1;
    
         
         XMVECTOR inter;
@@ -147,7 +192,7 @@ void PlayerFbx::Landing()
 	
         if (hit&&distance<=5.0f) {
 
-			onGround = true;
+			//onGround = true;
         }
 		else
 		{
@@ -155,6 +200,29 @@ void PlayerFbx::Landing()
 		}
         
 
+		if (CollisionManager::GetInstance()->Raycast(ray2, COLLISION_ATTR_WALL, &raycastHit2, 5)) {
+			//onGround = false;
+			//position.y -= (raycastHit.distance - 5.0 * 2.0f);
+			//debugCheck = true;
+			//onGround = true;
+		}
+		else
+		{
+			//debugCheck = false;
+			//onGround = false;
+		}
+
+		if (CollisionManager::GetInstance()->Spherecast(sphere, COLLISION_ATTR_WALL, &raycastHit2, 5)) {
+			//onGround = false;
+			//position.y -= (raycastHit.distance - 5.0 * 2.0f);
+			debugCheck = true;
+			onGround = true;
+		}
+		else
+		{
+			debugCheck = false;
+			onGround = false;
+		}
 	// 接地状態
 	if (onGround) {
 		// スムーズに坂を下る為の吸着距離
@@ -290,7 +358,7 @@ void PlayerFbx::WarpUpdate()
 		WarpTime += 1;
 	}
 
-	if (WarpTime > 120)
+	if (WarpTime > 60)
 	{
 		WarpTime = 0;
 		TimeWarpF = true;
@@ -311,6 +379,11 @@ void PlayerFbx::WarpUpdate()
 
 		//onGround = false;
 		TimeWarpF = false;
+
+
+
+		//落下ベクトルを計算して適切な方向に変換
+		VectorChange();
 	}
 	else if (redCollision == false)
 	{
@@ -330,6 +403,8 @@ void PlayerFbx::WarpUpdate()
 
 		blueTeleport = true;
 		TimeWarpF = false;
+		//落下ベクトルを計算して適切な方向に変換
+		VectorChange();
 	}
 	else if (blueCollision == false)
 	{
@@ -357,7 +432,7 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 	float dx = 0;
 	float dz = 0;
 	float dy = 0;
-
+	moveCamera = { 0,0,0,0 };
 //	wark = false;
 	// WASDが押されていたら並行移動させる
 	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
@@ -491,6 +566,11 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 void PlayerFbx::CollisionAfter()
 {
 	WallCollision = false;
+}
+
+void PlayerFbx::VectorChange()
+{
+	fallV.m128_f32[2] = -(fallV.m128_f32[1] + fallV.m128_f32[2]);
 }
 
 

@@ -199,6 +199,69 @@ bool CollisionManager::Raycast(const Ray& ray, unsigned short attribute, Raycast
 			it_hit = it;
 		}
 		*/
+
+		if (colA->GetShapeType() == COLLISIONSHAPE_WALL) {
+			Wall* wall = dynamic_cast<Wall*>(colA);
+
+			float tempDistance;
+			XMVECTOR tempInter;
+
+			if (!Collision::CheckRay2Box(ray, *wall, &tempDistance, &tempInter)) continue;
+			//if (tempDistance >= distance) continue;
+
+			result = true;
+			distance = tempDistance;
+			inter = tempInter;
+			it_hit = it;
+		}
+
+	}
+
+	if (result && hitInfo) {
+		hitInfo->distance = distance;
+		hitInfo->inter = inter;
+		hitInfo->collider = *it_hit;
+		hitInfo->fbx = hitInfo->collider->GetObject3d();
+	}
+
+	return result;
+}
+
+bool CollisionManager::Spherecast(const Sphere& sphere, unsigned short attribute, RaycastHit* hitInfo, float maxDistance)
+{
+	bool result = false;
+	std::forward_list<BaseCollider*>::iterator it;
+	std::forward_list<BaseCollider*>::iterator it_hit;
+	float distance = maxDistance;
+	XMVECTOR inter;
+
+	// 全てのコライダーと総当りチェック
+	it = colliders.begin();
+	for (; it != colliders.end(); ++it) {
+		BaseCollider* colA = *it;
+
+		// 属性が合わなければスキップ
+		if (!(colA->attribute & attribute)) {
+			continue;
+		}
+
+	
+
+		if (colA->GetShapeType() == COLLISIONSHAPE_WALL) {
+			Wall* wall = dynamic_cast<Wall*>(colA);
+
+			float tempDistance{};
+			XMVECTOR tempInter;
+
+			if (!Collision::CheckSphere2Box2(sphere, *wall,&tempInter)) continue;
+			//if (tempDistance >= distance) continue;
+
+			result = true;
+			distance = tempDistance;
+			inter = tempInter;
+			it_hit = it;
+		}
+
 	}
 
 	if (result && hitInfo) {

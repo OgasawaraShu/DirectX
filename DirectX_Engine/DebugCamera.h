@@ -19,16 +19,19 @@ public:
 	/// <param name="input">入力</param>
 	DebugCamera(int window_width, int window_height, Input* input);
 
+	void Initialize2();
 	// 更新
 	void Update() override;
 
-	void MainSceneUpdate();
+	volatile void MainSceneUpdate();
 
 	void TitleSceneUpdate();
 
 	void IventMainUpdate();
 
 	void LoadUpdate();
+
+	void ColisionAfterCameraSet(XMFLOAT3 Pos);
 
 	void SetDistance(float distance) {
 		this->distance = distance; viewDirty = true;
@@ -48,6 +51,9 @@ public:
 	XMFLOAT3 GetPosOld() { return oldeye; }
 
 
+	XMFLOAT3 GetEye2() {
+		return eye2;
+	}
 	int Gets() { return s; }
 
 
@@ -58,6 +64,9 @@ public:
 	XMVECTOR GetMoveOld() { return moveOld; }
 
 	XMVECTOR GetMoveOld2() { return moveOld2; }
+
+	float GetVx() { return vect.m128_f32[0]; }
+	float GetVy() { return vect.m128_f32[1]; }
 
 
 	void SetMove(XMVECTOR move) { move_ = move; }
@@ -73,7 +82,13 @@ public:
 	void SetScene(int scene_) { scene = scene_; }
 	void SetColision(bool a) { Colision = a; }
 	void SetColisionVec(XMVECTOR a) { ColisionVec = a; }
+	void SetRedAngle(XMFLOAT2 a) { RedAngle = a; }
+	void SetBlueAngle(XMFLOAT2 a) { BlueAngle = a; }
 
+	void SetRed(XMMATRIX a) { RotRed = a; }
+	void SetBlue(XMMATRIX a) { RotBlue = a; }
+
+	
 private:
 	// 入力クラスのポインタ
 	Input* input;
@@ -87,17 +102,38 @@ private:
 	// 回転行列
 	XMMATRIX matRot = DirectX::XMMatrixIdentity();
 	// 回転行列
-	XMMATRIX OldmatRot;
+	XMMATRIX OldmatRot = DirectX::XMMatrixIdentity();;
+
+	// 回転行列
+	XMMATRIX PitchRot = DirectX::XMMatrixIdentity();;
+
+
+	XMMATRIX RotRed = DirectX::XMMatrixIdentity();;
+	XMMATRIX RotBlue = DirectX::XMMatrixIdentity();;
+
+
+
+	XMFLOAT2 RedAngle;
+	XMFLOAT2 BlueAngle;
+
 	//
+	bool PitchFlag=false;
 	float camera_posX = 0;
 	float camera_posZ = 0;
 
 	bool Colision = false;
 	bool OldColision;
 
-	double angleX = 0;//カメラの角度X
-	double angleY = 0;//カメラの角度Y
-	double oldx = 0;
+	bool redfall = false;
+	bool bluefall = false;
+
+	XMMATRIX RotRedFall = DirectX::XMMatrixIdentity();;
+	XMMATRIX RotBlueFall = DirectX::XMMatrixIdentity();;
+
+
+	float angleX = 0;//カメラの角度X
+	float angleY = 0;//カメラの角度Y
+	float oldx = 0;
 	float oldy = 0;
 
 	const float Ras = 3.15;
@@ -126,16 +162,20 @@ int s = 0;
 
 	int IventTime = 0;
 
-	XMVECTOR fallV{};
-	XMVECTOR JumpV{};
-	XMVECTOR move;
-	XMVECTOR moveOld;
-	XMVECTOR moveOld2;
+	XMVECTOR fallV = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);;
+	XMVECTOR JumpV = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);;
+	XMVECTOR move= DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR moveOld = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR moveOld2 = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
-	XMVECTOR move_;
-	XMFLOAT3 Warp_;
-	XMFLOAT3 eye_;
-	XMFLOAT3 oldeye;
+	volatile XMVECTOR movevol{};
+
+	XMVECTOR move_ = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR vect= DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMFLOAT3 Warp_={0,0,0};
+	XMFLOAT3 eye_ = { 0,0,0 };
+	XMFLOAT3 oldeye = { 0,0,0 };
+	XMFLOAT3 position1{};
 
 	bool trun = false;
 	int time2 = 0;

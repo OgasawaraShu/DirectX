@@ -1,8 +1,9 @@
 #pragma once
+#pragma once
 
 #include <DirectXMath.h>
 
-class Camera
+class BlueCamera
 {
 protected: // エイリアス
 	// DirectX::を省略
@@ -18,12 +19,12 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="window_width">画面幅</param>
 	/// <param name="window_height">画面高さ</param>
-	Camera(int window_width, int window_height);
+	BlueCamera(int window_width, int window_height);
 
 	/// <summary>
 	/// デストラクタ
 	/// </summary>
-	virtual ~Camera() = default;
+	virtual ~BlueCamera() = default;
 
 	/// <summary>
 	/// 毎フレーム更新
@@ -80,7 +81,6 @@ public: // メンバ関数
 		return eye;
 	}
 
-
 	/// <summary>
 	/// 視点座標の設定
 	/// </summary>
@@ -117,14 +117,10 @@ public: // メンバ関数
 	void MoveVector(const XMFLOAT3& move);
 	void MoveVector(const XMVECTOR& move);
 
-    /// Y軸を除いたベクトルの移動 
-	void MoveVectorNotY(const XMVECTOR& move);
 	/// Y軸を除いたベクトルの移動 
-	void MoveVectorNotY2(const XMVECTOR& move);
+	void MoveVectorNotY(const XMVECTOR& move);
 
 	XMVECTOR GetCameraZAxis() { return CameraAxisGet; }
-	float GetCameraXAxis() { return CameraAxisXGet.m128_f32[1]; }
-	float GetCameraXAxis2() { return CameraAxisZGet.m128_f32[2]; }
 	XMFLOAT3 GetTargetPos() { return target; }
 
 protected: // メンバ変数
@@ -144,9 +140,6 @@ protected: // メンバ変数
 	bool projectionDirty = false;
 	// 視点座標
 	XMFLOAT3 eye = { 0, 0, -20 };
-
-	// 視点座標
-	XMFLOAT3 eye2 = { 0, 0, -20 };
 	// 注視点座標
 	XMFLOAT3 target = { 0, 0, 0 };
 	// 上方向ベクトル
@@ -155,10 +148,6 @@ protected: // メンバ変数
 	float aspectRatio = 1.0f;
 
 	XMVECTOR CameraAxisGet;
-
-	XMVECTOR CameraAxisXGet;
-	XMVECTOR CameraAxisZGet;
-
 
 	XMVECTOR Target;
 };
