@@ -62,10 +62,13 @@ protected:
 
 	XMVECTOR memory2 = { 0,0,1.0f,0 };
 
+
+
 	XMVECTOR Getmemo() { return memory; }
 	XMVECTOR Getmemo2() { return memory2; }
 
 
+	int Fbx_model_type;
 	int TriggerFlag = 0;
 
 	float dy;
@@ -75,6 +78,7 @@ protected:
 
 	float dy2;
 	float dx2;
+	bool Dead_flag = false;
 
 public:
 
@@ -126,14 +130,20 @@ public:
 	void SetScale(const DirectX::XMFLOAT3& scale_) { scale = scale_; }
 	void SetRotate(const DirectX::XMFLOAT3& rotation_) { rotation = rotation_; }
 	void SetColisionSize(const DirectX::XMFLOAT3& colisionsize_) { colisionsize = colisionsize_; }
-
-
+	void SetFbxmodelType(const int &type_) { Fbx_model_type = type_; }
+	void SetDeadFlag(const bool flag) { Dead_flag = flag; }
 
 	const XMMATRIX& GetMatWorld() { return matWorld; }//ワールド行列の取得
 	const XMFLOAT3& GetPosition() { return position; }//ポジションの取得
 	const XMFLOAT3& GetScale() { return scale; }//スケールの取得
 	const XMFLOAT3& GetRotation() { return rotation; }//ローテーションの取得
 	const XMFLOAT3& GetColisionSize() { return colisionsize; }//ローテーションの取得
+	const bool GetDeadFlag() { return Dead_flag; }
+
+	const float& GetColision_x() { return colisionsize.x; }
+	const float& GetColision_y() { return colisionsize.y; }
+	const float& GetColision_z() { return colisionsize.z; }
+	const int& GetFbxmodelType() { return Fbx_model_type; }
 	void SetColider(BaseCollider* collider);//こらいだーのセット
 	virtual void OnCollision(const CollisionInfo& info);//コールバック関数
 

@@ -21,6 +21,11 @@ public:
         DirectX::XMMATRIX mat8;//3D変換行列
         float Time8;
         float Bar8;
+        bool Post;
+    };
+
+    struct ConstBufferData9 {
+        bool Post;
     };
 
     static Sprite* Create(SpriteCommon* spriteCommon, UINT texnumber,
@@ -79,6 +84,9 @@ protected:
     bool isInvisible_ = false;
 
     float Yure = 0;
+
+    bool post;
+    
 public:
     void Initialize(SpriteCommon* spriteCommon, UINT texnumber,
         DirectX::XMFLOAT2 anchorpoint, bool isFlagX, bool isFlagY);
@@ -97,8 +105,10 @@ public:
     void SettexSize(const DirectX::XMFLOAT2& texSize) { texSize_ = texSize; }
     void SetColor(const DirectX::XMFLOAT4& color) { color_ = color; }
     void SetAnchor(const DirectX::XMFLOAT2& anchorpoint) { anchorpoint_ = anchorpoint; }
-
+    void SetPost(bool a) { post = a; }
     void Update();
+    void PostUpdate();
+
 
     //アニメーション用
     void SpriteDivDraw(float& DIVnum, float Divsize, float& sizex, float sizey, float& count);

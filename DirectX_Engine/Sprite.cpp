@@ -241,8 +241,68 @@ void Sprite::Update()
     {
         constMap->Bar8 = -30.0f;
     }
+
+
+    if (post == true)
+    {
+        constMap->Post = false;
+    }
+    else
+    {
+        constMap->Post = false;
+    }
     constBuff_->Unmap(0, nullptr);
 }
+
+void Sprite::PostUpdate()
+{
+    //ワールド行列の更新
+    matWorld_ = XMMatrixIdentity();
+
+    //X軸回転
+    matWorld_ *= XMMatrixRotationX(XMConvertToRadians(rotation_.x));
+
+    //Y軸回転
+    matWorld_ *= XMMatrixRotationY(XMConvertToRadians(rotation_.y));
+
+    //Z軸回転
+    matWorld_ *= XMMatrixRotationZ(XMConvertToRadians(rotation_.z));
+
+
+
+
+    //平行移動
+    matWorld_ *= XMMatrixTranslation(position_.x, position_.y, position_.z);
+
+    //定数バッファの転送
+    ConstBufferData8* constMap = nullptr;
+    HRESULT result = constBuff_->Map(0, nullptr, (void**)&constMap);
+    constMap->color8 = color_;
+    constMap->mat8 = matWorld_ * spriteCommon_->GetMatProjection();
+
+    constMap->Time8 += 2.0f;
+
+
+    if (constMap->Bar8 < 20.0f)
+    {
+        constMap->Bar8 += 0.05f;
+    }
+    else
+    {
+        constMap->Bar8 = -30.0f;
+    }
+
+    if (post == true)
+    {
+        constMap->Post = true;
+    }
+    else
+    {
+        constMap->Post = false;
+    }
+    constBuff_->Unmap(0, nullptr);
+}
+
 
 void Sprite::SpriteDivDraw(float& DIVnum, float Divsize, float& sizex, float sizey, float& count)
 {
@@ -362,6 +422,15 @@ void Sprite::PostInitialize(SpriteCommon* spriteCommon, UINT texnumber,
 
     //平行投影法
     constMap->mat8 = spriteCommon_->GetMatProjection();
+
+    if (post == true)
+    {
+        constMap->Post = false;
+    }
+    else
+    {
+        constMap->Post = false;
+    }
     constBuff_->Unmap(0, nullptr);
 
 
@@ -772,10 +841,7 @@ void Sprite::PostDraw()
  //       this->constBuff->Unmap(0, nullptr);
   //  }
 //
-    
-
-
-
+  
 
     ID3D12GraphicsCommandList* cmdList = spriteCommon_->GetcmdList();
 

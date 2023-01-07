@@ -11,6 +11,7 @@ public:
 	void MouseGet();
 	void Title();
 	void Scene1();
+	void MapEditScene();
 
 	void SetHwnd(HWND hwnd_) { hwnd = hwnd_; }
 
@@ -21,6 +22,7 @@ public:
 	int GetRed() { return OverRed; }
 	float GetChange() { return change; }
 	void SetExit(bool a) { Exit = a; }
+	bool GetEdit() { return MapEdit; }
 private:
 
 	// スケーリング
@@ -28,7 +30,7 @@ private:
 	bool Load = true;
 	float scaleX = 1.0f;
 	float scaleY = 1.0f;
-
+	bool MapEdit = false;
 	float mouseX;
 	float mouseY;
 

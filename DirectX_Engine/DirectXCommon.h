@@ -15,6 +15,8 @@ public://メンバ関数
 	//初期化
 	void Initialize(WinApp*win);
 
+	void ImguiPre();
+
 	void PreDraw();
 
 	void PostDraw();
@@ -44,7 +46,11 @@ private:
 	void InitializeFence();
 
 
-
+	/// <summary>
+	/// imgui初期化
+	/// </summary>
+	/// <returns>成否</returns>
+	bool InitImgui();
 	//デバイス
 	Microsoft::WRL::ComPtr<ID3D12Device> dev;
 	//DXGIファクトリ
@@ -79,7 +85,7 @@ private: // メンバ変数
 
 
 	UINT64 fenceVal = 0;
-
+	Microsoft::WRL::ComPtr<ID3D12DescriptorHeap> imguiHeap;
 
 };
 

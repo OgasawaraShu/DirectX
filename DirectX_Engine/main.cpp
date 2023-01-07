@@ -81,6 +81,7 @@ using namespace Microsoft::WRL;
 #include "MapWrite.h"
 #include "MapEdit.h"
 
+
 Model* modelPlane = nullptr;
 Model* modelBox = nullptr;
 Model* modelPyramid = nullptr;
@@ -574,6 +575,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Model* model22 = nullptr;
    Fbx3d* fbx3d37 = nullptr;
 
+
+   Model* model23 = nullptr;
+   Fbx3d* fbx3d38 = nullptr;
+
+   Model* model24 = nullptr;
+
    model1 = FbxLoader::GetInstance()->LoadModelFromFile("wall1");
    model2 = FbxLoader::GetInstance()->LoadModelFromFile("Door");
    model3 = FbxLoader::GetInstance()->LoadModelFromFile("blueBall");
@@ -597,6 +604,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    model20 = FbxLoader::GetInstance()->LoadModelFromFile("Door_");
    model21 = FbxLoader::GetInstance()->LoadModelFromFile("Door_not");
    model22 = FbxLoader::GetInstance()->LoadModelFromFile("portalpepar");
+   model23 = FbxLoader::GetInstance()->LoadModelFromFile("Grid");
+   model24 = FbxLoader::GetInstance()->LoadModelFromFile("CollisionBox");
 
    Fbx3d* fbx3d1_2 = nullptr;
    Fbx3d* fbx3d2_2 = nullptr;
@@ -683,6 +692,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    MapEdit* mapedit = nullptr;
    mapedit = new MapEdit(WinApp::window_width, WinApp::window_height, input);
    mapedit->SetFenceModel(model10);
+   mapedit->SetWallModel(model8);
+   mapedit->SetFloorModel(model6);
+   mapedit->SetDrumModel(model11);
+   mapedit->SetCollisionModel(model24);
    mapedit->Loadtxt();
 
    //モデル読み込み
@@ -869,6 +882,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d37->Initialize();
   fbx3d37->SetModel(model22);
 
+  fbx3d38 = new Fbx3d(input);
+  fbx3d38->Initialize();
+  fbx3d38->SetModel(model23);
   //3Dオブジェクト生成とモデルのセット
   fbx3d1_2 = new Fbx3d(input);
   fbx3d1_2->Initialize();
@@ -1210,43 +1226,43 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d8->SetPosition({ 0, 0, 106 });
   fbx3d8->SetRotate({ 270,0,0 });
 
-  fbx3d10->SetPosition({ 0, -10, -12 });
+  fbx3d10->SetPosition({ 0, 0, -12 });
   fbx3d10->SetScale({ 0.1,0.1,0.1 });
   fbx3d10->SetRotate({ 0,0,0 });
 
-  fbx3d11->SetPosition({ 20, -10, -12 });
+  fbx3d11->SetPosition({ 20, 0, -12 });
   fbx3d11->SetScale({ 0.1,0.1,0.1 });
   fbx3d11->SetRotate({ 0,0,0 });
 
-  fbx3d12->SetPosition({ 40, -10, -12 });
+  fbx3d12->SetPosition({ 40, 0, -12 });
   fbx3d12->SetScale({ 0.1,0.1,0.1 });
   fbx3d12->SetRotate({ 0,0,0 });
 
-  fbx3d13->SetPosition({ 60, -10, -12 });
+  fbx3d13->SetPosition({ 60, 0, -12 });
   fbx3d13->SetScale({ 0.1,0.1,0.1 });
   fbx3d13->SetRotate({ 0,0,0 });
 
-  fbx3d14->SetPosition({ 80, -10, -12});
+  fbx3d14->SetPosition({ 80, 0, -12});
   fbx3d14->SetScale({ 0.1,0.1,0.1 });
   fbx3d14->SetRotate({ 0,0,0 });
 
-  fbx3d15->SetPosition({ -20, -10, -12 });
+  fbx3d15->SetPosition({ -20, 0, -12 });
   fbx3d15->SetScale({ 0.1,0.1,0.1 });
   fbx3d15->SetRotate({ 0,0,0 });
 
-  fbx3d16->SetPosition({ -40, -10, -12 });
+  fbx3d16->SetPosition({ -40, 0, -12 });
   fbx3d16->SetScale({ 0.1,0.1,0.1 });
   fbx3d16->SetRotate({ 0,0,0 });
 
-  fbx3d17->SetPosition({ -60, -10, -12 });
+  fbx3d17->SetPosition({ -60, 0, -12 });
   fbx3d17->SetScale({ 0.1,0.1,0.1 });
   fbx3d17->SetRotate({ 0,0,0 });
 
-  fbx3d18->SetPosition({ -80, -10, -12 });
+  fbx3d18->SetPosition({ -80, 0, -12 });
   fbx3d18->SetScale({ 0.1,0.1,0.1 });
   fbx3d18->SetRotate({ 0,0,0 });
 
-  fbx3d19->SetPosition({ 0, -10, -12 });
+  fbx3d19->SetPosition({ 0, 0, -12 });
   fbx3d19->SetScale({ 0.1,0.1,0.1 });
   fbx3d19->SetRotate({ 0,0,0 });
 
@@ -1279,19 +1295,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d27->SetScale({ 3.5,3.5,3.5 });
   fbx3d27->SetRotate({ 0,0,0 });
 
-  fbx3d28->SetPosition({ 30, -10, -22 });
+  fbx3d28->SetPosition({ 30, 0, -22 });
   fbx3d28->SetScale({ 0.1,0.1,0.1 });
   fbx3d28->SetRotate({ 0,90,0 });
 
-  fbx3d29->SetPosition({ 30, -10, -62 });
+  fbx3d29->SetPosition({ 30, 0, -62 });
   fbx3d29->SetScale({ 0.1,0.1,0.1 });
   fbx3d29->SetRotate({ 0,90,0 });
 
-  fbx3d30->SetPosition({ 30, -10, -82 });
+  fbx3d30->SetPosition({ 30, 0, -82 });
   fbx3d30->SetScale({ 0.1,0.1,0.1 });
   fbx3d30->SetRotate({ 0,90,0 });
 
-  fbx3d31->SetPosition({ 30, -10, -102 });
+  fbx3d31->SetPosition({ 30, 0, -102 });
   fbx3d31->SetScale({ 0.1,0.1,0.1 });
   fbx3d31->SetRotate({ 0,90,0 });
 
@@ -1322,6 +1338,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d37->SetPosition({ 40,-1,-14 });
   fbx3d37->SetScale({ 0.04,0.04,0.04 });
   fbx3d37->SetRotate({ 0,360,0 });
+
+
+  fbx3d38->SetPosition({ 0,0,0 });
+  fbx3d38->SetScale({ 1,1,1 });
+  fbx3d38->SetRotate({ 0,0,0 });
 
   //衝突マネージャー
   CollisionManager* collisionManager = nullptr;
@@ -1579,6 +1600,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         {
             posi = camera->GetEye();
         }
+
+
+        scene->MapEditScene();
+
         //座標Set関連   
         //fbx3d2->SetMyPosition(fbx3d9->GetMyPosition());
        // fbx3d2->SetCameraAxisZ(camera->GetCameraZAxis());
@@ -1683,7 +1708,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         camera->SetColision(fbx3d9->GetColision());
         camera->SetMove(fbx3d9->GetMove());
         camera->SetColisionVec(fbx3d9->GetColisionVec());
-        camera->Update();
+        if (scene->GetEdit() == false)camera->Update();
  
         sprintf_s(moji2, "%f", camera->GetPositionX());
         fbx3d9->SetMemo(fbx3d4->GetMemo());
@@ -1700,55 +1725,58 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
       
         int i = 0;
 
-        while (1)
+
+        if (scene->GetEdit() == false)
         {
-            collisionManager->CheckAllCollisions();
-            if (fbx3d9->GetColision() == true)
+            while (1)
             {
-                camera->SetColision(fbx3d9->GetColision());
-                if (i < 4)
+                collisionManager->CheckAllCollisions();
+                if (fbx3d9->GetColision() == true)
                 {
-                    camera->SetMove(fbx3d9->GetMove());
+                    camera->SetColision(fbx3d9->GetColision());
+                    if (i < 4)
+                    {
+                        camera->SetMove(fbx3d9->GetMove());
+                    }
+                    else if (i % 4 == 0)
+                    {
+                        camera->SetMove(camera->GetMoveOld());
+                        mo = camera->GetMoveOld();
+                    }
+                    camera->SetColisionVec(fbx3d9->GetColisionVec());
+                    camera->Update();
+                    fbx3d9->SetPos(camera->GetEye2());
+                    fbx3d9->GetmoveOld(camera->GetMove());
+                    fbx3d9->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
+                    fbx3d9->CollisionAfter();
+                    i += 1;
+                    c = i;
                 }
-                else if(i%4==0)
+                else
                 {
-                    camera->SetMove(camera->GetMoveOld());
-                    mo = camera->GetMoveOld();
+                    //  
+                    break;
                 }
-                camera->SetColisionVec(fbx3d9->GetColisionVec());
-                camera->Update();
-                fbx3d9->SetPos(camera->GetEye2());
-                fbx3d9->GetmoveOld(camera->GetMove());
-                fbx3d9->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
-                fbx3d9->CollisionAfter();
-                i += 1;
-                c = i;
-            }
-            else
-            {
-              //  
-                break;
-            }
 
-            if (i > 14&& fbx3d9->Getground()==true)
-            {
+                if (i > 14 && fbx3d9->Getground() == true)
+                {
 
-                camera->SetEye(posi);
-                fbx3d9->SetPos(camera->GetPos());
+                    camera->SetEye(posi);
+                    fbx3d9->SetPos(camera->GetPos());
+                }
+
+                if (i > 60)
+                {
+                    break;
+                }
             }
 
-            if (i > 60)
-            {
-                break;
-            }
-        }
-
-        
-     
 
 
-        //if (scene->GetScene() == 1)
-        //{
+
+
+            //if (scene->GetScene() == 1)
+            //{
             Bluecamera->Update();
             Redcamera->Update();
             fbx3d3->SetCameraT(camera->GetTargetPos());
@@ -1764,11 +1792,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             camera->SetRedAngle(fbx3d4->GetMemoR());
 
             fbx3d21->ObjUpdate(camera->GetAngleX(), camera->GetAngleY());
-          
+
             fbx3d9->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
 
 
-          
+
 
             sprintf_s(moji, "%d", fbx3d9->GetDebug());
 
@@ -1777,92 +1805,98 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             fbx3d23->ExitUpdate(camera->GetAngleX(), camera->GetAngleY());
             fbx3d24->ExitUpdate(camera->GetAngleX(), camera->GetAngleY());
             fbx3d27->BoxObjUpdate(camera->GetAngleX(), camera->GetAngleY());
-       //     fbx3d32->BoxObjUpdate(camera->GetAngleX(), camera->GetAngleY());
-      //  }
+            //     fbx3d32->BoxObjUpdate(camera->GetAngleX(), camera->GetAngleY());
+           //  }
 
-        //追加
-   
+             //追加
 
 
-        input->GetScene(scene->GetScene());
-        fbx3d2->Update();
-      
-        fbx3d1->Update();
-    
-        fbx3d5->Update();
-        fbx3d6->Update();
-        fbx3d7->Update();
-        fbx3d8->Update();
-        fbx3d11->Update();
-        fbx3d12->Update();
-        fbx3d13->Update();
-        fbx3d14->Update();
-        fbx3d15->Update();
-        fbx3d16->Update();
-        fbx3d17->Update();
-        fbx3d18->Update();
-        fbx3d19->Update();
-        fbx3d20->Update();
-        fbx3d22->Update();
-        fbx3d25->Update();
-        fbx3d26->Update();
-        fbx3d23->ExitUpdate(camera->GetAngleX(), camera->GetAngleY());
-        fbx3d28->Update();
-        fbx3d29->Update();
-        fbx3d30->Update();
-        fbx3d31->Update();
-        fbx3d34->Update();
-        fbx3d35->Update();
-        fbx3d36->Update();
-        fbx3d37->Update();
-//        fbx3d33->Update();
-        wall1->Update();
-        wall2->Update();
-        wall3->Update();
-        wall4->Update();
-        /*
-        for (auto& object : objects) {
-            object->Update();
+
+            input->GetScene(scene->GetScene());
+            fbx3d2->Update();
+
+            fbx3d1->Update();
+
+            fbx3d5->Update();
+            fbx3d6->Update();
+            fbx3d7->Update();
+            fbx3d8->Update();
+            fbx3d11->Update();
+            fbx3d12->Update();
+            fbx3d13->Update();
+            fbx3d14->Update();
+            fbx3d15->Update();
+            fbx3d16->Update();
+            fbx3d17->Update();
+            fbx3d18->Update();
+            fbx3d19->Update();
+            fbx3d20->Update();
+            fbx3d22->Update();
+            fbx3d25->Update();
+            fbx3d26->Update();
+            fbx3d23->ExitUpdate(camera->GetAngleX(), camera->GetAngleY());
+            fbx3d28->Update();
+            fbx3d29->Update();
+            fbx3d30->Update();
+            fbx3d31->Update();
+            fbx3d34->Update();
+            fbx3d35->Update();
+            fbx3d36->Update();
+            fbx3d37->Update();
+            //        fbx3d33->Update();
+            wall1->Update();
+            wall2->Update();
+            wall3->Update();
+            wall4->Update();
+            /*
+            for (auto& object : objects) {
+                object->Update();
+            }
+
+
+            for (auto& object : objects) {
+                object->Draw();
+            }
+            */
+            //    camera->SetAngleRedX(fbx3d4->GetAngleX2());
+            //    camera->SetAngleRedY(fbx3d4->GetAngleY2());
+            camera->SetRedTeleport(fbx3d9->GetredTeleport());
+            //    camera->SetAngleBlueX(fbx3d3->GetAngleX1());
+            camera->SetAngleBlueY(fbx3d3->GetAngleY1());
+            camera->SetBlueTeleport(fbx3d9->GetblueTeleport());
+            //camera->SetEyePos(fbx3d9->GetMyPosition());
+            camera->SetBlue(fbx3d23->GetRot());
+            camera->SetRed(fbx3d24->GetRot());
+            Bluecamera->SetRot(fbx3d24->GetRot());
+            Redcamera->SetRot(fbx3d23->GetRot());
+
+
+
+            // パーティクル生成
+            if (fbx3d4->RedP_Attack() == true) particleMan->CreateParticles(fbx3d4->GetPosition());
+            if (fbx3d3->BlueP_Attack() == true) particleManBlue->CreateParticles(fbx3d3->GetPosition());
+            //     if (fbx3d4->RedP_Flag() == true) particleMan->CreateParticles2(fbx3d4->GetPosition());
+           //      if (fbx3d3->BlueP_Flag() == true) particleManBlue->CreateParticles2(fbx3d3->GetPosition());
+
+
+
+            particleMan->Update();
+            particleManBlue->BlueUpdate();
+
+            scene->SetExit(fbx3d9->GetExit());
         }
-
-
-        for (auto& object : objects) {
-            object->Draw();
+        else
+        {
+        fbx3d38->Update();
+        camera->MapEditUpdate();
         }
-        */
-    //    camera->SetAngleRedX(fbx3d4->GetAngleX2());
-    //    camera->SetAngleRedY(fbx3d4->GetAngleY2());
-        camera->SetRedTeleport(fbx3d9->GetredTeleport());
-    //    camera->SetAngleBlueX(fbx3d3->GetAngleX1());
-        camera->SetAngleBlueY(fbx3d3->GetAngleY1());
-        camera->SetBlueTeleport(fbx3d9->GetblueTeleport());
-        //camera->SetEyePos(fbx3d9->GetMyPosition());
-        camera->SetBlue(fbx3d23->GetRot());
-        camera->SetRed(fbx3d24->GetRot());
-        Bluecamera->SetRot(fbx3d24->GetRot());
-        Redcamera->SetRot(fbx3d23->GetRot());
-
-
-     
-        // パーティクル生成
-       if(fbx3d4->RedP_Attack()==true) particleMan->CreateParticles(fbx3d4->GetPosition());
-       if(fbx3d3->BlueP_Attack()==true) particleManBlue->CreateParticles(fbx3d3->GetPosition());
-  //     if (fbx3d4->RedP_Flag() == true) particleMan->CreateParticles2(fbx3d4->GetPosition());
- //      if (fbx3d3->BlueP_Flag() == true) particleManBlue->CreateParticles2(fbx3d3->GetPosition());
-
-
-
-        particleMan->Update();
-        particleManBlue->BlueUpdate();
-
-        scene->SetExit(fbx3d9->GetExit());
-
         //FBX描画
        // fbx3d1->Draw2(dxCommon->GetCmdList());
 
 
         fbx3d23->RenPreDraw(dxCommon->GetCmdList());
  
+
         if (fbx3d3->GetWarpFlag() == true && fbx3d4->GetWarpFlag2() == true)
         {
             if (portaltime == 0)
@@ -2010,47 +2044,63 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
              //FBX描画
             // fbx3d1->Draw2(dxCommon->GetCmdList());
-        if (scene->GetScene() != 99)
+           //バックバッファの番号を取得（2つなので0番か1番）
+      
+     //   mapedit->CreateObj(dxCommon->GetCmdList());
+        dxCommon->ImguiPre();
+
+        if (scene->GetEdit() == false)
         {
+            sprite100->SetPost(true);
 
-            mapedit->CreateObj(dxCommon->GetCmdList());
-          //  mapedit->LoadSet(dxCommon->GetCmdList());
+            if (scene->GetScene() != 99)
+            {
+
+               
+                //     mapedit->LoadSet(dxCommon->GetCmdList());
 
 
-            fbx3d23->RenderFbxDraw(dxCommon->GetCmdList());
-            fbx3d24->RenderFbxDraw2(dxCommon->GetCmdList());
-            fbx3d2->Draw2(dxCommon->GetCmdList());
-            fbx3d5->Draw2(dxCommon->GetCmdList());
-            fbx3d6->Draw2(dxCommon->GetCmdList());
-            fbx3d7->Draw2(dxCommon->GetCmdList());
-            fbx3d8->Draw2(dxCommon->GetCmdList());
-         //   fbx3d9->Draw2(dxCommon->GetCmdList());
-            fbx3d10->Draw2(dxCommon->GetCmdList());
-            fbx3d11->Draw2(dxCommon->GetCmdList());
-            fbx3d12->Draw2(dxCommon->GetCmdList());
-            fbx3d13->Draw2(dxCommon->GetCmdList());
-            fbx3d14->Draw2(dxCommon->GetCmdList());
-            fbx3d15->Draw2(dxCommon->GetCmdList());
-            fbx3d16->Draw2(dxCommon->GetCmdList());
-            fbx3d17->Draw2(dxCommon->GetCmdList());
-            fbx3d18->Draw2(dxCommon->GetCmdList());
-            fbx3d19->Draw2(dxCommon->GetCmdList());
-            fbx3d20->Draw2(dxCommon->GetCmdList());
-            fbx3d21->Draw2(dxCommon->GetCmdList());
-            fbx3d22->Draw2(dxCommon->GetCmdList());
-            fbx3d25->Draw2(dxCommon->GetCmdList());
-            fbx3d26->Draw2(dxCommon->GetCmdList());
-            fbx3d27->Draw2(dxCommon->GetCmdList());
-            fbx3d28->Draw2(dxCommon->GetCmdList());
-            fbx3d29->Draw2(dxCommon->GetCmdList());
-            fbx3d30->Draw2(dxCommon->GetCmdList());
-            fbx3d31->Draw2(dxCommon->GetCmdList());
-            fbx3d33->Draw2(dxCommon->GetCmdList());
-            fbx3d35->Draw2(dxCommon->GetCmdList());
-            fbx3d37->Draw2(dxCommon->GetCmdList());
+                fbx3d23->RenderFbxDraw(dxCommon->GetCmdList());
+                fbx3d24->RenderFbxDraw2(dxCommon->GetCmdList());
+                fbx3d2->Draw2(dxCommon->GetCmdList());
+                fbx3d5->Draw2(dxCommon->GetCmdList());
+                fbx3d6->Draw2(dxCommon->GetCmdList());
+                fbx3d7->Draw2(dxCommon->GetCmdList());
+                fbx3d8->Draw2(dxCommon->GetCmdList());
+                //   fbx3d9->Draw2(dxCommon->GetCmdList());
+                fbx3d10->Draw2(dxCommon->GetCmdList());
+                fbx3d11->Draw2(dxCommon->GetCmdList());
+                fbx3d12->Draw2(dxCommon->GetCmdList());
+                fbx3d13->Draw2(dxCommon->GetCmdList());
+                fbx3d14->Draw2(dxCommon->GetCmdList());
+                fbx3d15->Draw2(dxCommon->GetCmdList());
+                fbx3d16->Draw2(dxCommon->GetCmdList());
+                fbx3d17->Draw2(dxCommon->GetCmdList());
+                fbx3d18->Draw2(dxCommon->GetCmdList());
+                fbx3d19->Draw2(dxCommon->GetCmdList());
+                fbx3d20->Draw2(dxCommon->GetCmdList());
+                fbx3d21->Draw2(dxCommon->GetCmdList());
+                fbx3d22->Draw2(dxCommon->GetCmdList());
+                fbx3d25->Draw2(dxCommon->GetCmdList());
+                fbx3d26->Draw2(dxCommon->GetCmdList());
+                fbx3d27->Draw2(dxCommon->GetCmdList());
+                fbx3d28->Draw2(dxCommon->GetCmdList());
+                fbx3d29->Draw2(dxCommon->GetCmdList());
+                fbx3d30->Draw2(dxCommon->GetCmdList());
+                fbx3d31->Draw2(dxCommon->GetCmdList());
+                fbx3d33->Draw2(dxCommon->GetCmdList());
+                fbx3d35->Draw2(dxCommon->GetCmdList());
+                fbx3d37->Draw2(dxCommon->GetCmdList());
+            }
+            fbx3d34->Draw2(dxCommon->GetCmdList());
+            fbx3d36->Draw2(dxCommon->GetCmdList());
         }
-        fbx3d34->Draw2(dxCommon->GetCmdList());
-        fbx3d36->Draw2(dxCommon->GetCmdList());
+        else
+        {
+            sprite100->SetPost(false);
+            fbx3d38->Draw2(dxCommon->GetCmdList());
+        }
+        mapedit->CreateObj(dxCommon->GetCmdList());
         //      fbx3d32->Draw2(dxCommon->GetCmdList());
           //   // fbx3d23->RenPreDraw(dxCommon->GetCmdList());
            //   fbx3d23->RenPreDraw(dxCommon->GetCmdList());
@@ -2066,15 +2116,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         sprite100->PostDrawScene(dxCommon->GetCmdList());
         //     sprite101->PostDrawScene(dxCommon->GetCmdList());
 
-        //バックバッファの番号を取得（2つなので0番か1番）
         dxCommon->PreDraw();
-
-
+     
         spriteCommon->PreDraw_Post();
-        sprite100->Update();
+        sprite100->PostUpdate();
     //    sprite101->Update();
 
+     
         sprite100->PostDraw();
+     
         //fbx3d23->RenderFbxDraw(dxCommon->GetCmdList());
       //  sprite101->PostDraw();
 
@@ -2154,7 +2204,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         sprite6->Update();
         sprite6->SpriteDraw();
         sprite6->SetColor({ 1,1,1,scene->GetChange() });
-        if (fbx3d9->GetColision() == false)camera->ColisionAfterCameraSet(fbx3d9->GetMyPosition());
+        if (fbx3d9->GetColision() == false&&scene->GetEdit()==false)camera->ColisionAfterCameraSet(fbx3d9->GetMyPosition());
 
         // ４．描画コマンドここまで
      collisionManager->CheckAllCollisions();

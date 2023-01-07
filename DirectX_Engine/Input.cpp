@@ -60,10 +60,10 @@ void Input::Update()
 
     if (scene == 1)
     {
-        SetCursorPos(640, 360);
+        //SetCursorPos(640, 360);
 
         // マウスカーソルの非表示
-        ShowCursor(FALSE);
+       // ShowCursor(FALSE);
     }
     else
     {

@@ -29,6 +29,8 @@ public:
 
 	void IventMainUpdate();
 
+	void MapEditUpdate();
+
 	void LoadUpdate();
 
 	void ColisionAfterCameraSet(XMFLOAT3 Pos);

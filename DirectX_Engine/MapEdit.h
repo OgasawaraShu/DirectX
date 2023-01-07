@@ -1,9 +1,11 @@
 #pragma once
+#define __STDC_WANT_LIB_EXT1__ 1
 #include "Input.h"
 #include "Fbx3d.h"
 #include "memory.h"
 #include <list>
 #include "stdio.h"
+#include <string.h>
 #include <DirectXMath.h>
 #include <share.h>
 #include "MapLoader.h"
@@ -37,16 +39,41 @@ public:
 	void AdjustmentObj(std::unique_ptr<MapEdit>& obj_);
 	//情報をtxtに記録
 	void MapSave(std::unique_ptr<MapEdit>& obj_);
-	//モデルセット
-	void SetFenceModel(Model*model) { fence_model = model; }
 	//tｘtの情報をセット
 	void LoadSet(ID3D12GraphicsCommandList* cmdList);
 	//txtの情報を読み込む
 	void Loadtxt();
+    //コリジョンボックス作成
+	void CreateCollisionBox();
+	//コリジョンボックスUpdate
+	void UpdateCollisionBox(XMFLOAT3 scale_, XMFLOAT3 pos_, XMFLOAT3 rotate_, std::unique_ptr<MapEdit>& Colobj_);
+
+	//モデルセット
+	//フェンスモデル
+	void SetFenceModel(Model* model) { fence_model = model; }
+	//壁モデル
+	void SetWallModel(Model* model) { wall_model = model; }
+	//床モデル
+	void SetFloorModel(Model* model) { floor_model = model; }
+	//ドラムモデル
+	void SetDrumModel(Model* model) { drum_model = model; }
+	//コリジョンモデル
+	void SetCollisionModel(Model* model) { Collision_model = model; }
 
 	std::stringstream MapCommands;
+
+	std::stringstream MapCommands2;
 private:
 	std::list<std::unique_ptr<MapEdit>> Fences;
+
+	std::list<std::unique_ptr<MapEdit>> Walls;
+
+	std::list<std::unique_ptr<MapEdit>> Floors;
+
+	std::list<std::unique_ptr<MapEdit>> Drums;
+
+
+	std::list<std::unique_ptr<MapEdit>> Collisions;
 
 	std::list<std::unique_ptr<MapEdit>> mapObjs;
 
@@ -56,8 +83,19 @@ private:
 	int Window_Width;
 	int Window_Height;
 
+	int Fence_model_num = 1;
+	int Wall_model_num = 2;
+	int Floor_model_num = 3;
+	int Drum_model_num = 4;
+
+	bool Colision_draw_flag = true;
+
 	Input* input;
 	Model*fence_model;
+	Model*wall_model;
+	Model*floor_model;
+	Model*drum_model;
+	Model* Collision_model;
 	HWND hwnd = nullptr;
 };
 

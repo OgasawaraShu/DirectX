@@ -172,3 +172,11 @@ void SceneSelect::Scene1()
 
 	
 }
+
+void SceneSelect::MapEditScene()
+{
+	if (input->TriggerKey(DIK_M))
+	{
+		MapEdit = true;
+	}
+}
