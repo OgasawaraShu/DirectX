@@ -218,20 +218,20 @@ volatile void DebugCamera::MainSceneUpdate()
 
 
 	// マウスの左ボタンが押されていたらカメラを回転させる
-	if (input->PushMouseLeft())
-	{
+	//if (input->PushMouseLeft())
+	//{
 
 		float dy = mouseMove.lX * scaleY;
 		float dx = mouseMove.lY * scaleX;
 
 		angleX = -dx * XM_PI;
 		angleY = -dy * XM_PI;
-	}
-	else
-	{
-		angleX = 0;
-		angleY = 0;
-	}
+	//}
+	//else
+	//{
+	//	angleX = 0;
+	//	angleY = 0;
+	//}
 	oldx += angleX;
 	oldy += angleY;
 

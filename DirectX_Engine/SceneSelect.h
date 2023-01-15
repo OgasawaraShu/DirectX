@@ -14,6 +14,7 @@ public:
 	void MapEditScene();
 
 	void SetHwnd(HWND hwnd_) { hwnd = hwnd_; }
+	float GetMousePoint() { return mouseX; }
 
 	int GetScene() { return scene; }
 	int GetPush() { return push; }

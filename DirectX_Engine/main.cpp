@@ -696,8 +696,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    mapedit->SetFloorModel(model6);
    mapedit->SetDrumModel(model11);
    mapedit->SetCollisionModel(model24);
+   mapedit->SetExitModel(model2);
    mapedit->Loadtxt();
-
+  
+   MapEdit::SetMapCamera(camera);
    //モデル読み込み
    Fbx3d::SetDevice(dxCommon->GetDev());
 
@@ -1197,7 +1199,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d1->SetPosition({ 0, -10, 0 });
   fbx3d1->SetRotate({ 0,0,0 });
 
-  fbx3d2->SetPosition({ -60,11,100 });
+  fbx3d2->SetPosition({ -60,1,100 });
   fbx3d2->SetScale({ 0.1,0.1, 0.1 });
   fbx3d2->SetRotate({ 0,0,180 });
 
@@ -1424,7 +1426,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d9->PlayAnimation2();
 
   scene->SetHwnd(winApp->GetHwnd());
-
+  mapedit->SetHwnd(winApp->GetHwnd());
   int c = 0;
   int portaltime = 0;
   XMVECTOR mo;
@@ -1452,7 +1454,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             fbx3d1->SetPosition({ 0, -10, 0 });
             fbx3d1->SetRotate({ 0,0,0 });
 
-            fbx3d2->SetPosition({ -60,11,100 });
+            fbx3d2->SetPosition({ -60,1,100 });
             fbx3d2->SetScale({ 0.1,0.1, 0.1 });
             fbx3d2->SetRotate({ 0,0,180 });
 
@@ -1481,43 +1483,43 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             fbx3d8->SetPosition({ 0, 0, 106 });
             fbx3d8->SetRotate({ 270,0,0 });
 
-            fbx3d10->SetPosition({ 0, -10, -12 });
+            fbx3d10->SetPosition({ 0, 0, -12 });
             fbx3d10->SetScale({ 0.1,0.1,0.1 });
             fbx3d10->SetRotate({ 0,0,0 });
 
-            fbx3d11->SetPosition({ 20, -10, -12 });
+            fbx3d11->SetPosition({ 20, 0, -12 });
             fbx3d11->SetScale({ 0.1,0.1,0.1 });
             fbx3d11->SetRotate({ 0,0,0 });
 
-            fbx3d12->SetPosition({ 40, -10, -12 });
+            fbx3d12->SetPosition({ 40, 0, -12 });
             fbx3d12->SetScale({ 0.1,0.1,0.1 });
             fbx3d12->SetRotate({ 0,0,0 });
 
-            fbx3d13->SetPosition({ 60, -10, -12 });
+            fbx3d13->SetPosition({ 60, 0, -12 });
             fbx3d13->SetScale({ 0.1,0.1,0.1 });
             fbx3d13->SetRotate({ 0,0,0 });
 
-            fbx3d14->SetPosition({ 80, -10, -12 });
+            fbx3d14->SetPosition({ 80, 0, -12 });
             fbx3d14->SetScale({ 0.1,0.1,0.1 });
             fbx3d14->SetRotate({ 0,0,0 });
 
-            fbx3d15->SetPosition({ -20, -10, -12 });
+            fbx3d15->SetPosition({ -20, 0, -12 });
             fbx3d15->SetScale({ 0.1,0.1,0.1 });
             fbx3d15->SetRotate({ 0,0,0 });
 
-            fbx3d16->SetPosition({ -40, -10, -12 });
+            fbx3d16->SetPosition({ -40, 0, -12 });
             fbx3d16->SetScale({ 0.1,0.1,0.1 });
             fbx3d16->SetRotate({ 0,0,0 });
 
-            fbx3d17->SetPosition({ -60, -10, -12 });
+            fbx3d17->SetPosition({ -60, 0, -12 });
             fbx3d17->SetScale({ 0.1,0.1,0.1 });
             fbx3d17->SetRotate({ 0,0,0 });
 
-            fbx3d18->SetPosition({ -80, -10, -12 });
+            fbx3d18->SetPosition({ -80, 0, -12 });
             fbx3d18->SetScale({ 0.1,0.1,0.1 });
             fbx3d18->SetRotate({ 0,0,0 });
 
-            fbx3d19->SetPosition({ 0, -10, -12 });
+            fbx3d19->SetPosition({ 0, 0, -12 });
             fbx3d19->SetScale({ 0.1,0.1,0.1 });
             fbx3d19->SetRotate({ 0,0,0 });
 
@@ -1550,19 +1552,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             fbx3d27->SetScale({ 3.5,3.5,3.5 });
             fbx3d27->SetRotate({ 0,0,0 });
 
-            fbx3d28->SetPosition({ 30, -10, -22 });
+            fbx3d28->SetPosition({ 30, 0, -22 });
             fbx3d28->SetScale({ 0.1,0.1,0.1 });
             fbx3d28->SetRotate({ 0,90,0 });
 
-            fbx3d29->SetPosition({ 30, -10, -62 });
+            fbx3d29->SetPosition({ 30, 0, -62 });
             fbx3d29->SetScale({ 0.1,0.1,0.1 });
             fbx3d29->SetRotate({ 0,90,0 });
 
-            fbx3d30->SetPosition({ 30, -10, -82 });
+            fbx3d30->SetPosition({ 30, 0, -82 });
             fbx3d30->SetScale({ 0.1,0.1,0.1 });
             fbx3d30->SetRotate({ 0,90,0 });
 
-            fbx3d31->SetPosition({ 30, -10, -102 });
+            fbx3d31->SetPosition({ 30, 0, -102 });
             fbx3d31->SetScale({ 0.1,0.1,0.1 });
             fbx3d31->SetRotate({ 0,90,0 });
 
@@ -2097,9 +2099,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         }
         else
         {
+         
             sprite100->SetPost(false);
             fbx3d38->Draw2(dxCommon->GetCmdList());
         }
+    
+     //   mapedit->SetMousePositionX(scene->GetMousePoint());
         mapedit->CreateObj(dxCommon->GetCmdList());
         //      fbx3d32->Draw2(dxCommon->GetCmdList());
           //   // fbx3d23->RenPreDraw(dxCommon->GetCmdList());

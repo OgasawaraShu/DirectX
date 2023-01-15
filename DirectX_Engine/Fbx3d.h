@@ -75,10 +75,13 @@ protected:
     float dx;
 
 	int TriggerFlag2 = 0;
+	int ver=0;
 
 	float dy2;
 	float dx2;
 	bool Dead_flag = false;
+
+	bool Select_obj_flag = false;
 
 public:
 
@@ -131,7 +134,9 @@ public:
 	void SetRotate(const DirectX::XMFLOAT3& rotation_) { rotation = rotation_; }
 	void SetColisionSize(const DirectX::XMFLOAT3& colisionsize_) { colisionsize = colisionsize_; }
 	void SetFbxmodelType(const int &type_) { Fbx_model_type = type_; }
+	void SetFbxVer(const int& ver_) { ver = ver_; }
 	void SetDeadFlag(const bool flag) { Dead_flag = flag; }
+	void SetSelectFlag(const bool flag) { Select_obj_flag = flag; }
 
 	const XMMATRIX& GetMatWorld() { return matWorld; }//ワールド行列の取得
 	const XMFLOAT3& GetPosition() { return position; }//ポジションの取得
@@ -139,11 +144,13 @@ public:
 	const XMFLOAT3& GetRotation() { return rotation; }//ローテーションの取得
 	const XMFLOAT3& GetColisionSize() { return colisionsize; }//ローテーションの取得
 	const bool GetDeadFlag() { return Dead_flag; }
+	const bool GetSelectFlag() { return Select_obj_flag; }
 
 	const float& GetColision_x() { return colisionsize.x; }
 	const float& GetColision_y() { return colisionsize.y; }
 	const float& GetColision_z() { return colisionsize.z; }
 	const int& GetFbxmodelType() { return Fbx_model_type; }
+	const int& GetVer() { return ver; }
 	void SetColider(BaseCollider* collider);//こらいだーのセット
 	virtual void OnCollision(const CollisionInfo& info);//コールバック関数
 
