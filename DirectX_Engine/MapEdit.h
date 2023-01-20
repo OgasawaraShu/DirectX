@@ -49,6 +49,18 @@ public:
 	void UpdateCollisionBox(XMFLOAT3 scale_, XMFLOAT3 pos_, XMFLOAT3 rotate_, std::unique_ptr<MapEdit>& Colobj_);
 	//OBJを選択
 	void ObjSelect(std::unique_ptr<MapEdit>& obj_,XMFLOAT2 mouse);
+	//スポーン地点関連
+	void CreateSpawn();
+	//copy処理
+	void CopyModelInfo(int type, int ver, XMFLOAT3 pos, XMFLOAT3 scale, XMFLOAT3 rotate, XMFLOAT3 ColisionSize);
+	//ペースト処理
+	void PasteInfo();
+	//矢印生成処理
+	void ArowCreate();
+	//矢印更新
+	void ArowUpdate(std::unique_ptr<MapEdit>& obj_, XMFLOAT2 mouse);
+	//矢印当たり判定
+	void ArowCollision(std::unique_ptr<MapEdit>& obj_2,std::unique_ptr<MapEdit>& obj_, XMFLOAT2 mouse);
 
 	//モデルセット
 	//フェンスモデル
@@ -65,9 +77,22 @@ public:
 	void SetCollisionModel(Model* model) { Collision_model = model; }
 
 
+	//デバック用モデル
+	//スタート場所モデル
+	void SetRespawnModel(Model* model) { respawn_model = model; }
+	//矢印赤モデル
+	void SetRedArowModel(Model* model) { Red_arow_model = model; }
+	//矢印緑モデル
+	void SetGreenArowModel(Model* model) { Green_arow_model = model; }
+	//矢印青モデル
+	void SetBlueArowModel(Model* model) { Blue_arow_model = model; }
+
+	//ゲッター
+	//初期リス
+	XMFLOAT3 GetRespawn() { return Respawn_position; }
+
 	static void SetMapCamera(Camera* camera) { MapEdit::M_camera = camera; }
 
-	//XMFLOAT3 CalcScrennToWorld(XMFLOAT3 )
 	std::stringstream MapCommands;
 
 	std::stringstream MapCommands2;
@@ -84,10 +109,48 @@ private:
 
 	std::list<std::unique_ptr<MapEdit>> Exits;
 
+	//エディットデバック可視化用モデル
+	std::list<std::unique_ptr<MapEdit>> Respawns;
+
 	std::list<std::unique_ptr<MapEdit>> Collisions;
+
+	std::list<std::unique_ptr<MapEdit>> Arows;
+
 
 	//出力時のオブジェクト配列
 	std::list<std::unique_ptr<MapEdit>> mapObjs;
+
+	//リスポーン地点代入変数
+	XMFLOAT3 Respawn_position{};
+
+	//COPY用入れ物変数
+	XMFLOAT3 Copy_pos{};
+
+	XMFLOAT3 Copy_scale{};
+
+	XMFLOAT3 Copy_rotate{};
+
+	XMFLOAT3 Copy_colision_size{};
+
+	int Copy_model_num=100;
+
+	int Copy_ver=0;
+
+	//矢印の位置
+	XMFLOAT3 Arow_pos{};
+	//矢印の表示フラッグ
+	bool Arow_draw_flag = false;
+	//矢印の生成フラッグ
+	bool Arow_create_flag = false;
+	
+	//マウスの1フレーム前座標
+	XMFLOAT2 Old_mouse_move{};
+
+	//矢印による位置移動フラグ
+	bool Arow_ivent_flag = false;
+
+	//矢印の制限管理変数
+	int Arow_ivent_fixed = 0;
 
 	float scaleX = 1.0f;
 	float scaleY = 1.0f;
@@ -96,6 +159,9 @@ private:
 	int Window_Width;
 
 	int Window_Height;
+
+	//スポーンポイント生成フラグ
+	bool Respawn_model_create_flag = false;
 
 	//オブジェクトのモデルナンバー
 	int Fence_model_num = 1;
@@ -107,6 +173,15 @@ private:
 	int Drum_model_num = 4;
 
 	int Exit_model_num = 5;
+
+	int spawn_model_num = 0;
+
+	int Red_arow_model_num = -1;
+
+	int Green_arow_model_num = -2;
+
+	int Blue_arow_model_num = -3;
+
 
 	//オブジェクトの属性
 	int null_ver = 0;
@@ -138,6 +213,13 @@ private:
 
 	Model* exit_model;
 
+	Model* respawn_model;
+
+	Model* Red_arow_model;
+
+	Model* Green_arow_model;
+
+	Model* Blue_arow_model;
 	//HWND
 	HWND hwnd = nullptr;
 };

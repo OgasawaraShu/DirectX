@@ -47,8 +47,8 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 	//キーを押して生成
 	//imgui関連
 	ImGui::Begin("Option");
-	ImGui::SetWindowPos(ImVec2(700, 0));
-	ImGui::SetWindowSize(ImVec2(500, 200));
+	ImGui::SetWindowPos(ImVec2(0, 0));
+	ImGui::SetWindowSize(ImVec2(300, 200));
 
 	if (ImGui::TreeNode("Create")) {
 		//フェンスモデル生成
@@ -61,7 +61,11 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 			//ここでモデルの形状をセット
 			fence->SetModel(fence_model);
 			//コリジョンのサイズ登録(初期は０)
-			fence->SetColisionSize({ 0,0,0 });
+			fence->SetColisionSize({ 10,10,2 });
+			//スケールのサイズ
+			fence->SetScale({ 0.1,0.1,0.1 });
+			//ポジションの初期位置設定
+			fence->SetPosition({ 0,10,0 });
 			//モデルを指定
 			fence->SetFbxmodelType(Fence_model_num);
 			//ver指定
@@ -83,7 +87,11 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 			//ここでモデルの形状をセット
 			drum->SetModel(drum_model);
 			//コリジョンのサイズ登録(初期は０)
-			drum->SetColisionSize({ 0,0,0 });
+			drum->SetColisionSize({ 6,6,6 });
+			//スケールのサイズ
+			drum->SetScale({ 0.02,0.02,0.02 });
+			//ポジションの初期位置設定
+			drum->SetPosition({ 0,10,0 });
 			//モデルを指定
 			drum->SetFbxmodelType(Drum_model_num);
 			//ver指定
@@ -129,6 +137,8 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 			floor->SetModel(floor_model);
 			//コリジョンのサイズ登録(初期は０)
 			floor->SetColisionSize({ 0,0,0 });
+			//スケールのサイズ
+			floor->SetScale({ 1,0.05,1 });
 			//モデルを指定
 			floor->SetFbxmodelType(Floor_model_num);
 			//ver指定
@@ -150,7 +160,9 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 			//ここでモデルの形状をセット
 			exit->SetModel(exit_model);
 			//コリジョンのサイズ登録(初期は０)
-			exit->SetColisionSize({ 0,0,0 });
+			exit->SetColisionSize({ 10,10,10 });
+			//スケールのサイズ
+			exit->SetScale({ 0.1,0.1,0.1 });
 			//モデルを指定
 			exit->SetFbxmodelType(Exit_model_num);
 			//ver指定
@@ -176,6 +188,11 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		{
 			Colision_draw_flag = false;
 		}
+	}
+	//ボタンが押されてコピー元の中に情報が入っているのならペーストして生成する
+	if (ImGui::Button("Paste")||(input->PushKey(DIK_LCONTROL) && input->TriggerKey(DIK_V)))
+	{
+		PasteInfo();
 	}
 
 
@@ -205,24 +222,43 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		for (std::unique_ptr<MapEdit>& exit_ : Exits) {
 			exit_->MapSave(exit_);
 		}
+
+		for (std::unique_ptr<MapEdit>& spawn_ : Respawns) {
+			spawn_->MapSave(spawn_);
+		}
 	}
 
 
 
 	ImGui::End();
 
-
+	ArowCreate();
+	
 
 	//PIckUpされたObjの内容を表示	
 	ImGui::Begin("PickUp Obj");
-	ImGui::SetWindowPos(ImVec2(0, 580));
-	ImGui::SetWindowSize(ImVec2(500, 200));
+	ImGui::SetWindowPos(ImVec2(0, 400));
+	ImGui::SetWindowSize(ImVec2(300, 200));
 
-
+    Arow_draw_flag = false;
+	
 	for (std::unique_ptr<MapEdit>& fence_ : Fences) {
 		if (fence_->GetSelectFlag() == true)
 		{
 			fence_->AdjustmentObj(fence_);
+
+			Arow_draw_flag = true;
+
+			Arow_pos = fence_->GetPosition();
+			//矢印による位置の移動
+			ArowUpdate(fence_,mouse);
+
+			
+			//押されたらモデルの情報を一時保存(copy)
+			if (ImGui::Button("Copy")||(input->PushKey(DIK_LCONTROL)&&input->PushKey(DIK_C)))
+			{
+				CopyModelInfo(fence_->GetFbxmodelType(), fence_->GetVer(), fence_->GetPosition(), fence_->GetScale(), fence_->GetRotation(), fence_->GetColisionSize());
+			}
 		}
 	}
 
@@ -230,6 +266,21 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		if (drum_->GetSelectFlag() == true)
 		{
 			drum_->AdjustmentObj(drum_);
+
+			Arow_draw_flag = true;
+
+			//矢印の位置変数代入
+			Arow_pos = drum_->GetPosition();
+
+			//矢印による位置の移動
+			ArowUpdate(drum_, mouse);
+
+
+			//押されたらモデルの情報を一時保存(copy)
+			if (ImGui::Button("Copy") || (input->PushKey(DIK_LCONTROL) && input->PushKey(DIK_C)))
+			{
+				CopyModelInfo(drum_->GetFbxmodelType(), drum_->GetVer(), drum_->GetPosition(), drum_->GetScale(), drum_->GetRotation(), drum_->GetColisionSize());
+			}
 		}
 	}
 
@@ -237,6 +288,22 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		if (walls_->GetSelectFlag() == true)
 		{
 			walls_->AdjustmentObj(walls_);
+
+			Arow_draw_flag = true;
+
+
+			//矢印の位置変数代入
+			Arow_pos = walls_->GetPosition();
+
+			//矢印による位置の移動
+			ArowUpdate(walls_, mouse);
+
+
+			//押されたらモデルの情報を一時保存(copy)
+			if (ImGui::Button("Copy") || (input->PushKey(DIK_LCONTROL) && input->PushKey(DIK_C)))
+			{
+				CopyModelInfo(walls_->GetFbxmodelType(), walls_->GetVer(), walls_->GetPosition(), walls_->GetScale(), walls_->GetRotation(), walls_->GetColisionSize());
+			}
 		}
 	}
 
@@ -244,6 +311,23 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		if (floor_->GetSelectFlag() == true)
 		{
 			floor_->AdjustmentObj(floor_);
+
+			Arow_draw_flag = true;
+
+
+			//矢印の位置変数代入
+			Arow_pos = floor_->GetPosition();
+
+			//矢印による位置の移動
+			ArowUpdate(floor_, mouse);
+
+
+
+			//押されたらモデルの情報を一時保存(copy)
+			if (ImGui::Button("Copy") || (input->PushKey(DIK_LCONTROL) && input->PushKey(DIK_C)))
+			{
+				CopyModelInfo(floor_->GetFbxmodelType(), floor_->GetVer(), floor_->GetPosition(), floor_->GetScale(), floor_->GetRotation(), floor_->GetColisionSize());
+			}
 		}
 	}
 
@@ -251,17 +335,35 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		if (exit_->GetSelectFlag() == true)
 		{
 			exit_->AdjustmentObj(exit_);
+
+			Arow_draw_flag = true;
+
+
+			//矢印の位置変数代入
+			Arow_pos = exit_->GetPosition();
+
+			//矢印による位置の移動
+			ArowUpdate(exit_, mouse);
+
+		}
+	}
+
+
+	for (std::unique_ptr<MapEdit>& spawn_ : Respawns) {
+		if (spawn_->GetSelectFlag() == true)
+		{
+			spawn_->AdjustmentObj(spawn_);
 		}
 	}
 	ImGui::End();
 
-
+	
 	//各OBJの情報の調整処理
 	//更新
 	//imgui関連
 	ImGui::Begin("Obj_Data");
-	ImGui::SetWindowPos(ImVec2(0, 0));
-	ImGui::SetWindowSize(ImVec2(500, 200));
+	ImGui::SetWindowPos(ImVec2(0, 200));
+	ImGui::SetWindowSize(ImVec2(300, 200));
 
 
 	//Objのカウント用
@@ -403,7 +505,8 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		strcat_s(str, str2);
 		//ツリーに格納
 		if (ImGui::TreeNode(str)) {
-			floor_->AdjustmentObj(floor_);
+			floor_->AdjustmentObj(floor_)
+				;
 			ImGui::TreePop();
 		}
 		//Fbxの更新処理
@@ -456,6 +559,8 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		colision_size[Collision_count] = { exit_->GetColisionSize() };
 		Collision_count += 1;
 	}
+
+	CreateSpawn();
 	//imguiの終わり
 	ImGui::End();
 
@@ -496,6 +601,17 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 
 	for (std::unique_ptr<MapEdit>& exit_ : Exits) {
 		exit_->Draw2(cmdList);
+	}
+
+	for (std::unique_ptr<MapEdit>& spawn_ : Respawns) {
+		spawn_->Draw2(cmdList);
+	}
+
+	if (Arow_draw_flag == true)
+	{
+		for (std::unique_ptr<MapEdit>& arow_ : Arows) {
+			arow_->Draw2(cmdList);
+		}
 	}
 }
 
@@ -545,11 +661,15 @@ void MapEdit::AdjustmentObj(std::unique_ptr<MapEdit>& obj_)
 	//colision
 	ImGui::InputFloat3("COLISION", &slider_colisionsize.x);
 
+	
+
+
 	//押されたらOBJを削除
 	if (ImGui::Button("Delete"))
 	{
 		obj_->SetDeadFlag(true);
 	}
+
 	
 	//変更した値を渡す
 	obj_->SetPosition(slider_position);
@@ -674,57 +794,67 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 			//集めた情報をここでOBJの中に収納していく
 			//ここでOBJを生成する（モデルや座標の情報をwhile文で取るためここでは入れ物だけ）
             //生成
-			std::unique_ptr<MapEdit>mapObj = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
-			//初期化
-			mapObj->Initialize();
-			//type1ならフェンスモデルをセット
-			if (type == 1)
+
+			//タイプが０だとスポーン地点なので飛ばす
+			if (type != 0)
 			{
-				//ここでモデルの形状をセット
-				mapObj->SetModel(fence_model);
-			}
-			else if (type == 2)
-			{
-				//ここでモデルの形状をセット
-				mapObj->SetModel(wall_model);
-			}
-			else if (type == 3)
-			{
-				//ここでモデルの形状をセット
-				mapObj->SetModel(floor_model);
-			}
-			else if (type == 4)
-			{
-				//ここでモデルの形状をセット
-				mapObj->SetModel(drum_model);
-			}
+				std::unique_ptr<MapEdit>mapObj = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+				//初期化
+				mapObj->Initialize();
+				//type1ならフェンスモデルをセット
+				if (type == 1)
+				{
+					//ここでモデルの形状をセット
+					mapObj->SetModel(fence_model);
+				}
+				else if (type == 2)
+				{
+					//ここでモデルの形状をセット
+					mapObj->SetModel(wall_model);
+				}
+				else if (type == 3)
+				{
+					//ここでモデルの形状をセット
+					mapObj->SetModel(floor_model);
+				}
+				else if (type == 4)
+				{
+					//ここでモデルの形状をセット
+					mapObj->SetModel(drum_model);
+				}
 
 
-			
 
 
-			//座標をセット
-			mapObj->SetPosition(pos);
-			//スケールをセット
-			mapObj->SetScale(scale);
-			//回転をセット
-			mapObj->SetRotate(rotate);
-			//colisionsize登録
-			mapObj->SetColisionSize(ColisionSize);
-			//当たり判定のサイズ、形、属性を指定
-			mapObj->SetColider(new WallCollider(XMVECTOR{ ColisionSize.x,ColisionSize.y,ColisionSize.z,0 }));
-			//verで属性を決める
-			if (ver == 0)
-			{
-				mapObj->SetVerWall();
+
+				//座標をセット
+				mapObj->SetPosition(pos);
+				//スケールをセット
+				mapObj->SetScale(scale);
+				//回転をセット
+				mapObj->SetRotate(rotate);
+				//colisionsize登録
+				mapObj->SetColisionSize(ColisionSize);
+				//当たり判定のサイズ、形、属性を指定
+				mapObj->SetColider(new WallCollider(XMVECTOR{ ColisionSize.x,ColisionSize.y,ColisionSize.z,0 }));
+				//verで属性を決める
+				if (ver == 0)
+				{
+					mapObj->SetVerWall();
+				}
+				else if (ver == 1)
+				{
+					mapObj->SetVerExit();
+				}
+				//作るのに必要な情報が揃ったので登録
+				//登録
+				mapObjs.push_back(std::move(mapObj));
 			}
-			else if (ver == 1)
+			else
 			{
-				mapObj->SetVerExit();
+				//typeが０なら自機の初期リスなので変数に代入
+				Respawn_position = pos;
 			}
-			//作るのに必要な情報が揃ったので登録
-			//登録
-			mapObjs.push_back(std::move(mapObj));
 		}
 	}
 
@@ -775,7 +905,6 @@ void MapEdit::UpdateCollisionBox(XMFLOAT3 scale_,XMFLOAT3 pos_,XMFLOAT3 rotate_,
 	scale.z = scale_.z / 100;
 
 	Colobj_->SetPosition(pos_);
-//	Colobj_->SetRotate(rotate_);
 	Colobj_->SetScale(scale);
 
 	Colobj_->Update();
@@ -870,12 +999,459 @@ void MapEdit::ObjSelect(std::unique_ptr<MapEdit>& obj_, XMFLOAT2 mouse)
 	tmax4 = min(tmax, max(tz1, tz2));
 
 	//当たり判定の部分にマウスポイントのレイが当たっていた場合情報をPICKUPする
-	if (tmax2 >= tmin2 && tmax3 >= tmin3 && tmax4 >= tmin4 && input->TriggerMouseRight())
+	if (tmax2 >= tmin2 && tmax3 >= tmin3 && tmax4 >= tmin4 && input->TriggerMouseLeft())
 	{
 		obj_->SetSelectFlag(true);
 	}
-	else if (!(tmax2 >= tmin2 && tmax3 >= tmin3 && tmax4 >= tmin4) && input->TriggerMouseRight())
+	else if (!(tmax2 >= tmin2 && tmax3 >= tmin3 && tmax4 >= tmin4) && input->TriggerMouseLeft())
 	{
 		obj_->SetSelectFlag(false);
 	}
+}
+
+void MapEdit::CreateSpawn()
+{
+	//まだ一度も生成していないならfalseなので生成する
+	if (Respawn_model_create_flag == false)
+	{
+		//生成
+		std::unique_ptr<MapEdit>respawn = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+		//初期化
+		respawn->Initialize();
+		//ここでモデルの形状をセット
+		respawn->SetModel(respawn_model);
+		//スケールを標準設定
+		respawn->SetScale({ 0.1,0.1,0.1 });
+		//ポジション初期化
+		respawn->SetPosition({ 0.0,0.0,-20.0 });
+		//登録
+		Respawns.push_back(std::move(respawn));
+		//フラグをtrueにして生成を止める
+		Respawn_model_create_flag = true;
+	}
+
+	//IMGUIでの調整用
+	for (std::unique_ptr<MapEdit>& respawn_:Respawns) {
+
+		//ツリーに格納
+		if (ImGui::TreeNode("Spawn point")) {
+			//imgui用の変数作成
+			static XMFLOAT3 slider_position;
+			//imguiの変数に現在のOBJのデータ代入
+			slider_position = respawn_->GetPosition();
+			//Objの情報調整
+			//position
+			ImGui::InputFloat3("POSITION", &slider_position.x);
+
+			//変更した値を渡す
+			respawn_->SetPosition(slider_position);
+			ImGui::TreePop();
+		}
+		//Fbxの更新処理
+		respawn_->Update();
+		//OBJの単独PICKUP
+		respawn_->ObjSelect(respawn_, mouse);
+	}
+}
+
+void MapEdit::CopyModelInfo(int type, int ver, XMFLOAT3 pos, XMFLOAT3 scale, XMFLOAT3 rotate, XMFLOAT3 ColisionSize)
+{
+	//渡されたObjの情報を中継ぎ用変数に書き込み保存する
+	//モデル
+	Copy_model_num = type;
+	//属性
+	Copy_ver = ver;
+	//position
+	Copy_pos = pos;
+	//scale
+	Copy_scale = scale;
+	//rotation
+	Copy_rotate = rotate;
+	//コリジョンサイズ
+	Copy_colision_size = ColisionSize;
+}
+
+void MapEdit::PasteInfo()
+{
+	//Copy_model_numの変数で読み込むモデルを分岐する
+	if (Copy_model_num == 1)
+	{
+		//生成
+		std::unique_ptr<MapEdit>fence = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+		//初期化
+		fence->Initialize();
+		//ここでモデルの形状をセット
+		fence->SetModel(fence_model);
+		//コリジョンのサイズ登録(初期は０)
+		fence->SetColisionSize(Copy_colision_size);
+		//スケールのサイズ
+		fence->SetScale(Copy_scale);
+		//ポジションの初期位置設定
+		fence->SetPosition(Copy_pos);
+		//回転
+		fence->SetRotate(Copy_rotate);
+		//モデルを指定
+		fence->SetFbxmodelType(Fence_model_num);
+		//ver指定
+		fence->SetFbxVer(null_ver);
+		//登録
+		Fences.push_back(std::move(fence));
+
+		//当たり判定確認用OBJ生成
+		CreateCollisionBox();
+	}
+	else if (Copy_model_num == 2)
+	{
+		//生成
+		std::unique_ptr<MapEdit>wall = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+		//初期化
+		wall->Initialize();
+		//ここでモデルの形状をセット
+		wall->SetModel(wall_model);
+		//コリジョンのサイズ登録(初期は０)
+		wall->SetColisionSize(Copy_colision_size);
+		//スケールのサイズ
+		wall->SetScale(Copy_scale);
+		//ポジションの初期位置設定
+		wall->SetPosition(Copy_pos);
+		//回転
+		wall->SetRotate(Copy_rotate);
+		//モデルを指定
+		wall->SetFbxmodelType(Wall_model_num);
+		//ver指定
+		wall->SetFbxVer(null_ver);
+		//登録
+		Walls.push_back(std::move(wall));
+
+		//当たり判定確認用OBJ生成
+		CreateCollisionBox();
+	}
+	else if (Copy_model_num == 3)
+	{
+		//生成
+		std::unique_ptr<MapEdit>floor = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+		//初期化
+		floor->Initialize();
+		//ここでモデルの形状をセット
+		floor->SetModel(floor_model);
+		//コリジョンのサイズ登録(初期は０)
+		floor->SetColisionSize(Copy_colision_size);
+		//スケールのサイズ
+		floor->SetScale(Copy_scale);
+		//ポジションの初期位置設定
+		floor->SetPosition(Copy_pos);
+		//回転
+		floor->SetRotate(Copy_rotate);
+		//モデルを指定
+		floor->SetFbxmodelType(Floor_model_num);
+		//ver指定
+		floor->SetFbxVer(null_ver);
+		//登録
+		Floors.push_back(std::move(floor));
+
+		//当たり判定確認用OBJ生成
+		CreateCollisionBox();
+	}
+	else if (Copy_model_num == 4)
+	{
+		//生成
+		std::unique_ptr<MapEdit>drum = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+		//初期化
+		drum->Initialize();
+		//ここでモデルの形状をセット
+		drum->SetModel(drum_model);
+		//コリジョンのサイズ登録(初期は０)
+		drum->SetColisionSize(Copy_colision_size);
+		//スケールのサイズ
+		drum->SetScale(Copy_scale);
+		//ポジションの初期位置設定
+		drum->SetPosition(Copy_pos);
+		//回転
+		drum->SetRotate(Copy_rotate);
+		//モデルを指定
+		drum->SetFbxmodelType(Drum_model_num);
+		//ver指定
+		drum->SetFbxVer(null_ver);
+		//登録
+		Drums.push_back(std::move(drum));
+
+		//当たり判定確認用OBJ生成
+		CreateCollisionBox();
+	}
+	else if (Copy_model_num == 5)
+	{
+		//生成
+		std::unique_ptr<MapEdit>exit = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+		//初期化
+		exit->Initialize();
+		//ここでモデルの形状をセット
+		exit->SetModel(exit_model);
+		//コリジョンのサイズ登録(初期は０)
+		exit->SetColisionSize(Copy_colision_size);
+		//スケールのサイズ
+		exit->SetScale(Copy_scale);
+		//ポジションの初期位置設定
+		exit->SetPosition(Copy_pos);
+		//回転
+		exit->SetRotate(Copy_rotate);
+		//モデルを指定
+		exit->SetFbxmodelType(Exit_model_num);
+		//ver指定
+		exit->SetFbxVer(exit_ver);
+		//登録
+		Exits.push_back(std::move(exit));
+
+		//当たり判定確認用OBJ生成
+		CreateCollisionBox();
+	}
+	else
+	{
+	assert(1);
+	}
+}
+
+void MapEdit::ArowCreate()
+{
+	//フラグがfalseならまだ生成していないので生成する
+	if (Arow_create_flag == false)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			//生成
+			std::unique_ptr<MapEdit>arow = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+			//初期化
+			arow->Initialize();
+
+			//iでモデルを分岐する(0=R,1=G,2=B)
+			if (i == 0)
+			{
+				//ここでモデルの形状をセット
+				arow->SetModel(Red_arow_model);
+				//モデルを指定
+				arow->SetFbxmodelType(Red_arow_model_num);
+				//回転
+				arow->SetRotate({ 0,180,0 });
+				//コリジョンのサイズ登録(初期は０)
+				arow->SetColisionSize({ 10,1,1 });
+			}
+			else if(i==1)
+			{
+				//ここでモデルの形状をセット
+				arow->SetModel(Green_arow_model);
+				//モデルを指定
+				arow->SetFbxmodelType(Green_arow_model_num);
+				//回転
+				arow->SetRotate({ 0,0,270 });
+				//コリジョンのサイズ登録(初期は０)
+				arow->SetColisionSize({ 1,10,1 });
+			}
+			else if (i == 2)
+			{
+				//ここでモデルの形状をセット
+				arow->SetModel(Blue_arow_model);
+				//モデルを指定
+				arow->SetFbxmodelType(Blue_arow_model_num);
+				//回転
+				arow->SetRotate({ 0,90,0 });
+				//コリジョンのサイズ登録(初期は０)
+				arow->SetColisionSize({ 1,1,10 });
+			}
+			
+			//スケールのサイズ
+			arow->SetScale({0.1,0.05,0.05});
+			//ポジションの初期位置設定
+			arow->SetPosition({0,0,0});
+		
+			//ver指定
+			arow->SetFbxVer(null_ver);
+			//登録
+			Arows.push_back(std::move(arow));
+		}
+		//生成の処理が終わったらフラグをtrueにする
+		Arow_create_flag = true;
+	}
+
+
+}
+
+void MapEdit::ArowUpdate(std::unique_ptr<MapEdit>& obj_, XMFLOAT2 mouse)
+{
+	for (std::unique_ptr<MapEdit>& arow_ : Arows) {
+
+		//起点の位置はPickUpObjを基準に色ごとに矢印の位置を調整する
+		if (arow_->GetFbxmodelType() == -1)
+		{
+			arow_->SetPosition({ Arow_pos.x+10,Arow_pos.y,Arow_pos.z });
+		}
+		else if (arow_->GetFbxmodelType() == -2)
+		{
+			arow_->SetPosition({ Arow_pos.x,Arow_pos.y+10,Arow_pos.z });
+		}
+		else if (arow_->GetFbxmodelType() == -3)
+		{
+			arow_->SetPosition({ Arow_pos.x,Arow_pos.y,Arow_pos.z+10 });
+		}
+
+		//描画されていたら当たり判定ON
+		if (Arow_draw_flag == true)
+		{
+			arow_->ArowCollision(obj_,arow_,mouse);
+		}
+		//FBXの更新処理
+		arow_->Update();
+	}
+}
+
+void MapEdit::ArowCollision(std::unique_ptr<MapEdit>& obj_2, std::unique_ptr<MapEdit>& obj_, XMFLOAT2 mouse)
+{
+
+	XMMATRIX viewPort = {
+		1280.0f / 2  ,0.0f,0.0f,0.0f,
+		0.0f,-720.0f / 2  ,0.0f,0.0f,
+		0.0f,0.0f         ,1.0f, 0.0f,
+		1280.0f / 2,  720.0f / 2,0.0f,1.0f
+	};
+
+	XMMATRIX matViewProjection =
+		camera->GetViewProjectionMatrix() * viewPort;
+
+	//逆行列を計算
+	XMMATRIX matInverseVPV = XMMatrixInverse(nullptr, matViewProjection);
+
+	//スクリーン座標
+	XMVECTOR posNear = XMVECTOR{ mouse.x,mouse.y,0 };
+	XMVECTOR posFar = XMVECTOR{ mouse.x,mouse.y,1 };
+
+	//スクリーン座標からワールド座標へ
+	posNear = DirectX::XMVector3TransformCoord(posNear, matInverseVPV);
+	posFar = DirectX::XMVector3TransformCoord(posFar, matInverseVPV);
+
+	//マウスレイの方向
+	XMVECTOR mouseDirection = DirectX::XMVectorSubtract(posFar, posNear);
+
+	//レイの方向を正規化
+	mouseDirection = DirectX::XMVector3Normalize(mouseDirection);
+
+	//カメラから照準オブジェクトの距離
+	const float kDistance = 10000;
+
+	//当たり判定用のレイを作成
+	Ray mouse_ray;
+	mouse_ray.start = posNear;
+	mouse_ray.dir = mouseDirection;
+	RaycastHit raycastHit;
+
+
+	// 交差判定
+	XMFLOAT3 Min_pos;
+	XMFLOAT3 Max_pos;
+	XMFLOAT3 pos2;
+	Min_pos = obj_->GetPosition();
+	Max_pos = obj_->GetPosition();
+	pos2 = obj_->GetColisionSize();
+
+	//四角の当たり判定の位置最大値、最低値設定
+	Min_pos.x = Min_pos.x - pos2.x;
+	Min_pos.y = Min_pos.y - pos2.y;
+	Min_pos.z = Min_pos.z - pos2.z;
+
+	Max_pos.x = Max_pos.x + pos2.x;
+	Max_pos.y = Max_pos.y + pos2.y;
+	Max_pos.z = Max_pos.z + pos2.z;
+
+	//計算用変数作成
+	double tmin = -INFINITY, tmax = INFINITY;
+	double tmin2 = -INFINITY, tmax2 = INFINITY;
+	double tmin3 = -INFINITY, tmax3 = INFINITY;
+	double tmin4 = -INFINITY, tmax4 = INFINITY;
+
+	//X軸
+	double tx1 = (Min_pos.x - mouse_ray.start.m128_f32[0]) / mouse_ray.dir.m128_f32[0];
+	double tx2 = (Max_pos.x - mouse_ray.start.m128_f32[0]) / mouse_ray.dir.m128_f32[0];
+
+	//tmin = min(tx1, tx2);
+	//tmax = max(tx1, tx2);
+
+	tmin = max(tmin, min(tx1, tx2));
+	tmax = min(tmax, max(tx1, tx2));
+	//Y軸
+	double ty1 = (Min_pos.y - mouse_ray.start.m128_f32[1]) / mouse_ray.dir.m128_f32[1];
+	double ty2 = (Max_pos.y - mouse_ray.start.m128_f32[1]) / mouse_ray.dir.m128_f32[1];
+
+	tmin2 = max(tmin, min(ty1, ty2));
+	tmax2 = min(tmax, max(ty1, ty2));
+	//Z軸
+	double tz1 = (Min_pos.z - mouse_ray.start.m128_f32[2]) / mouse_ray.dir.m128_f32[2];
+	double tz2 = (Max_pos.z - mouse_ray.start.m128_f32[2]) / mouse_ray.dir.m128_f32[2];
+
+	tmin3 = max(tmin, min(tz1, tz2));
+	tmax3 = min(tmax, max(tz1, tz2));
+
+	tmin4 = max(tmin, min(tz1, tz2));
+	tmax4 = min(tmax, max(tz1, tz2));
+
+	XMFLOAT2 move;
+	move.x = Old_mouse_move.x - mouse.x;
+	move.y = Old_mouse_move.y - mouse.y;
+
+
+	//当たり判定の部分にマウスポイントのレイが当たっていた場合情報をPICKUPする
+	if (tmax2 >= tmin2 && tmax3 >= tmin3 && tmax4 >= tmin4 && input->PushMouseRight())
+	{
+		Arow_ivent_flag = true;
+
+		//位置の移動を重複させないためにTriggerで分岐させる
+		if (input->TriggerMouseRight())
+		{
+			//矢印の向きで分岐
+			if (obj_->GetFbxmodelType() == -1)
+			{
+				Arow_ivent_fixed = 1;
+			}
+			else if (obj_->GetFbxmodelType() == -2)
+			{
+				Arow_ivent_fixed = 2;
+			}
+			else if (obj_->GetFbxmodelType() == -3)
+			{
+				Arow_ivent_fixed = 3;
+			}
+		}
+	}
+	
+	//キーが押されていたらマウスの移動量によってOBJを移動させる
+	if (Arow_ivent_flag == true && input->PushMouseRight())
+	{
+		//元の位置を取得
+		XMFLOAT3 Origin_obj_pos = obj_2->GetPosition();
+
+		//移動量によって位置を加算していく
+		if (obj_->GetFbxmodelType() == -1&&Arow_ivent_fixed == 1)
+		{
+
+			Origin_obj_pos.x -= move.x;
+			obj_2->SetPosition(Origin_obj_pos);
+		}
+	
+		if (obj_->GetFbxmodelType() == -2 && Arow_ivent_fixed == 2)
+		{
+			Origin_obj_pos.y += move.y;
+			obj_2->SetPosition(Origin_obj_pos);
+		}
+
+		if (obj_->GetFbxmodelType() == -3 && Arow_ivent_fixed == 3)
+		{
+			Origin_obj_pos.z -= move.x;
+			obj_2->SetPosition(Origin_obj_pos);
+		}
+	}
+	else if(!(input->PushMouseRight()))
+	{
+		//キーが離されたら移動をそこで中止させる
+		Arow_ivent_flag = false;
+		Arow_ivent_fixed = 0;
+	}
+
+	//マウスの座標を保存
+	Old_mouse_move = mouse;
 }

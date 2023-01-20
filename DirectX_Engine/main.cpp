@@ -580,6 +580,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Fbx3d* fbx3d38 = nullptr;
 
    Model* model24 = nullptr;
+   Model* model25 = nullptr;
+   Model* model26 = nullptr;
+   Model* model27 = nullptr;
+   Model* model28 = nullptr;
+   Model* model29 = nullptr;
+   Model* model30 = nullptr;
+
+
+
 
    model1 = FbxLoader::GetInstance()->LoadModelFromFile("wall1");
    model2 = FbxLoader::GetInstance()->LoadModelFromFile("Door");
@@ -606,6 +615,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    model22 = FbxLoader::GetInstance()->LoadModelFromFile("portalpepar");
    model23 = FbxLoader::GetInstance()->LoadModelFromFile("Grid");
    model24 = FbxLoader::GetInstance()->LoadModelFromFile("CollisionBox");
+   model25 = FbxLoader::GetInstance()->LoadModelFromFile("Respawn");
+   model26 = FbxLoader::GetInstance()->LoadModelFromFile("floor");
+   model27 = FbxLoader::GetInstance()->LoadModelFromFile("walls");
+   model28 = FbxLoader::GetInstance()->LoadModelFromFile("RedArow");
+   model29 = FbxLoader::GetInstance()->LoadModelFromFile("GreenArow");
+   model30 = FbxLoader::GetInstance()->LoadModelFromFile("BlueArow");
+
 
    Fbx3d* fbx3d1_2 = nullptr;
    Fbx3d* fbx3d2_2 = nullptr;
@@ -692,11 +708,16 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    MapEdit* mapedit = nullptr;
    mapedit = new MapEdit(WinApp::window_width, WinApp::window_height, input);
    mapedit->SetFenceModel(model10);
-   mapedit->SetWallModel(model8);
-   mapedit->SetFloorModel(model6);
+   mapedit->SetWallModel(model27);
+   mapedit->SetFloorModel(model26);
    mapedit->SetDrumModel(model11);
    mapedit->SetCollisionModel(model24);
    mapedit->SetExitModel(model2);
+   mapedit->SetRespawnModel(model25);
+   mapedit->SetRedArowModel(model28);
+   mapedit->SetGreenArowModel(model29);
+   mapedit->SetBlueArowModel(model30);
+
    mapedit->Loadtxt();
   
    MapEdit::SetMapCamera(camera);
@@ -2102,10 +2123,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
          
             sprite100->SetPost(false);
             fbx3d38->Draw2(dxCommon->GetCmdList());
+            mapedit->CreateObj(dxCommon->GetCmdList());
         }
     
      //   mapedit->SetMousePositionX(scene->GetMousePoint());
-        mapedit->CreateObj(dxCommon->GetCmdList());
+
         //      fbx3d32->Draw2(dxCommon->GetCmdList());
           //   // fbx3d23->RenPreDraw(dxCommon->GetCmdList());
            //   fbx3d23->RenPreDraw(dxCommon->GetCmdList());
