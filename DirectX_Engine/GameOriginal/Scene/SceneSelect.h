@@ -1,0 +1,95 @@
+#pragma once
+#include "../../Engine/Input/Input.h"
+
+class SceneSelect
+{
+public:
+	SceneSelect(int window_width, int window_height, Input* input);
+	//初期化
+	void SceneInitialize();
+	//更新
+	void Update();
+	//マウス取得
+	void MouseGet();
+	//タイトルシーン
+	void Title();
+	//遷移処理
+	void ChangeScene();
+	//ステージエディット
+	void MapEditScene();
+	//hwndセット
+	void SetHwnd(HWND hwnd_) { hwnd = hwnd_; }
+	//デバッグ
+	float GetMousePoint() { return mouseX; }
+	//シーン参照
+	int GetScene() { return scene; }
+	//押したか参照
+	int GetPush() { return push; }
+	//ジカン参照
+	int GetTime() { return Time; }
+	//ドアがどれだけ回転したか
+	float GetDoorY() { return DoorRotate; }
+	//どのシーンに移動するか参照
+	int GetRed() { return OverRed; }
+	//変化させるか参照
+	float GetChange() { return change; }
+	//出口に当たったかセット
+	void SetExit(bool a) { Exit = a; }
+	//エディットシーンに行くか参照
+	bool GetEdit() { return MapEdit; }
+private:
+
+	//出口
+	bool Exit;
+	//ロード
+	bool Load = true;
+	//スケール
+	float scaleX = 1.0f;
+	//
+	float scaleY = 1.0f;
+	//エディットフラグ
+	bool MapEdit = false;
+	//マウス座標
+	float mouseX;
+	//
+	float mouseY;
+	//文字を赤くするかの選択
+	float TitleRed = 0;
+	//input
+	Input* input;
+	//シーン
+	int scene = 0;
+	//押したか
+	int push = 0;
+	//ろーどのじかん
+	int Time = 0;
+	//デモ
+	int Demo = 0;
+	//
+	float a;
+	//ロードの時間２
+	int Second = 0;
+	//距離
+	float distance;
+	//
+	int flag;
+	//どの赤
+	int OverRed = 0;
+    //止める時間
+	int StopTime;
+	//どれだけ変化させるか
+	float change = 0;
+	//変化のフラグ
+	bool changeFlag = false;
+	//ロードの時間３
+	int LoadTime = 0;
+	//ドアの回転
+	float DoorRotate = 0;
+	// マウス座標を取得する
+	POINT p;
+
+	//ウィンドウハンドル
+	HWND hwnd = nullptr;
+
+};
+
