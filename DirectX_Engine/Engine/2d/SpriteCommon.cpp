@@ -11,8 +11,8 @@ using namespace DirectX;
 
 void SpriteCommon::Initialize(ID3D12Device* dev, ID3D12GraphicsCommandList* cmdList, int window_width, int window_height)
 {
-    assert(dev);
 
+    assert(dev);
     device_ = dev;
     cmdList_ = cmdList;
 

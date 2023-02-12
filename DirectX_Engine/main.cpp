@@ -25,37 +25,25 @@ using namespace Microsoft::WRL;
 #include "Engine/Input/Input.h"
 #include "Engine/Base/WinApp.h"
 #include "Engine/Base/DirectXCommon.h"
-
-//#include "Engine/3d/Object3d.h"
 #include"Engine/3d/Model.h"
-
-
 #include "Engine/Collision/Collision.h"
 #include "Engine/Collision/CollisionPrimitive.h"
-
-
 #include<xaudio2.h>
 #pragma comment(lib,"xaudio2.lib")
 #include<fstream>
-
 #include "Engine/Base/WinApp.h"
 #include "Engine/Audio/Audio.h"
-#include"Engine/2d/SpriteCommon.h"
+//#include"Engine/2d/SpriteCommon.h"
 #include "Engine/2d/Sprite.h"
 #include "Engine/2d/DebugText.h"
 #include "Engine/2d/PostEffectCommon.h"
 #include "Engine/2d/PostEffect.h"
-
-//#include "FbxLoader.h"
 #include "Engine/3d/FbxLoader.h"
 #include "Engine/3d/Fbx3d.h"
 #include "Engine/Camera/Camera.h"
 #include "Engine/Camera/DebugCamera.h"
-
 #include "Engine/Input/GamePad.h"
-//#include "fbxsdk.h"
 #include <vector>
-
 #include "Engine/Collision/SphereCollider.h"
 #include "Engine/Collision/PlaneCollider.h"
 #include "Engine/Collision/BoxCollider.h"
@@ -66,6 +54,7 @@ using namespace Microsoft::WRL;
 #include "GameOriginal/Game/Physics.h" 
 #include "GameOriginal/Game/ObjFbx.h"
 #include "GameOriginal/Scene/SceneSelect.h"
+#include "GameOriginal/Scene/GameScene.h"
 #include "GameOriginal/Game/PortalExit.h"
 #include "Engine/Camera/BlueCameraDebug.h"
 #include "Engine/Camera/RedCameraDebug.h"
@@ -78,30 +67,11 @@ using namespace Microsoft::WRL;
 #include "Engine/2d/DirectWrite.h"
 
 
-Model* modelPlane = nullptr;
-Model* modelBox = nullptr;
-Model* modelPyramid = nullptr;
-
-//std::vector<Object3d*> objects;
-
-
-Sphere sphere;
-
-Plane plane;
-
-Triangle triangle;
-
-
-//
-DirectXCommon* dxCommon = nullptr;
 SpriteCommon* spriteCommon = new SpriteCommon();
 PostEffectCommon* posteffectCommon = new PostEffectCommon();
 SpriteCommon* spriteCommon2= new SpriteCommon();
 
 class CollisionManager;
-class Bullet;
-
-//ComPtr<ID3D12Device> dev;
 
 LRESULT CALLBACK WindowProc(
     HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
@@ -114,7 +84,6 @@ LRESULT CALLBACK WindowProc(
     return DefWindowProc(hwnd, uMsg, wParam, lParam);
 }
 
-
 #ifdef _DEBUG
 #   define MyOutputDebugString( str, ... ) \
       { \
@@ -125,9 +94,6 @@ LRESULT CALLBACK WindowProc(
 #else
 #    define MyOutputDebugString( str, ... ) // 空実装
 #endif
-
-
-
 //カメラ
 DebugCamera* camera = nullptr;
 BlueCameraDebug* Bluecamera = nullptr;
@@ -136,28 +102,26 @@ RedCameraDebug* Redcamera = nullptr;
 #pragma optimize( "", off )
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-    //FbxManager* fbxManager = FbxManager::Create();
-
     //ポインタ置き場
+    DirectXCommon* dxCommon = nullptr;
     Input* input = nullptr;
     WinApp* winApp = nullptr;
     Audio* audio = nullptr;
-    GamePad* gamepad = nullptr;
-    Physics* physics=nullptr;
+  //  Physics* physics=nullptr;
     SceneSelect* scene = nullptr;
-    ParticleManager* particleMan = nullptr;
-    ParticleManager* particleManBlue = nullptr;
+    //ParticleManager* particleMan = nullptr;
+    //ParticleManager* particleManBlue = nullptr;
     DirectWrite* directWrite = nullptr;
+    GameScene* gameScene = nullptr;
     directWrite = new DirectWrite();
 
     //WindowsAPIの初期化
     winApp = new WinApp();
     winApp->Initialize();
 
-    gamepad = new GamePad();
-   
-// DirectX初期化処理　ここから
 
+
+// DirectX初期化処理　ここから
     ComPtr<IXAudio2> xAudio2;
     IXAudio2MasteringVoice* masterVoice;
 
@@ -182,19 +146,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     HRESULT result;
      
+    input = new Input();
+    scene = new SceneSelect(WinApp::window_width, WinApp::window_height, input);
 
-
-     input = new Input();
-     physics = new Physics();
-     scene = new SceneSelect(WinApp::window_width, WinApp::window_height, input);
-
-    //入力の初期化
-  //  Input* input = Input::GetInstance();
-  
     input->Intialize(winApp);
 
-
- 
+    /*
     camera = new DebugCamera(WinApp::window_width, WinApp::window_height, input);
     Bluecamera= new BlueCameraDebug(WinApp::window_width, WinApp::window_height);
     Redcamera = new RedCameraDebug(WinApp::window_width, WinApp::window_height);
@@ -220,7 +177,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    lightGroup = LightGroup::Create();
 
    Fbx3d::SetLightGroup(lightGroup);
-
+   */
    //DirectWrite
    std::string keys="a";
   
@@ -242,22 +199,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
     //マスターボイスを作成 
     result = xAudio2->CreateMasteringVoice(&masterVoice);
-    
-    //スプライト初期化
-  
+    /*
+    //スプライト初期化  
    spriteCommon->Initialize(dxCommon->GetDev(),dxCommon->GetCmdList(),winApp->window_width,winApp->window_height);
    posteffectCommon->PostInitialize(dxCommon->GetDev(), dxCommon->GetCmdList(), winApp->window_width, winApp->window_height);
 
-
-
     //ポストエフェクト用
-  //Sprite*sprite=Sprite::Create(100, "Resources/Red.png");
    PostEffect* postEffect = PostEffect::PostCreate(posteffectCommon, 100);
    spriteCommon->SpriteCommonLoadTexture(100, L"Resources/Red.png");
-
-   //Sprite* sprite101 = Sprite::PostCreate(spriteCommon, 101);
-   //spriteCommon->SpriteCommonLoadTexture(101, L"Resources/Red.png");
-
 
     //スプライト
     Sprite* sprite = Sprite::Create(spriteCommon,0);
@@ -321,28 +270,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     const int debugTextTexNumber = 2;
 
     spriteCommon->SpriteCommonLoadTexture(debugTextTexNumber,L"Resources/ASC_white1280.png");
-    //SpriteCommonLoadTexture(spriteCommon, debugTextTexNumber, L"Resources/ASC_white1280.png", dxCommon->GetDev());
-
     debugtext->debugTextInit(spriteCommon,debugTextTexNumber);
     debugtext2->debugTextInit(spriteCommon, debugTextTexNumber);
-
-
-
     // DirectX初期化処理　ここまで
 
     FbxLoader::GetInstance()->Initialize(dxCommon->GetDev());
- 
-    //3D初期値設定
-
-    //的のフラグ
-    int TargetFlag = 1;
+ */
 
     //オーディオ初期化
     audio = new Audio();
     audio->Initialize();
 
     //パイプライン生成
- 
+ /*
     BYTE key[256] = {};
     BYTE olds[256] = {};
 
@@ -353,119 +293,44 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     int debug2_y = 24;
 
     //ゲームシーン処理関連
-
-    int GameScene = 0;
-
     char moji[64];
     char moji2[64];
 
-    Collision collision;
+    BulletFbx* fbx3d3 = nullptr;
+    BulletFbx* fbx3d4 = nullptr;
+    PlayerFbx* fbx3d9 = nullptr;
+    PortalExit* fbx3d23 = nullptr;
+    PortalExit* fbx3d24 = nullptr;
+    Fbx3d* fbx3d34 = nullptr;
+    Fbx3d* fbx3d36 = nullptr;
+    Fbx3d* fbx3d38 = nullptr;
 
-  // camera->SetTarget({ 10,0,0 });
-   //camera->SetDistance(30.0f);
+
+
    Model* model1 = nullptr;
-   Fbx3d* fbx3d1 = nullptr;
-
    Model* model2 = nullptr;
-   Fbx3d* fbx3d2 = nullptr;
-
    Model* model3 = nullptr;
-   BulletFbx* fbx3d3 = nullptr;
-
    Model* model4 = nullptr;
-   BulletFbx* fbx3d4 = nullptr;
-
    Model* model5 = nullptr;
-   Fbx3d* fbx3d5 = nullptr;
-
    Model* model6 = nullptr;
-   Fbx3d* fbx3d6 = nullptr;
-
    Model* model7 = nullptr;
-   Fbx3d* fbx3d7 = nullptr;
-
    Model* model8= nullptr;
-   Fbx3d* fbx3d8= nullptr;
-
    Model* model9 = nullptr;
-   PlayerFbx* fbx3d9 = nullptr;
-
    Model* model10 = nullptr;
-   ObjFbx* fbx3d10 = nullptr;
-
-   Fbx3d* fbx3d11 = nullptr;
-   Fbx3d* fbx3d12 = nullptr;
-   Fbx3d* fbx3d13 = nullptr;
-   Fbx3d* fbx3d14 = nullptr;
-   Fbx3d* fbx3d15 = nullptr;
-
-   Fbx3d* fbx3d16 = nullptr;
-   Fbx3d* fbx3d17 = nullptr;
-   Fbx3d* fbx3d18 = nullptr;
-   Fbx3d* fbx3d19 = nullptr;
-
-
    Model* model11 = nullptr;
-   Fbx3d* fbx3d20 = nullptr;
-
-   //Model* model11 = nullptr;
-   Fbx3d* fbx3d22 = nullptr;
-
-
-
    Model* model12 = nullptr;
-   ObjFbx* fbx3d21 = nullptr;
-
    Model* model13 = nullptr;
    Model* model13_2 = nullptr;
-   PortalExit* fbx3d23 = nullptr;
-   PortalExit* fbx3d24 = nullptr;
-
    Model* model15 = nullptr;
-   Fbx3d* fbx3d25 = nullptr;
-
    Model* model16 = nullptr;
-   Fbx3d* fbx3d26 = nullptr;
-
    Model* model17 = nullptr;
-   ObjFbx* fbx3d27 = nullptr;
-
-   Fbx3d* fbx3d28 = nullptr;
-   Fbx3d* fbx3d29 = nullptr;
-   Fbx3d* fbx3d30 = nullptr;
-   Fbx3d* fbx3d31 = nullptr;
-
-   ObjFbx* fbx3d32 = nullptr;
-
-
-
-   Fbx3d* wall1 = nullptr;
-   Fbx3d* wall2 = nullptr;
-   Fbx3d* wall3 = nullptr;
-   Fbx3d* wall4 = nullptr;
-
    Model* model14 = nullptr;
-
    Model* model18 = nullptr;
-   Fbx3d* fbx3d33 = nullptr;
-
-   Fbx3d* fbx3d34 = nullptr;
-
    Model* model19 = nullptr;
-   Fbx3d* fbx3d35 = nullptr;
-
    Model* model20 = nullptr;
-
    Model* model21 = nullptr;
-   Fbx3d* fbx3d36 = nullptr;
-
    Model* model22 = nullptr;
-   Fbx3d* fbx3d37 = nullptr;
-
-
    Model* model23 = nullptr;
-   Fbx3d* fbx3d38 = nullptr;
-
    Model* model24 = nullptr;
    Model* model25 = nullptr;
    Model* model26 = nullptr;
@@ -473,9 +338,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Model* model28 = nullptr;
    Model* model29 = nullptr;
    Model* model30 = nullptr;
-
-
-
 
    model1 = FbxLoader::GetInstance()->LoadModelFromFile("wall1");
    model2 = FbxLoader::GetInstance()->LoadModelFromFile("Door");
@@ -508,89 +370,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    model28 = FbxLoader::GetInstance()->LoadModelFromFile("RedArow");
    model29 = FbxLoader::GetInstance()->LoadModelFromFile("GreenArow");
    model30 = FbxLoader::GetInstance()->LoadModelFromFile("BlueArow");
-
-
-   Fbx3d* fbx3d1_2 = nullptr;
-   Fbx3d* fbx3d2_2 = nullptr;
-   Fbx3d* fbx3d3_2 = nullptr;
-   Fbx3d* fbx3d4_2 = nullptr;
-   Fbx3d* fbx3d5_2 = nullptr;
-   Fbx3d* fbx3d6_2 = nullptr;
-   Fbx3d* fbx3d7_2 = nullptr;
-   Fbx3d* fbx3d8_2 = nullptr;
-   Fbx3d* fbx3d9_2 = nullptr;
-   Fbx3d* fbx3d10_2 = nullptr;
-   Fbx3d* fbx3d11_2 = nullptr;
-   Fbx3d* fbx3d12_2 = nullptr;
-   Fbx3d* fbx3d13_2 = nullptr;
-   Fbx3d* fbx3d14_2 = nullptr;
-   Fbx3d* fbx3d15_2 = nullptr;
-   Fbx3d* fbx3d16_2 = nullptr;
-   Fbx3d* fbx3d17_2 = nullptr;
-   Fbx3d* fbx3d18_2 = nullptr;
-   Fbx3d* fbx3d19_2 = nullptr;
-   Fbx3d* fbx3d20_2 = nullptr;
-   Fbx3d* fbx3d21_2 = nullptr;
-   Fbx3d* fbx3d22_2 = nullptr;
-   Fbx3d* fbx3d23_2 = nullptr;
-   Fbx3d* fbx3d24_2 = nullptr;
-   Fbx3d* fbx3d25_2 = nullptr;
-   Fbx3d* fbx3d26_2 = nullptr;
-   Fbx3d* fbx3d27_2 = nullptr;
-   Fbx3d* fbx3d28_2 = nullptr;
-   Fbx3d* fbx3d29_2 = nullptr;
-   Fbx3d* fbx3d30_2 = nullptr;
-   Fbx3d* fbx3d31_2 = nullptr;
-   Fbx3d* fbx3d32_2 = nullptr;
-   Fbx3d* fbx3d33_2 = nullptr;
-   Fbx3d* fbx3d34_2 = nullptr;
-   Fbx3d* fbx3d35_2 = nullptr;
-   Fbx3d* fbx3d36_2 = nullptr;
-   Fbx3d* fbx3d37_2 = nullptr;
-
-   Fbx3d* fbx3d1_3 = nullptr;
-   Fbx3d* fbx3d2_3 = nullptr;
-   Fbx3d* fbx3d3_3 = nullptr;
-   Fbx3d* fbx3d4_3 = nullptr;
-   Fbx3d* fbx3d5_3 = nullptr;
-   Fbx3d* fbx3d6_3 = nullptr;
-   Fbx3d* fbx3d7_3 = nullptr;
-   Fbx3d* fbx3d8_3 = nullptr;
-   Fbx3d* fbx3d9_3 = nullptr;
-   Fbx3d* fbx3d10_3 = nullptr;
-   Fbx3d* fbx3d11_3 = nullptr;
-   Fbx3d* fbx3d12_3 = nullptr;
-   Fbx3d* fbx3d13_3 = nullptr;
-   Fbx3d* fbx3d14_3 = nullptr;
-   Fbx3d* fbx3d15_3 = nullptr;
-   Fbx3d* fbx3d16_3 = nullptr;
-   Fbx3d* fbx3d17_3 = nullptr;
-   Fbx3d* fbx3d18_3 = nullptr;
-   Fbx3d* fbx3d19_3 = nullptr;
-   Fbx3d* fbx3d20_3 = nullptr;
-   Fbx3d* fbx3d21_3 = nullptr;
-   Fbx3d* fbx3d22_3 = nullptr;
-   Fbx3d* fbx3d23_3 = nullptr;
-   Fbx3d* fbx3d24_3 = nullptr;
-   Fbx3d* fbx3d25_3 = nullptr;
-   Fbx3d* fbx3d26_3 = nullptr;
-   Fbx3d* fbx3d27_3 = nullptr;
-   Fbx3d* fbx3d28_3 = nullptr;
-   Fbx3d* fbx3d29_3 = nullptr;
-   Fbx3d* fbx3d30_3 = nullptr;
-   Fbx3d* fbx3d31_3 = nullptr;
-   Fbx3d* fbx3d32_3 = nullptr;
-   Fbx3d* fbx3d33_3 = nullptr;
-   Fbx3d* fbx3d34_3 = nullptr;
-   Fbx3d* fbx3d35_3 = nullptr;
-   Fbx3d* fbx3d36_3 = nullptr;
-   Fbx3d* fbx3d37_3 = nullptr;
    
-   Fbx3d* Bluefbx3d1 = nullptr;
- 
-
-
-
    //マップエディット
    MapEdit* mapedit = nullptr;
    mapedit = new MapEdit(WinApp::window_width, WinApp::window_height, input);
@@ -612,27 +392,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    MapEdit::SetMapCamera(camera);
    //モデル読み込み
    Fbx3d::SetDevice(dxCommon->GetDev());
-
    Fbx3d::SetCamera(camera);
    Fbx3d::SetBlueCamera(Bluecamera);
    Fbx3d::SetRedCamera(Redcamera);
-   
-   //Fbx3d::SetCamera(Bluecamera);
-
-
-
    Fbx3d::CreateGraphicsPipeline();
 
-   
   //3Dオブジェクト生成とモデルのセット
-  fbx3d1= new Fbx3d(input);
-  fbx3d1->Initialize();
-  fbx3d1->SetModel(model1);
-
-  fbx3d2 = new Fbx3d(input);
-  fbx3d2->Initialize();
-  fbx3d2->SetModel(model2);
-
   fbx3d3 = new BulletFbx(input);
   fbx3d3->Initialize();
   fbx3d3->SetModel(model3);
@@ -641,95 +406,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d4->Initialize();
   fbx3d4->SetModel(model4);
 
-  fbx3d5 = new Fbx3d(input);
-  fbx3d5->Initialize();
-  fbx3d5->SetModel(model8);
-
-  fbx3d6 = new Fbx3d(input);
-  fbx3d6->Initialize();
-  fbx3d6->SetModel(model6);
-
-  fbx3d7 = new Fbx3d(input);
-  fbx3d7->Initialize();
-  fbx3d7->SetModel(model8);
-
-  fbx3d8 = new Fbx3d(input);
-  fbx3d8->Initialize();
-  fbx3d8->SetModel(model8);
-
   fbx3d9= new PlayerFbx(input,physics);
   fbx3d9->Initialize();
   fbx3d9->SetModel(model14);
-
-  fbx3d10 = new ObjFbx(input);
-  fbx3d10->Initialize();
-  fbx3d10->SetModel(model10);
-
-
-  wall1 = new Fbx3d(input);
-  wall1->Initialize();
-  wall1->SetModel(model8);
-
-  wall2 = new Fbx3d(input);
-  wall2->Initialize();
-  wall2->SetModel(model8);
-
-  wall3 = new Fbx3d(input);
-  wall3->Initialize();
-  wall3->SetModel(model8);
-
-  wall4 = new Fbx3d(input);
-  wall4->Initialize();
-  wall4->SetModel(model8);
-
-  fbx3d11 = new Fbx3d(input);
-  fbx3d11->Initialize();
-  fbx3d11->SetModel(model10);
-
-  fbx3d12 = new Fbx3d(input);
-  fbx3d12->Initialize();
-  fbx3d12->SetModel(model10);
-
-  fbx3d13 = new Fbx3d(input);
-  fbx3d13->Initialize();
-  fbx3d13->SetModel(model10);
-
-  fbx3d14 = new Fbx3d(input);
-  fbx3d14->Initialize();
-  fbx3d14->SetModel(model10);
-
-  fbx3d15 = new Fbx3d(input);
-  fbx3d15->Initialize();
-  fbx3d15->SetModel(model10);
-
-  fbx3d16 = new Fbx3d(input);
-  fbx3d16->Initialize();
-  fbx3d16->SetModel(model10);
-
-  fbx3d17 = new Fbx3d(input);
-  fbx3d17->Initialize();
-  fbx3d17->SetModel(model10);
-
-  fbx3d18 = new Fbx3d(input);
-  fbx3d18->Initialize();
-  fbx3d18->SetModel(model10);
-
-  fbx3d19 = new Fbx3d(input);
-  fbx3d19->Initialize();
-  fbx3d19->SetModel(model10);
-
-  fbx3d20 = new Fbx3d(input);
-  fbx3d20->Initialize();
-  fbx3d20->SetModel(model11);
-
-  fbx3d21 = new ObjFbx(input);
-  fbx3d21->Initialize();
-  fbx3d21->SetModel(model12);
-
-
-  fbx3d22 = new Fbx3d(input);
-  fbx3d22->Initialize();
-  fbx3d22->SetModel(model8);
 
   fbx3d23 = new PortalExit(input);
  // fbx3d23->PortalCreateGraphicsPipeline();
@@ -741,449 +420,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d24->RenderFbxInitialize();
   fbx3d24->SetModel(model13_2);
 
-  fbx3d25 = new Fbx3d(input);
-  fbx3d25->Initialize();
-  fbx3d25->SetModel(model15);
-
-  fbx3d26 = new Fbx3d(input);
-  fbx3d26->Initialize();
-  fbx3d26->SetModel(model16);
-
-  fbx3d27 = new ObjFbx(input);
-  fbx3d27->Initialize();
-  fbx3d27->SetModel(model17);
-
-  fbx3d28 = new Fbx3d(input);
-  fbx3d28->Initialize();
-  fbx3d28->SetModel(model10);
-
-  fbx3d29 = new Fbx3d(input);
-  fbx3d29->Initialize();
-  fbx3d29->SetModel(model10);
-
-  fbx3d30 = new Fbx3d(input);
-  fbx3d30->Initialize();
-  fbx3d30->SetModel(model10);
-
-  fbx3d31 = new Fbx3d(input);
-  fbx3d31->Initialize();
-  fbx3d31->SetModel(model10);
-
-  fbx3d32= new ObjFbx(input);
-  fbx3d32->Initialize();
-  fbx3d32->SetModel(model17);
-
-  fbx3d33 = new Fbx3d(input);
-  fbx3d33->Initialize();
-  fbx3d33->SetModel(model18);
 
   fbx3d34 = new Fbx3d(input);
   fbx3d34->Initialize();
   fbx3d34->SetModel(model20);
 
-  fbx3d35 = new Fbx3d(input);
-  fbx3d35->Initialize();
-  fbx3d35->SetModel(model19);
 
   fbx3d36 = new Fbx3d(input);
   fbx3d36->Initialize();
   fbx3d36->SetModel(model21);
 
-  fbx3d37 = new Fbx3d(input);
-  fbx3d37->Initialize();
-  fbx3d37->SetModel(model22);
 
   fbx3d38 = new Fbx3d(input);
   fbx3d38->Initialize();
   fbx3d38->SetModel(model23);
-  //3Dオブジェクト生成とモデルのセット
-  fbx3d1_2 = new Fbx3d(input);
-  fbx3d1_2->Initialize();
-  fbx3d1_2->SetModel(model1);
-
-  fbx3d2_2 = new ObjFbx(input);
-  fbx3d2_2->Initialize();
-  fbx3d2_2->SetModel(model2);
-
-  fbx3d3_2 = new BulletFbx(input);
-  fbx3d3_2->Initialize();
-  fbx3d3_2->SetModel(model3);
-
-  fbx3d4_2 = new BulletFbx(input);
-  fbx3d4_2->Initialize();
-  fbx3d4_2->SetModel(model4);
-
-  fbx3d5_2 = new Fbx3d(input);
-  fbx3d5_2->Initialize();
-  fbx3d5_2->SetModel(model8);
-
-  fbx3d6_2 = new Fbx3d(input);
-  fbx3d6_2->Initialize();
-  fbx3d6_2->SetModel(model6);
-
-  fbx3d7_2 = new Fbx3d(input);
-  fbx3d7_2->Initialize();
-  fbx3d7_2->SetModel(model8);
-
-  fbx3d8_2 = new Fbx3d(input);
-  fbx3d8_2->Initialize();
-  fbx3d8_2->SetModel(model8);
-
-  fbx3d9_2 = new PlayerFbx(input, physics);
-  fbx3d9_2->Initialize();
-  fbx3d9_2->SetModel(model14);
-
-  fbx3d10_2 = new ObjFbx(input);
-  fbx3d10_2->Initialize();
-  fbx3d10_2->SetModel(model10);
-
-  fbx3d11_2 = new Fbx3d(input);
-  fbx3d11_2->Initialize();
-  fbx3d11_2->SetModel(model10);
-
-  fbx3d12_2 = new Fbx3d(input);
-  fbx3d12_2->Initialize();
-  fbx3d12_2->SetModel(model10);
-
-  fbx3d13_2 = new Fbx3d(input);
-  fbx3d13_2->Initialize();
-  fbx3d13_2->SetModel(model10);
-
-  fbx3d14_2 = new Fbx3d(input);
-  fbx3d14_2->Initialize();
-  fbx3d14_2->SetModel(model10);
-
-  fbx3d15_2 = new Fbx3d(input);
-  fbx3d15_2->Initialize();
-  fbx3d15_2->SetModel(model10);
-
-  fbx3d16_2 = new Fbx3d(input);
-  fbx3d16_2->Initialize();
-  fbx3d16_2->SetModel(model10);
-
-  fbx3d17_2 = new Fbx3d(input);
-  fbx3d17_2->Initialize();
-  fbx3d17_2->SetModel(model10);
-
-  fbx3d18_2 = new Fbx3d(input);
-  fbx3d18_2->Initialize();
-  fbx3d18_2->SetModel(model10);
-
-  fbx3d19_2 = new Fbx3d(input);
-  fbx3d19_2->Initialize();
-  fbx3d19_2->SetModel(model10);
-
-  fbx3d20_2 = new Fbx3d(input);
-  fbx3d20_2->Initialize();
-  fbx3d20_2->SetModel(model11);
-
-  fbx3d21_2 = new ObjFbx(input);
-  fbx3d21_2->Initialize();
-  fbx3d21_2->SetModel(model12);
-
-
-  fbx3d22_2 = new Fbx3d(input);
-  fbx3d22_2->Initialize();
-  fbx3d22_2->SetModel(model8);
-
-  fbx3d23_2 = new PortalExit(input);
-  // fbx3d23->PortalCreateGraphicsPipeline();
-  fbx3d23_2->RenderFbxInitialize();
-  fbx3d23_2->SetModel(model13);
-
-  fbx3d24_2 = new PortalExit(input);
-  // fbx3d24->PortalCreateGraphicsPipeline();
-  fbx3d24_2->RenderFbxInitialize();
-  fbx3d24_2->SetModel(model13);
-
-  fbx3d25_2 = new Fbx3d(input);
-  fbx3d25_2->Initialize();
-  fbx3d25_2->SetModel(model15);
-
-  fbx3d26_2 = new Fbx3d(input);
-  fbx3d26_2->Initialize();
-  fbx3d26_2->SetModel(model16);
-
-  fbx3d27_2 = new ObjFbx(input);
-  fbx3d27_2->Initialize();
-  fbx3d27_2->SetModel(model17);
-
-  fbx3d28_2 = new Fbx3d(input);
-  fbx3d28_2->Initialize();
-  fbx3d28_2->SetModel(model10);
-
-  fbx3d29_2 = new Fbx3d(input);
-  fbx3d29_2->Initialize();
-  fbx3d29_2->SetModel(model10);
-
-  fbx3d30_2 = new Fbx3d(input);
-  fbx3d30_2->Initialize();
-  fbx3d30_2->SetModel(model10);
-
-  fbx3d31_2 = new Fbx3d(input);
-  fbx3d31_2->Initialize();
-  fbx3d31_2->SetModel(model10);
-
-  fbx3d32_2 = new ObjFbx(input);
-  fbx3d32_2->Initialize();
-  fbx3d32_2->SetModel(model17);
-
-  fbx3d33_2 = new Fbx3d(input);
-  fbx3d33_2->Initialize();
-  fbx3d33_2->SetModel(model18);
-
-  fbx3d34_2 = new Fbx3d(input);
-  fbx3d34_2->Initialize();
-  fbx3d34_2->SetModel(model20);
-
-  fbx3d35_2 = new Fbx3d(input);
-  fbx3d35_2->Initialize();
-  fbx3d35_2->SetModel(model19);
-
-  fbx3d36_2 = new Fbx3d(input);
-  fbx3d36_2->Initialize();
-  fbx3d36_2->SetModel(model21);
-
-  fbx3d37_2 = new Fbx3d(input);
-  fbx3d37_2->Initialize();
-  fbx3d37_2->SetModel(model22);
-
-  //3Dオブジェクト生成とモデルのセット
-  fbx3d1_3 = new Fbx3d(input);
-  fbx3d1_3->Initialize();
-  fbx3d1_3->SetModel(model1);
-
-  fbx3d2_3 = new ObjFbx(input);
-  fbx3d2_3->Initialize();
-  fbx3d2_3->SetModel(model2);
-
-  fbx3d3_3 = new BulletFbx(input);
-  fbx3d3_3->Initialize();
-  fbx3d3_3->SetModel(model3);
-
-  fbx3d4_3 = new BulletFbx(input);
-  fbx3d4_3->Initialize();
-  fbx3d4_3->SetModel(model4);
-
-  fbx3d5_3 = new Fbx3d(input);
-  fbx3d5_3->Initialize();
-  fbx3d5_3->SetModel(model8);
-
-  fbx3d6_3 = new Fbx3d(input);
-  fbx3d6_3->Initialize();
-  fbx3d6_3->SetModel(model6);
-
-  fbx3d7_3 = new Fbx3d(input);
-  fbx3d7_3->Initialize();
-  fbx3d7_3->SetModel(model8);
-
-  fbx3d8_3 = new Fbx3d(input);
-  fbx3d8_3->Initialize();
-  fbx3d8_3->SetModel(model8);
-
-  fbx3d9_3 = new PlayerFbx(input, physics);
-  fbx3d9_3->Initialize();
-  fbx3d9_3->SetModel(model14);
-
-  fbx3d10_3 = new ObjFbx(input);
-  fbx3d10_3->Initialize();
-  fbx3d10_3->SetModel(model10);
-
-  fbx3d11_3 = new Fbx3d(input);
-  fbx3d11_3->Initialize();
-  fbx3d11_3->SetModel(model10);
-
-  fbx3d12_3 = new Fbx3d(input);
-  fbx3d12_3->Initialize();
-  fbx3d12_3->SetModel(model10);
-
-  fbx3d13_3 = new Fbx3d(input);
-  fbx3d13_3->Initialize();
-  fbx3d13_3->SetModel(model10);
-
-  fbx3d14_3 = new Fbx3d(input);
-  fbx3d14_3->Initialize();
-  fbx3d14_3->SetModel(model10);
-
-  fbx3d15_3 = new Fbx3d(input);
-  fbx3d15_3->Initialize();
-  fbx3d15_3->SetModel(model10);
-
-  fbx3d16_3 = new Fbx3d(input);
-  fbx3d16_3->Initialize();
-  fbx3d16_3->SetModel(model10);
-
-  fbx3d17_3 = new Fbx3d(input);
-  fbx3d17_3->Initialize();
-  fbx3d17_3->SetModel(model10);
-
-  fbx3d18_3 = new Fbx3d(input);
-  fbx3d18_3->Initialize();
-  fbx3d18_3->SetModel(model10);
-
-  fbx3d19_3 = new Fbx3d(input);
-  fbx3d19_3->Initialize();
-  fbx3d19_3->SetModel(model10);
-
-  fbx3d20_3 = new Fbx3d(input);
-  fbx3d20_3->Initialize();
-  fbx3d20_3->SetModel(model11);
-
-  fbx3d21_3 = new ObjFbx(input);
-  fbx3d21_3->Initialize();
-  fbx3d21_3->SetModel(model12);
-
-
-  fbx3d22_3 = new Fbx3d(input);
-  fbx3d22_3->Initialize();
-  fbx3d22_3->SetModel(model8);
-
-  fbx3d23_3 = new PortalExit(input);
-  // fbx3d23->PortalCreateGraphicsPipeline();
-  fbx3d23_3->RenderFbxInitialize();
-  fbx3d23_3->SetModel(model13);
-
-  fbx3d24_3 = new PortalExit(input);
-  // fbx3d24->PortalCreateGraphicsPipeline();
-  fbx3d24_3->RenderFbxInitialize();
-  fbx3d24_3->SetModel(model13);
-
-  fbx3d25_3 = new Fbx3d(input);
-  fbx3d25_3->Initialize();
-  fbx3d25_3->SetModel(model15);
-
-  fbx3d26_3 = new Fbx3d(input);
-  fbx3d26_3->Initialize();
-  fbx3d26_3->SetModel(model16);
-
-  fbx3d27_3 = new ObjFbx(input);
-  fbx3d27_3->Initialize();
-  fbx3d27_3->SetModel(model17);
-
-  fbx3d28_3 = new Fbx3d(input);
-  fbx3d28_3->Initialize();
-  fbx3d28_3->SetModel(model10);
-
-  fbx3d29_3 = new Fbx3d(input);
-  fbx3d29_3->Initialize();
-  fbx3d29_3->SetModel(model10);
-
-  fbx3d30_3 = new Fbx3d(input);
-  fbx3d30_3->Initialize();
-  fbx3d30_3->SetModel(model10);
-
-  fbx3d31_3 = new Fbx3d(input);
-  fbx3d31_3->Initialize();
-  fbx3d31_3->SetModel(model10);
-
-  fbx3d32_3 = new ObjFbx(input);
-  fbx3d32_3->Initialize();
-  fbx3d32_3->SetModel(model17);
-
-  fbx3d33_3 = new Fbx3d(input);
-  fbx3d33_3->Initialize();
-  fbx3d33_3->SetModel(model18);
-
-  fbx3d34_3 = new Fbx3d(input);
-  fbx3d34_3->Initialize();
-  fbx3d34_3->SetModel(model20);
-
-  fbx3d35_3 = new Fbx3d(input);
-  fbx3d35_3->Initialize();
-  fbx3d35_3->SetModel(model19);
-
-  fbx3d36_3 = new Fbx3d(input);
-  fbx3d36_3->Initialize();
-  fbx3d36_3->SetModel(model21);
-
-  fbx3d37_3 = new Fbx3d(input);
-  fbx3d37_3->Initialize();
-  fbx3d37_3->SetModel(model22);
-
-  wall1->SetPosition({ -90, 0, 0 });
-  wall2->SetPosition({ +90, 0, 0 });
-  wall3->SetPosition({  0, 0,-90 });
-  wall4->SetPosition({  0, 0,+90 });
-
-  fbx3d1->SetPosition({ 0, -10, 0 });
-  fbx3d1->SetRotate({ 0,0,0 });
-
-  fbx3d2->SetPosition({ -60,1,100 });
-  fbx3d2->SetScale({ 0.1,0.1, 0.1 });
-  fbx3d2->SetRotate({ 0,0,180 });
 
   fbx3d3->SetScale({ 0.05, 0.05,0.05 });
   fbx3d4->SetScale({ 0.05, 0.05,0.05 });
 
   fbx3d3->SetPosition({ 0, 0, -20 });
   fbx3d9->SetPosition({ 0, 0, -20 });
-
-
-  fbx3d5->SetPosition({105, 80, 0 });
-  fbx3d5->SetRotate({ 90,270,0 });
-
-  fbx3d22->SetPosition({ -105, 80, 0 });
-  fbx3d22->SetRotate({ 90,90,0 });
-
-
-
-  fbx3d6->SetPosition({ 0, -10, 0 });
-  fbx3d6->SetRotate({ 0,0,0 });
-
-
-  fbx3d7->SetPosition({ 0, 80, -105 });
-  fbx3d7->SetRotate({ 90,0,0 });
-
-  fbx3d8->SetPosition({ 0, 0, 106 });
-  fbx3d8->SetRotate({ 270,0,0 });
-
-  fbx3d10->SetPosition({ 0, 0, -12 });
-  fbx3d10->SetScale({ 0.1,0.1,0.1 });
-  fbx3d10->SetRotate({ 0,0,0 });
-
-  fbx3d11->SetPosition({ 20, 0, -12 });
-  fbx3d11->SetScale({ 0.1,0.1,0.1 });
-  fbx3d11->SetRotate({ 0,0,0 });
-
-  fbx3d12->SetPosition({ 40, 0, -12 });
-  fbx3d12->SetScale({ 0.1,0.1,0.1 });
-  fbx3d12->SetRotate({ 0,0,0 });
-
-  fbx3d13->SetPosition({ 60, 0, -12 });
-  fbx3d13->SetScale({ 0.1,0.1,0.1 });
-  fbx3d13->SetRotate({ 0,0,0 });
-
-  fbx3d14->SetPosition({ 80, 0, -12});
-  fbx3d14->SetScale({ 0.1,0.1,0.1 });
-  fbx3d14->SetRotate({ 0,0,0 });
-
-  fbx3d15->SetPosition({ -20, 0, -12 });
-  fbx3d15->SetScale({ 0.1,0.1,0.1 });
-  fbx3d15->SetRotate({ 0,0,0 });
-
-  fbx3d16->SetPosition({ -40, 0, -12 });
-  fbx3d16->SetScale({ 0.1,0.1,0.1 });
-  fbx3d16->SetRotate({ 0,0,0 });
-
-  fbx3d17->SetPosition({ -60, 0, -12 });
-  fbx3d17->SetScale({ 0.1,0.1,0.1 });
-  fbx3d17->SetRotate({ 0,0,0 });
-
-  fbx3d18->SetPosition({ -80, 0, -12 });
-  fbx3d18->SetScale({ 0.1,0.1,0.1 });
-  fbx3d18->SetRotate({ 0,0,0 });
-
-  fbx3d19->SetPosition({ 0, 0, -12 });
-  fbx3d19->SetScale({ 0.1,0.1,0.1 });
-  fbx3d19->SetRotate({ 0,0,0 });
-
-  fbx3d20->SetPosition({ 60, -6, -30 });
-  fbx3d20->SetScale({ 0.014,0.014,0.014 });
-  fbx3d20->SetRotate({ 0,0,0 });
-
-  fbx3d21->SetPosition({ 60, -1.8, -30 });
-  fbx3d21->SetScale({ 0.012,0.012,0.012 });
-  fbx3d21->SetRotate({ 0,45,90 });
 
   fbx3d23->SetPosition({ 0,0,0 });
   fbx3d23->SetScale({ 0.1,0.1,0.1});
@@ -1193,63 +449,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   fbx3d24->SetScale({ 0.1,0.1,0.1 });
   fbx3d24->SetRotate({ 0,0,270 });
 
-  fbx3d25->SetPosition({ 0,-1,-14 });
-  fbx3d25->SetScale({ 0.04,0.04,0.04 });
-  fbx3d25->SetRotate({ 0,360,0 });
-
-
-  fbx3d26->SetPosition({ 28,-1,-60 });
-  fbx3d26->SetScale({ 0.04,0.04,0.04 });
-  fbx3d26->SetRotate({ 0,90,0 });
-
-  fbx3d27->SetPosition({ 30,0,-41 });
-  fbx3d27->SetScale({ 3.5,3.5,3.5 });
-  fbx3d27->SetRotate({ 0,0,0 });
-
-  fbx3d28->SetPosition({ 30, 0, -22 });
-  fbx3d28->SetScale({ 0.1,0.1,0.1 });
-  fbx3d28->SetRotate({ 0,90,0 });
-
-  fbx3d29->SetPosition({ 30, 0, -62 });
-  fbx3d29->SetScale({ 0.1,0.1,0.1 });
-  fbx3d29->SetRotate({ 0,90,0 });
-
-  fbx3d30->SetPosition({ 30, 0, -82 });
-  fbx3d30->SetScale({ 0.1,0.1,0.1 });
-  fbx3d30->SetRotate({ 0,90,0 });
-
-  fbx3d31->SetPosition({ 30, 0, -102 });
-  fbx3d31->SetScale({ 0.1,0.1,0.1 });
-  fbx3d31->SetRotate({ 0,90,0 });
-
-  fbx3d32->SetPosition({ 30,0,-37 });
-  fbx3d32->SetScale({ 3.5,3.5,3.5 });
-  fbx3d32->SetRotate({ 0,0,0 });
-
-  fbx3d33->SetPosition({ 0,0,0 });
-  fbx3d33->SetScale({ 0.1,0.1,0.1 });
-  fbx3d33->SetRotate({ 0,0,270 });
-
-
   fbx3d34->SetPosition({ 300,10,60 });
   fbx3d34->SetScale({ 0.1,0.1, 0.1 });
   fbx3d34->SetRotate({ 0,0,180 });
 
-  fbx3d35->SetPosition({ -45,2,90 });
-  fbx3d35->SetScale({ 0.02,0.02,0.02 });
-  fbx3d35->SetRotate({ 0,90,0 });
-
-
-
   fbx3d36->SetPosition({ 307,10,60 });
   fbx3d36->SetScale({ 0.1,0.1, 0.1 });
   fbx3d36->SetRotate({ 0,0,180 });
-
-
-  fbx3d37->SetPosition({ 40,-1,-14 });
-  fbx3d37->SetScale({ 0.04,0.04,0.04 });
-  fbx3d37->SetRotate({ 0,360,0 });
-
 
   fbx3d38->SetPosition({ 0,0,0 });
   fbx3d38->SetScale({ 1,1,1 });
@@ -1262,182 +468,49 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
   float radius = 5.0f;
   float PlayerRadius = 1.0f;
 
-  fbx3d1->SetColider(new BoxCollider(XMVECTOR{70,70,70,0}));
-  fbx3d2->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius+30));
-
   fbx3d3->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
   fbx3d4->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
-  fbx3d6->SetColider(new WallCollider(XMVECTOR{ 100,2,100,0 }));
   fbx3d9->SetColider(new SphereCollider(XMVECTOR{ 0,PlayerRadius,0,0 }, PlayerRadius));
-  //fbx3d10->SetColider(new WallCollider(XMVECTOR{ 20,10,0.1,0 }));
-
-  
- // wall1->SetColider(new WallCollider(XMVECTOR{ 3,80,100,0 }));
-// wall2->SetColider(new WallCollider(XMVECTOR{ 3,80,100,0 }));
- // wall3->SetColider(new WallCollider(XMVECTOR{ 100,80,3,0 }));
-  //wall4->SetColider(new WallCollider(XMVECTOR{ 100,80,3,0 }));
-
-//  fbx3d11->SetColider(new WallCollider(XMVECTOR{ 20,15,2,0 }));
-//  fbx3d12->SetColider(new WallCollider(XMVECTOR{ 20,15,2,0 }));
-//  fbx3d13->SetColider(new WallCollider(XMVECTOR{ 20,15,2,0 }));
-//  fbx3d14->SetColider(new WallCollider(XMVECTOR{ 20,15,2,0 }));
- // fbx3d15->SetColider(new WallCollider(XMVECTOR{ 20,15,2,0 }));
- // fbx3d16->SetColider(new WallCollider(XMVECTOR{ 20,15,2,0 }));
-//  fbx3d17->SetColider(new WallCollider(XMVECTOR{ 20,15,2,0 }));
-//  fbx3d18->SetColider(new WallCollider(XMVECTOR{ 20,15,2,0 }));
-//  fbx3d19->SetColider(new WallCollider(XMVECTOR{ 20,15,2,0 }));
-
-  fbx3d20->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
-  fbx3d21->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
-  fbx3d27->SetColider(new SphereCollider(XMVECTOR{ 0,radius-2,0,0 }, radius-2));
- // fbx3d32->SetColider(new SphereCollider(XMVECTOR{ 0,radius - 2,0,0 }, radius - 2));
-
-
-
- // fbx3d28->SetColider(new WallCollider(XMVECTOR{ 1,15,10,0 }));
- // fbx3d29->SetColider(new WallCollider(XMVECTOR{ 1,15,10,0 }));
- // fbx3d30->SetColider(new WallCollider(XMVECTOR{ 1,15,10,0 }));
- // fbx3d31->SetColider(new WallCollider(XMVECTOR{ 1,15,10,0 }));
 
   //当たり判定の属性
-//  fbx3d2->SetVerExit();
-//  fbx3d6->SetVerObj();
   fbx3d3->SetVerBulletRed();
   fbx3d4->SetVerBulletBlue();
   fbx3d9->SetVer();
-// // fbx3d10->SetVerObj();
- // fbx3d21->SetVerObj();
- // fbx3d6->SetVerWall();
- // fbx3d10->SetVerWall();
-//  fbx3d11->SetVerWall();
- // fbx3d12->SetVerWall(); 
- // fbx3d13->SetVerWall();
-//  fbx3d14->SetVerWall();
-//  fbx3d15->SetVerWall();
- // fbx3d16->SetVerWall();
-//  fbx3d17->SetVerWall();
-//  fbx3d18->SetVerWall();
-//  fbx3d19->SetVerWall();
- // fbx3d27->SetVerObj2();
-//  fbx3d32->SetVerObj2();
-  fbx3d20->SetVerSPHEREOBJ();
-////  fbx3d29->SetVerWall();
-//  fbx3d30->SetVerWall();
- // fbx3d31->SetVerWall();
-//  fbx3d21->SetVerWall();
 
- // wall1->SetVerWall();
- // wall2->SetVerWall();
- // wall3->SetVerWall();
- // wall4->SetVerWall();
-  //fbx3d2->PlayAnimation2();
+  
+
   fbx3d9->PlayAnimation2();
 
-  scene->SetHwnd(winApp->GetHwnd());
+
   mapedit->SetHwnd(winApp->GetHwnd());
   int c = 0;
   int portaltime = 0;
   XMVECTOR mo;
   XMFLOAT3 posi;
+  */
 
- 
+gameScene = new GameScene();
+gameScene->SceneInitialize(dxCommon, input, audio, winApp);
+
+      scene->SetHwnd(winApp->GetHwnd());
     while (true)  // ゲームループ
     {
-     //   Fbx3d::SetCamera(camera);
+     /*
         if (scene->GetScene() == -1)
         {
 
             fbx3d3->Initialize2();
             fbx3d4->Initialize2();
-            fbx3d21->ObjInitialize();
             fbx3d9->Initialize2();
-            fbx3d27->ObjInitialize();
+    
             scene->SceneInitialize();
             camera->Initialize2();
-            wall1->SetPosition({ -90, 0, 0 });
-            wall2->SetPosition({ +90, 0, 0 });
-            wall3->SetPosition({ 0, 0,-90 });
-            wall4->SetPosition({ 0, 0,+90 });
-
-            fbx3d1->SetPosition({ 0, -10, 0 });
-            fbx3d1->SetRotate({ 0,0,0 });
-
-            fbx3d2->SetPosition({ -60,1,100 });
-            fbx3d2->SetScale({ 0.1,0.1, 0.1 });
-            fbx3d2->SetRotate({ 0,0,180 });
 
             fbx3d3->SetScale({ 0.05, 0.05,0.05 });
             fbx3d4->SetScale({ 0.05, 0.05,0.05 });
 
             fbx3d3->SetPosition({ 0, 0, -20 });
             fbx3d9->SetPosition({ 0, 0, -20 });
-
-
-            fbx3d5->SetPosition({ 105, 80, 0 });
-            fbx3d5->SetRotate({ 90,270,0 });
-
-            fbx3d22->SetPosition({ -105, 80, 0 });
-            fbx3d22->SetRotate({ 90,90,0 });
-
-
-
-            fbx3d6->SetPosition({ 0, -10, 0 });
-            fbx3d6->SetRotate({ 0,0,0 });
-
-
-            fbx3d7->SetPosition({ 0, 80, -105 });
-            fbx3d7->SetRotate({ 90,0,0 });
-
-            fbx3d8->SetPosition({ 0, 0, 106 });
-            fbx3d8->SetRotate({ 270,0,0 });
-
-            fbx3d10->SetPosition({ 0, 0, -12 });
-            fbx3d10->SetScale({ 0.1,0.1,0.1 });
-            fbx3d10->SetRotate({ 0,0,0 });
-
-            fbx3d11->SetPosition({ 20, 0, -12 });
-            fbx3d11->SetScale({ 0.1,0.1,0.1 });
-            fbx3d11->SetRotate({ 0,0,0 });
-
-            fbx3d12->SetPosition({ 40, 0, -12 });
-            fbx3d12->SetScale({ 0.1,0.1,0.1 });
-            fbx3d12->SetRotate({ 0,0,0 });
-
-            fbx3d13->SetPosition({ 60, 0, -12 });
-            fbx3d13->SetScale({ 0.1,0.1,0.1 });
-            fbx3d13->SetRotate({ 0,0,0 });
-
-            fbx3d14->SetPosition({ 80, 0, -12 });
-            fbx3d14->SetScale({ 0.1,0.1,0.1 });
-            fbx3d14->SetRotate({ 0,0,0 });
-
-            fbx3d15->SetPosition({ -20, 0, -12 });
-            fbx3d15->SetScale({ 0.1,0.1,0.1 });
-            fbx3d15->SetRotate({ 0,0,0 });
-
-            fbx3d16->SetPosition({ -40, 0, -12 });
-            fbx3d16->SetScale({ 0.1,0.1,0.1 });
-            fbx3d16->SetRotate({ 0,0,0 });
-
-            fbx3d17->SetPosition({ -60, 0, -12 });
-            fbx3d17->SetScale({ 0.1,0.1,0.1 });
-            fbx3d17->SetRotate({ 0,0,0 });
-
-            fbx3d18->SetPosition({ -80, 0, -12 });
-            fbx3d18->SetScale({ 0.1,0.1,0.1 });
-            fbx3d18->SetRotate({ 0,0,0 });
-
-            fbx3d19->SetPosition({ 0, 0, -12 });
-            fbx3d19->SetScale({ 0.1,0.1,0.1 });
-            fbx3d19->SetRotate({ 0,0,0 });
-
-            fbx3d20->SetPosition({ 60, -6, -30 });
-            fbx3d20->SetScale({ 0.014,0.014,0.014 });
-            fbx3d20->SetRotate({ 0,0,0 });
-
-            fbx3d21->SetPosition({ 60, -1.8, -30 });
-            fbx3d21->SetScale({ 0.012,0.012,0.012 });
-            fbx3d21->SetRotate({ 0,45,90 });
 
             fbx3d23->SetPosition({ 0,0,0 });
             fbx3d23->SetScale({ 0.1,0.1,0.1 });
@@ -1447,64 +520,13 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             fbx3d24->SetScale({ 0.1,0.1,0.1 });
             fbx3d24->SetRotate({ 0,0,270 });
 
-            fbx3d25->SetPosition({ 0,-1,-14 });
-            fbx3d25->SetScale({ 0.04,0.04,0.04 });
-            fbx3d25->SetRotate({ 0,360,0 });
-
-
-            fbx3d26->SetPosition({ 28,-1,-60 });
-            fbx3d26->SetScale({ 0.04,0.04,0.04 });
-            fbx3d26->SetRotate({ 0,90,0 });
-
-            fbx3d27->SetPosition({ 30,0,-41 });
-            fbx3d27->SetScale({ 3.5,3.5,3.5 });
-            fbx3d27->SetRotate({ 0,0,0 });
-
-            fbx3d28->SetPosition({ 30, 0, -22 });
-            fbx3d28->SetScale({ 0.1,0.1,0.1 });
-            fbx3d28->SetRotate({ 0,90,0 });
-
-            fbx3d29->SetPosition({ 30, 0, -62 });
-            fbx3d29->SetScale({ 0.1,0.1,0.1 });
-            fbx3d29->SetRotate({ 0,90,0 });
-
-            fbx3d30->SetPosition({ 30, 0, -82 });
-            fbx3d30->SetScale({ 0.1,0.1,0.1 });
-            fbx3d30->SetRotate({ 0,90,0 });
-
-            fbx3d31->SetPosition({ 30, 0, -102 });
-            fbx3d31->SetScale({ 0.1,0.1,0.1 });
-            fbx3d31->SetRotate({ 0,90,0 });
-
-            fbx3d32->SetPosition({ 30,0,-37 });
-            fbx3d32->SetScale({ 3.5,3.5,3.5 });
-            fbx3d32->SetRotate({ 0,0,0 });
-
-            fbx3d33->SetPosition({ 0,0,0 });
-            fbx3d33->SetScale({ 0.1,0.1,0.1 });
-            fbx3d33->SetRotate({ 0,0,270 });
-
-
             fbx3d34->SetPosition({ 300,10,60 });
             fbx3d34->SetScale({ 0.1,0.1, 0.1 });
             fbx3d34->SetRotate({ 0,0,180 });
 
-            fbx3d35->SetPosition({ -45,2,90 });
-            fbx3d35->SetScale({ 0.02,0.02,0.02 });
-            fbx3d35->SetRotate({ 0,90,0 });
-
-
-
             fbx3d36->SetPosition({ 307,10,60 });
             fbx3d36->SetScale({ 0.1,0.1, 0.1 });
             fbx3d36->SetRotate({ 0,0,180 });
-
-
-            fbx3d37->SetPosition({ 40,-1,-14 });
-            fbx3d37->SetScale({ 0.04,0.04,0.04 });
-            fbx3d37->SetRotate({ 0,360,0 });
-
-
         }
         if (fbx3d9->GetColision() == false)
         {
@@ -1515,47 +537,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         scene->MapEditScene();
 
         //座標Set関連   
-        fbx3d10->SetMyPosition(fbx3d9->GetMyPosition());
-        fbx3d10->SetCameraAxisZ(camera->GetCameraZAxis());
-        fbx3d10->SetTarget(camera->GetTargetPos());
-
-        fbx3d21->SetMyPosition(fbx3d9->GetMyPosition());
-        fbx3d21->SetCameraAxisZ(camera->GetCameraZAxis());
-        fbx3d21->SetTarget(camera->GetTargetPos());
-
-        fbx3d27->SetMyPosition(fbx3d9->GetMyPosition());
-        fbx3d27->SetCameraAxisZ(camera->GetCameraZAxis());
-        fbx3d27->SetTarget(camera->GetTargetPos());
-
         mapedit->SetMyPosition(fbx3d9->GetMyPosition());
         mapedit->SetCameraAxisZ(camera->GetCameraZAxis());
         mapedit->SetTarget(camera->GetTargetPos());
 
-        
-
-        fbx3d32->SetMyPosition(fbx3d9->GetMyPosition());
-        fbx3d32->SetCameraAxisZ(camera->GetCameraZAxis());
-        fbx3d32->SetTarget(camera->GetTargetPos());
-
         fbx3d23->SetMyposition(fbx3d9->GetMyPosition());
         fbx3d24->SetMyposition(fbx3d9->GetMyPosition());
-    //    fbx3d3->SetWorld(camera->GetRot());
-    
-      
+
         fbx3d3->SetMove(fbx3d9->GetMove());
         fbx3d4->SetMove(fbx3d9->GetMove());
         fbx3d3->SetPos(camera->GetPos());
         fbx3d4->SetPos(camera->GetPos());
        
-
-      
         camera->SetWarpPosition(fbx3d9->GetPosition());
         camera->SetGround(fbx3d9->Getground());
         camera->SetScene(scene->GetScene());
-
-        fbx3d21->SetShotBlue(fbx3d4->GetShot());
-        fbx3d21->SetShotRed(fbx3d3->GetShot2());
-        fbx3d21->SetWark(fbx3d9->GetWark());
 
         mapedit->SetShotBlue(fbx3d4->GetShot());
         mapedit->SetShotRed(fbx3d3->GetShot2());
@@ -1566,21 +562,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
       
         fbx3d24->GetFlag(fbx3d4->GetWarpFlag2());
         fbx3d24->GetExitPosition(fbx3d4->GetPosition());
-
-
-        fbx3d33->SetPosition({ fbx3d24->GetMyPosition() });
-        fbx3d33->SetRotate({ fbx3d24->GetMyRotate() });
-        fbx3d33->SetScale({ fbx3d24->GetMyScale() });
-
        
         Bluecamera->SetEyePos(fbx3d24->GetMyPosition());
         Redcamera->SetEyePos(fbx3d23->GetMyPosition());
-
-        
-     // sprite2->SpriteTransVertexBuffer();
-     
-    
-     
+     */
      //sprintf_s(moji2, "camera=%f", camera->GetPositionY());
      //sprintf_s(moji2,"%d",camera->GetAngleY());
      
@@ -1589,7 +574,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             //ゲームループを抜ける
             break;
         }
-
+        /*
         // DirectX毎フレーム処理　ここから
       
         fbx3d36->SetRotate({ 0,scene->GetDoorY(),180});
@@ -1616,11 +601,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         lightGroup->Update();
         input->Update();
       
-        
-       
-     //   Fbx3d::SetCamera(camera);
-       // fbx3d9->SetWall(camera->GetWall());
-     
         camera->SetColision(fbx3d9->GetColision());
         camera->SetMove(fbx3d9->GetMove());
         camera->SetColisionVec(fbx3d9->GetColisionVec());
@@ -1670,7 +650,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
                 }
                 else
                 {
-                    //  
                     break;
                 }
 
@@ -1687,21 +666,14 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
                 }
             }
 
-
-
-
-
-            //if (scene->GetScene() == 1)
-            //{
             Bluecamera->Update();
             Redcamera->Update();
             fbx3d3->SetCameraT(camera->GetTargetPos());
             fbx3d4->SetCameraT(camera->GetTargetPos());
-     //       fbx3d3->SetGet(fbx3d21->Getgetobj());
-      //      fbx3d4->SetGet(fbx3d21->Getgetobj());
 
-            fbx3d3->SetGet(mapedit->Getgetobj());
-            fbx3d4->SetGet(mapedit->Getgetobj());
+            //後で変える
+            fbx3d3->SetGet(mapedit->GetGetGun());
+            fbx3d4->SetGet(mapedit->GetGetGun());
 
 
 
@@ -1711,9 +683,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             camera->SetBlueAngle(fbx3d3->GetMemoB());
             camera->SetRedAngle(fbx3d4->GetMemoR());
-
-            //fbx3d21->ObjUpdate(camera->GetAngleX(), camera->GetAngleY());
-
             fbx3d9->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
 
 
@@ -1721,75 +690,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
             sprintf_s(moji, "%d", fbx3d9->GetDebug());
 
-
-            //fbx3d10->Update();
             fbx3d23->ExitUpdate(camera->GetAngleX(), camera->GetAngleY());
             fbx3d24->ExitUpdate(camera->GetAngleX(), camera->GetAngleY());
-            //fbx3d27->BoxObjUpdate(camera->GetAngleX(), camera->GetAngleY());
-            //     fbx3d32->BoxObjUpdate(camera->GetAngleX(), camera->GetAngleY());
-           //  }
 
              //追加
-
-
-
             input->GetScene(scene->GetScene());
-            /*
-            fbx3d2->Update();
-
-            fbx3d1->Update();
-
-            fbx3d5->Update();
-            fbx3d6->Update();
-            fbx3d7->Update();
-            fbx3d8->Update();
-            fbx3d11->Update();
-            fbx3d12->Update();
-            fbx3d13->Update();
-            fbx3d14->Update();
-            fbx3d15->Update();
-            fbx3d16->Update();
-            fbx3d17->Update();
-            fbx3d18->Update();
-            fbx3d19->Update();
-            fbx3d20->Update();
-            fbx3d22->Update();
-            fbx3d25->Update();
-            fbx3d26->Update();
-            */
             fbx3d23->ExitUpdate(camera->GetAngleX(), camera->GetAngleY());
-            /*
-            fbx3d28->Update();
-            fbx3d29->Update();
-            fbx3d30->Update();
-            fbx3d31->Update();
-            */
             fbx3d34->Update();
-          //  fbx3d35->Update();
             fbx3d36->Update();
-           // fbx3d37->Update();
-            //        fbx3d33->Update();
-           // wall1->Update();
-            //wall2->Update();
-            //wall3->Update();
-            //wall4->Update();
-            /*
-            for (auto& object : objects) {
-                object->Update();
-            }
-
-
-            for (auto& object : objects) {
-                object->Draw();
-            }
-            */
-            //    camera->SetAngleRedX(fbx3d4->GetAngleX2());
-            //    camera->SetAngleRedY(fbx3d4->GetAngleY2());
             camera->SetRedTeleport(fbx3d9->GetredTeleport());
-            //    camera->SetAngleBlueX(fbx3d3->GetAngleX1());
             camera->SetAngleBlueY(fbx3d3->GetAngleY1());
             camera->SetBlueTeleport(fbx3d9->GetblueTeleport());
-            //camera->SetEyePos(fbx3d9->GetMyPosition());
             camera->SetBlue(fbx3d23->GetRot());
             camera->SetRed(fbx3d24->GetRot());
             Bluecamera->SetRot(fbx3d24->GetRot());
@@ -1800,10 +711,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             // パーティクル生成
             if (fbx3d4->RedP_Attack() == true) particleMan->CreateParticles(fbx3d4->GetPosition());
             if (fbx3d3->BlueP_Attack() == true) particleManBlue->CreateParticles(fbx3d3->GetPosition());
-            //     if (fbx3d4->RedP_Flag() == true) particleMan->CreateParticles2(fbx3d4->GetPosition());
-           //      if (fbx3d3->BlueP_Flag() == true) particleManBlue->CreateParticles2(fbx3d3->GetPosition());
-
-
 
             particleMan->Update();
             particleManBlue->BlueUpdate();
@@ -1816,79 +723,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         camera->MapEditUpdate();
         }
         //FBX描画
-       // fbx3d1->Draw2(dxCommon->GetCmdList());
-
-
         fbx3d23->RenPreDraw(dxCommon->GetCmdList());
  
 
         if (fbx3d3->GetWarpFlag() == true && fbx3d4->GetWarpFlag2() == true)
         {
-            if (portaltime == 0)
-            {
-                /*
-                fbx3d2_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d2->GetMatWorld());
-                fbx3d5_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d5->GetMatWorld());
-                fbx3d6_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d6->GetMatWorld());
-                fbx3d7_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d7->GetMatWorld());
-                fbx3d8_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d8->GetMatWorld());
-                fbx3d9_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d9->GetMatWorld());
-                fbx3d11_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d11->GetMatWorld());
-                fbx3d12_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d12->GetMatWorld());
-                fbx3d13_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d13->GetMatWorld());
-                fbx3d14_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d14->GetMatWorld());
-                fbx3d15_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d15->GetMatWorld());
-                fbx3d16_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d16->GetMatWorld());
-                fbx3d17_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d17->GetMatWorld());
-                fbx3d18_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d18->GetMatWorld());
-                fbx3d19_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d19->GetMatWorld());
-                fbx3d20_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d20->GetMatWorld());
-                fbx3d21_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d21->GetMatWorld());
-                fbx3d22_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d22->GetMatWorld());
-                fbx3d27_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d27->GetMatWorld());
-                fbx3d28_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d28->GetMatWorld());
-                fbx3d29_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d29->GetMatWorld());
-                fbx3d30_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d30->GetMatWorld());
-                fbx3d31_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d31->GetMatWorld());
-                fbx3d35_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d35->GetMatWorld());
-                fbx3d37_2->DrawPortalWindow(dxCommon->GetCmdList(), fbx3d37->GetMatWorld());
-                */
-            }
-            else
-            {
 
-                /*
-                fbx3d2_2->Draw2(dxCommon->GetCmdList());
-                fbx3d5_2->Draw2(dxCommon->GetCmdList());
-                fbx3d6_2->Draw2(dxCommon->GetCmdList());
-                fbx3d7_2->Draw2(dxCommon->GetCmdList());
-                fbx3d8_2->Draw2(dxCommon->GetCmdList());
-                fbx3d9_2->Draw2(dxCommon->GetCmdList());
-                fbx3d10_2->Draw2(dxCommon->GetCmdList());
-                fbx3d11_2->Draw2(dxCommon->GetCmdList());
-                fbx3d12_2->Draw2(dxCommon->GetCmdList());
-                fbx3d13_2->Draw2(dxCommon->GetCmdList());
-                fbx3d14_2->Draw2(dxCommon->GetCmdList());
-                fbx3d15_2->Draw2(dxCommon->GetCmdList());
-                fbx3d16_2->Draw2(dxCommon->GetCmdList());
-                fbx3d17_2->Draw2(dxCommon->GetCmdList());
-                fbx3d18_2->Draw2(dxCommon->GetCmdList());
-                fbx3d19_2->Draw2(dxCommon->GetCmdList());
-                fbx3d20_2->Draw2(dxCommon->GetCmdList());
-                fbx3d21_2->Draw2(dxCommon->GetCmdList());
-                fbx3d22_2->Draw2(dxCommon->GetCmdList());
-                fbx3d25_2->Draw2(dxCommon->GetCmdList());
-                fbx3d26_2->Draw2(dxCommon->GetCmdList());
-                fbx3d27_2->Draw2(dxCommon->GetCmdList());
-                fbx3d28_2->Draw2(dxCommon->GetCmdList());
-                fbx3d29_2->Draw2(dxCommon->GetCmdList());
-                fbx3d30_2->Draw2(dxCommon->GetCmdList());
-                fbx3d31_2->Draw2(dxCommon->GetCmdList());
-                fbx3d33_2->Draw2(dxCommon->GetCmdList());
-                fbx3d35_2->Draw2(dxCommon->GetCmdList());
-                fbx3d37_2->Draw2(dxCommon->GetCmdList());
-                */
-            }
         }
         else
         {
@@ -1900,86 +740,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         fbx3d24->RenPreDraw2(dxCommon->GetCmdList());
         if (fbx3d3->GetWarpFlag() == true && fbx3d4->GetWarpFlag2() == true)
         {
-            if (portaltime == 0)
-            {
-                /*
-                fbx3d2_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d2->GetMatWorld());
-                fbx3d5_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d5->GetMatWorld());
-                fbx3d6_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d6->GetMatWorld());
-                fbx3d7_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d7->GetMatWorld());
-                fbx3d8_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d8->GetMatWorld());
-                fbx3d9_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d9->GetMatWorld());
-                fbx3d11_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d11->GetMatWorld());
-                fbx3d12_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d12->GetMatWorld());
-                fbx3d13_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d13->GetMatWorld());
-                fbx3d14_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d14->GetMatWorld());
-                fbx3d15_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d15->GetMatWorld());
-                fbx3d16_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d16->GetMatWorld());
-                fbx3d17_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d17->GetMatWorld());
-                fbx3d18_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d18->GetMatWorld());
-                fbx3d19_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d19->GetMatWorld());
-                fbx3d20_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d20->GetMatWorld());
-                fbx3d21_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d21->GetMatWorld());
-                fbx3d22_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d22->GetMatWorld());
-                fbx3d27_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d27->GetMatWorld());
-                fbx3d28_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d28->GetMatWorld());
-                fbx3d29_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d29->GetMatWorld());
-                fbx3d30_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d30->GetMatWorld());
-                fbx3d31_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d31->GetMatWorld());
-                fbx3d35_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d35->GetMatWorld());
-                fbx3d37_3->DrawPortalWindowRed(dxCommon->GetCmdList(), fbx3d37->GetMatWorld());
-                */
-                portaltime += 1;
-            }
-            else
-            {
-                /*
-                fbx3d2_3->Draw2(dxCommon->GetCmdList());
-                fbx3d5_3->Draw2(dxCommon->GetCmdList());
-                fbx3d6_3->Draw2(dxCommon->GetCmdList());
-                fbx3d7_3->Draw2(dxCommon->GetCmdList());
-                fbx3d8_3->Draw2(dxCommon->GetCmdList());
-                fbx3d9_3->Draw2(dxCommon->GetCmdList());
-                fbx3d10_3->Draw2(dxCommon->GetCmdList());
-                fbx3d11_3->Draw2(dxCommon->GetCmdList());
-                fbx3d12_3->Draw2(dxCommon->GetCmdList());
-                fbx3d13_3->Draw2(dxCommon->GetCmdList());
-                fbx3d14_3->Draw2(dxCommon->GetCmdList());
-                fbx3d15_3->Draw2(dxCommon->GetCmdList());
-                fbx3d16_3->Draw2(dxCommon->GetCmdList());
-                fbx3d17_3->Draw2(dxCommon->GetCmdList());
-                fbx3d18_3->Draw2(dxCommon->GetCmdList());
-                fbx3d19_3->Draw2(dxCommon->GetCmdList());
-                fbx3d20_3->Draw2(dxCommon->GetCmdList());
-                fbx3d21_3->Draw2(dxCommon->GetCmdList());
-                fbx3d22_3->Draw2(dxCommon->GetCmdList());
-                fbx3d25_3->Draw2(dxCommon->GetCmdList());
-                fbx3d26_3->Draw2(dxCommon->GetCmdList());
-                fbx3d27_3->Draw2(dxCommon->GetCmdList());
-                fbx3d28_3->Draw2(dxCommon->GetCmdList());
-                fbx3d29_3->Draw2(dxCommon->GetCmdList());
-                fbx3d30_3->Draw2(dxCommon->GetCmdList());
-                fbx3d31_3->Draw2(dxCommon->GetCmdList());
-                fbx3d33_3->Draw2(dxCommon->GetCmdList());
-                fbx3d35_3->Draw2(dxCommon->GetCmdList());
-                fbx3d37_3->Draw2(dxCommon->GetCmdList());
-                */
-            }
+          
         }
         fbx3d24->RenPostDraw2(dxCommon->GetCmdList());
 
-     //レンダ―テクスチャの描画
+        //レンダ―テクスチャの描画
         postEffect->PreDrawScene(dxCommon->GetCmdList());
-      
-        //     sprite101->PreDrawScene(dxCommon->GetCmdList());
-             ////スプライト共通コマンド
-            // spriteCommon->PreDraw();
 
-             //FBX描画
-            // fbx3d1->Draw2(dxCommon->GetCmdList());
-           //バックバッファの番号を取得（2つなので0番か1番）
-      
-     //   mapedit->CreateObj(dxCommon->GetCmdList());
+
+        //バックバッファの番号を取得（2つなので0番か1番）
         dxCommon->ImguiPre();
 
         if (scene->GetEdit() == false)
@@ -1995,37 +764,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
                 fbx3d23->RenderFbxDraw(dxCommon->GetCmdList());
                 fbx3d24->RenderFbxDraw2(dxCommon->GetCmdList());
-                /*
-                fbx3d2->Draw2(dxCommon->GetCmdList());
-                fbx3d5->Draw2(dxCommon->GetCmdList());
-                fbx3d6->Draw2(dxCommon->GetCmdList());
-                fbx3d7->Draw2(dxCommon->GetCmdList());
-                fbx3d8->Draw2(dxCommon->GetCmdList());
-                //   fbx3d9->Draw2(dxCommon->GetCmdList());
-                fbx3d10->Draw2(dxCommon->GetCmdList());
-                fbx3d11->Draw2(dxCommon->GetCmdList());
-                fbx3d12->Draw2(dxCommon->GetCmdList());
-                fbx3d13->Draw2(dxCommon->GetCmdList());
-                fbx3d14->Draw2(dxCommon->GetCmdList());
-                fbx3d15->Draw2(dxCommon->GetCmdList());
-                fbx3d16->Draw2(dxCommon->GetCmdList());
-                fbx3d17->Draw2(dxCommon->GetCmdList());
-                fbx3d18->Draw2(dxCommon->GetCmdList());
-                fbx3d19->Draw2(dxCommon->GetCmdList());
-                fbx3d20->Draw2(dxCommon->GetCmdList());
-                fbx3d21->Draw2(dxCommon->GetCmdList());
-                fbx3d22->Draw2(dxCommon->GetCmdList());
-                fbx3d25->Draw2(dxCommon->GetCmdList());
-                fbx3d26->Draw2(dxCommon->GetCmdList());
-                fbx3d27->Draw2(dxCommon->GetCmdList());
-                fbx3d28->Draw2(dxCommon->GetCmdList());
-                fbx3d29->Draw2(dxCommon->GetCmdList());
-                fbx3d30->Draw2(dxCommon->GetCmdList());
-                fbx3d31->Draw2(dxCommon->GetCmdList());
-                fbx3d33->Draw2(dxCommon->GetCmdList());
-                fbx3d35->Draw2(dxCommon->GetCmdList());
-                fbx3d37->Draw2(dxCommon->GetCmdList());
-                */
+
             }
             fbx3d34->Draw2(dxCommon->GetCmdList());
             fbx3d36->Draw2(dxCommon->GetCmdList());
@@ -2037,55 +776,25 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             fbx3d38->Draw2(dxCommon->GetCmdList());
             mapedit->CreateObj(dxCommon->GetCmdList());
         }
-    
-     //   mapedit->SetMousePositionX(scene->GetMousePoint());
 
-        //      fbx3d32->Draw2(dxCommon->GetCmdList());
-          //   // fbx3d23->RenPreDraw(dxCommon->GetCmdList());
-           //   fbx3d23->RenPreDraw(dxCommon->GetCmdList());
-          //    Bluecamera->Update();
-          //    fbx3d23->RenPostDraw(dxCommon->GetCmdList());
- 
-
-        // fbx3d23->RenPostDraw(dxCommon->GetCmdList());
          // パーティクルの描画
         particleMan->Draw(dxCommon->GetCmdList());
         particleManBlue->Draw(dxCommon->GetCmdList());
         //ポストエフェクトここまで
         postEffect->PostDrawScene(dxCommon->GetCmdList());
-        //     sprite101->PostDrawScene(dxCommon->GetCmdList());
 
         dxCommon->PreDraw();
      
         posteffectCommon->PostPreDraw();
         postEffect->PostUpdate();
-    //    sprite101->Update();
-
      
         postEffect->PostDraw();
-     
-        //fbx3d23->RenderFbxDraw(dxCommon->GetCmdList());
-      //  sprite101->PostDraw();
-
-
-        if (fbx3d9->GetWark() == true)
-        {
-            //audio->SoundPlayWave("Resources/SOUND/Wark_sund.wav");//押す音
-        }
-
+     */
         if (input->PushKey(DIK_ESCAPE))
         {
             break;
         }
-        //3D描画前処理
-      //  Object3d::PreDraw(dxCommon->GetCmdList());
-          //3D描画
-        //ここに処理追加できる
-      
-        //3D描画後処理
-        //Object3d::PostDraw();
-       
-
+        /*
         ////スプライト共通コマンド
         spriteCommon->PreDraw();
     //    debugtext->Print(moji, 100, 100);
@@ -2128,16 +837,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             sprite->SpriteTransVertexBuffer();
             sprite->Update();
             sprite->SpriteDraw();
-
-            //debug
-           // sprite4->SpriteTransVertexBuffer();
-           // sprite4->Update();
-           // sprite4->SpriteDraw();
         }
-        else if (scene->GetScene() == 100)
-        {
-            break;
-        }
+        
+        
+      
 
         sprite6->SpriteTransVertexBuffer();
         sprite6->Update();
@@ -2146,7 +849,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         if (fbx3d9->GetColision() == false&&scene->GetEdit()==false)camera->ColisionAfterCameraSet(fbx3d9->GetMyPosition());
 
         // ４．描画コマンドここまで
-     collisionManager->CheckAllCollisions();
+        collisionManager->CheckAllCollisions();
+        */
+
+        gameScene->SceneUpdate();
+        gameScene->SceneDraw();
+
+
+
+        if (scene->GetScene() == 100)
+        {
+            break;
+        }
         // DirectX毎フレーム処理　ここまで
         dxCommon->PostDrawPreDirectWrite();
         directWrite->SetSwapChain(dxCommon->GetSwapChain());
@@ -2174,23 +888,17 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     delete spriteCommon;
     delete posteffectCommon;
 
-    delete sprite;
+   // delete sprite;
 
     //テキスト解放
-    delete debugtext;
+    //delete debugtext;
 
     audio->Finalize();
     delete audio;
 
-    delete fbx3d1;
-    delete model1;
+    //delete model1;
 
     FbxLoader::GetInstance()->Finalize();
-
-    delete(modelPlane);
-    delete(modelBox);
-    delete(modelPyramid);
-
     return 0;
 }
 #pragma optimize( "", on )

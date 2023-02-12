@@ -1,24 +1,33 @@
-
-/*
 #pragma once
-#include "../Game/BulletFbx.h"
-#include "../Game/PlayerFbx.h"
-#include "../Game/ObjFbx.h"
-#include "../Game/PortalExit.h"
-#include "../Game/Physics.h"
-#include "SceneSelect.h"
-#include "../MapEdit/MapEdit.h"
-#include "../Particle/ParticleManager.h"
-
 #include "../../Engine/Base/DirectXCommon.h"
 #include <DirectXMath.h>
 #include "../../Engine/Input/Input.h"
-#include "../../Engine/2d/Sprite.h"
-#include "../Particle/ParticleManager.h"
-#include "../../Engine/2d/DebugText.h"
 #include "../../Engine/Audio/Audio.h"
-#include "../../Engine/Camera/DebugCamera.h"
+#include "../../Engine/2d/Sprite.h"
+#include "../../Engine/2d/SpriteCommon.h"
+#include "../../Engine/2d/DebugText.h"
+#include "../../Engine/3d/Model.h"
+#include "../../Engine/3d/FbxLoader.h"
+#include "../../Engine/3d/Fbx3d.h"
+#include "../../Engine/2d/PostEffectCommon.h"
+#include "../../Engine/2d/PostEffect.h"
+#include "../Particle/ParticleManager.h"
 #include "../../Engine/Light/LightGroup.h"
+#include "SceneSelect.h"
+#include "../../Engine/Camera/BlueCameraDebug.h"
+#include "../../Engine/Camera/RedCameraDebug.h"
+#include "../../Engine/Camera/Camera.h"
+#include "../../Engine/Camera/DebugCamera.h"
+#include "../Game/Physics.h" 
+#include "../Game/PlayerFbx.h"
+#include "../Game/BulletFbx.h"
+#include "../Game/PortalExit.h"
+#include "../../Engine/Collision/SphereCollider.h"
+#include "../../Engine/Collision/PlaneCollider.h"
+#include "../../Engine/Collision/BoxCollider.h"
+#include "../../Engine/Collision/Wallcolider.h"
+#include "../../Engine/Collision/CollisionManager.h"
+#include "../MapEdit/MapEdit.h"
 
 class GameScene
 {
@@ -34,21 +43,71 @@ private: // エイリアス
 
 private: // 静的メンバ変数
 	static const int debugTextTexNumber = 0;
+
 public:
+	GameScene();
 
 	//シーン初期化
-	void SceneInitialize(DirectXCommon* dxCommon, Input* input, Audio* audio);
+	void SceneInitialize(DirectXCommon* dxCommon, Input* input, Audio* audio,WinApp*winApp);
+	//sprite初期化
+	void SpriteInitialize(DirectXCommon* dxCommon,WinApp* winApp);
+	//modelデータ読み込み
+	void ModelLoadInitialize();
+	//Fbx初期化
+	void FbxInitialize();
+	//mapedit初期化
+	void EditInitialize();
 	//シーン更新
 	void SceneUpdate();
 	//シーン描画
 	void SceneDraw();
-private:
+
+private://クラス変数
+
+	int c = 0;
+	int portaltime = 0;
+	XMVECTOR mo;
+	XMFLOAT3 posi;
+
+	//ゲームシーン処理関連
+	char moji[64];
+	char moji2[64];
+
+private://ポインタ
     
-	DirectXCommon* dxCommon = nullptr;
-	Input* input = nullptr;
-	Audio* audio = nullptr;
-	DebugText* debugText;
+	//クラスのポインタ
+	DirectXCommon* dxCommon_ = nullptr;
+	Input* input_ = nullptr;
+	Audio* audio_ = nullptr;
+	WinApp* winApp_ = nullptr;
+	SpriteCommon* spriteCommon = new SpriteCommon();
+	SceneSelect* scene = nullptr;
+	PostEffectCommon* postCommon = new PostEffectCommon();;
+	PostEffect* postEffect = nullptr;
 	LightGroup* lightGroup = nullptr;
+	Physics* physics = nullptr;
+
+	//カメラ
+	DebugCamera* camera = nullptr;
+	BlueCameraDebug* Bluecamera = nullptr;
+	RedCameraDebug* Redcamera = nullptr;
+
+
+	//パーティクル
+	ParticleManager* particleManRed = nullptr;
+	ParticleManager* particleManBlue = nullptr;
+
+	//スプライト
+	Sprite* spriteAim = nullptr;
+    Sprite* spriteStartOP = nullptr;
+	Sprite* spriteExitOP = nullptr;
+	Sprite* spriteOP = nullptr;
+	Sprite* spriteNameOP = nullptr;
+	Sprite* spriteChangeScene = nullptr;
+
+	//デバックテキスト
+	DebugText* debugtext = nullptr;
+	DebugText* debugtext2 = nullptr;
 
 	//モデル
 	Model* model1 = nullptr;
@@ -83,11 +142,18 @@ private:
 	Model* model29 = nullptr;
 	Model* model30 = nullptr;
 
-	//ポインタ
-	BulletFbx* bullet = nullptr;
+	//オブジェクト
+	BulletFbx* redBullet = nullptr;
+	BulletFbx* blueBullet = nullptr;
 	PlayerFbx* player = nullptr;
+	PortalExit* redExit = nullptr;
+	PortalExit* blueExit = nullptr;
+	Fbx3d* fbx3d34 = nullptr;
+	Fbx3d* fbx3d36 = nullptr;
+	Fbx3d* fbx3d38 = nullptr;
 	MapEdit* mapedit = nullptr;
 
+	 //衝突マネージャー
+	CollisionManager* collisionManager = nullptr;
 };
 
-*/

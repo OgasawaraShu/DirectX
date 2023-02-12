@@ -1119,6 +1119,9 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 			mapObj_->SetShotRed(Shot2);
 			mapObj_->SetWark(wark);
 
+			//Gun‚ðŽ‚Á‚½‚©‚Ìƒtƒ‰ƒO‚ð‘ã“ü
+			Cursor_on = mapObj_->Getgetobj();
+
 			mapObj_->ObjUpdate(0, 0);
 		}
 		else if (mapObj_->GetFbxmodelType() == 7)

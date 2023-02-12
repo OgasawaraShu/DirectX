@@ -80,6 +80,10 @@ public:
 	//コリジョンモデル
 	void SetCollisionModel(Model* model) { Collision_model = model; }
 
+	//セット
+    //OBJの取ったかの参照
+	bool GetGetGun() { return Cursor_on; }
+
 	//デバック用モデル
 	//スタート場所モデル
 	void SetRespawnModel(Model* model) { respawn_model = model; }
@@ -202,6 +206,8 @@ private:
 
 	int obj_ver = 3;
 
+	//portalgunを取ったかのフラグ
+	bool Cursor_on;
 
 	//コリジョンサイズのモデル可視化フラグ
 	bool Colision_draw_flag = true;
