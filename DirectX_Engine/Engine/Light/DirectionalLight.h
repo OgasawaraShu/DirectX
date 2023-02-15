@@ -64,7 +64,7 @@ public: // メンバ関数
 
 private: // メンバ変数
 	// ライト方向（単位ベクトル）
-	XMVECTOR lightdir = { 1,0,0,0 };
+	XMVECTOR lightdir = {1,0,0,0 };
 	// ライト色
 	XMFLOAT3 lightcolor = { 1,1,1 };
 	// 有効フラグ

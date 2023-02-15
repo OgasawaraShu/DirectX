@@ -339,7 +339,7 @@ void DebugCamera::IventMainUpdate()
 {
 
 	IventTime += 1;
-	eye = { 0,-7,-20 };
+//	eye = { 0,-7,-20 };
 	if (IventNumber == 0)
 	{
 		trun = false;

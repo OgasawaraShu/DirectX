@@ -245,7 +245,6 @@ public:
 		XMMATRIX viewproj;
 		XMMATRIX world;
 		XMFLOAT3 cameraPos;
-		XMFLOAT3 cameraPos2;
 	};
 };
 

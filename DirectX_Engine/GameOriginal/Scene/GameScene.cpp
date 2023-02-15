@@ -2,12 +2,17 @@
 #include <cassert>
 #include <sstream>
 #include <iomanip>
-
+#include <imgui.h>
 
 using namespace DirectX;
 class CollisionManager;
 
 GameScene::GameScene()
+{
+
+}
+
+GameScene::~GameScene()
 {
 
 }
@@ -35,6 +40,7 @@ void GameScene::SceneInitialize(DirectXCommon* dxCommon, Input* input, Audio* au
 	camera = new DebugCamera(WinApp::window_width, WinApp::window_height, input);
 	Bluecamera = new BlueCameraDebug(WinApp::window_width, WinApp::window_height);
 	Redcamera = new RedCameraDebug(WinApp::window_width, WinApp::window_height);
+
 	//パーティクル
     //パーティクルマネージャ生成
 	particleManRed = ParticleManager::Create(dxCommon->GetDev(), camera);
@@ -49,20 +55,33 @@ void GameScene::SceneInitialize(DirectXCommon* dxCommon, Input* input, Audio* au
 
 	float lightDir2[3] = { 1,0,0 };
 	float lightColor2[3] = { 0,0,1 };
-	// ライト静的初期化
-	LightGroup::StaticInitialize(dxCommon->GetDev());
-	// ライト生成
-	lightGroup = LightGroup::Create();
-	//ライトセット
-	Fbx3d::SetLightGroup(lightGroup);
 
 
 	//FbxLoader初期化
 	FbxLoader::GetInstance()->Initialize(dxCommon->GetDev());
+
+	// ライト静的初期化
+	LightGroup::StaticInitialize(dxCommon->GetDev());
+	// ライト生成
+	lightGroup = LightGroup::Create();
+
+	lightGroup->SetDirLightActive(0, false);
+	lightGroup->SetDirLightActive(1, false);
+	lightGroup->SetDirLightActive(2, false);
+	lightGroup->SetPointLightActive(0, true);
+	pointLightPos[0] = 0.5f;
+	pointLightPos[1] = 1.0f;
+	pointLightPos[2] = 0.0f;
+	lightGroup->SetSpotLightActive(0, false);
+	//ライトセット
+	Fbx3d::SetLightGroup(lightGroup);
 	//model読み込み
 	ModelLoadInitialize();
+	//Edit初期化
+	EditInitialize();
 	//FBX初期化
 	FbxInitialize();
+
 	//sprite読み込み
 	SpriteInitialize(dxCommon,winApp);
 	//ポストエフェクト用
@@ -70,8 +89,8 @@ void GameScene::SceneInitialize(DirectXCommon* dxCommon, Input* input, Audio* au
 	postEffect = PostEffect::PostCreate(postCommon, 100);
 	spriteCommon->SpriteCommonLoadTexture(100, L"Resources/Red.png");
 
-	//Edit初期化
-	EditInitialize();
+
+
 
 	scene->SetHwnd(winApp->GetHwnd());
 	mapedit->SetHwnd(winApp->GetHwnd());
@@ -125,6 +144,13 @@ void GameScene::SpriteInitialize(DirectXCommon* dxCommon,WinApp* winApp)
 	spriteChangeScene->SetPosition({ 640,360,0 });
 	spriteChangeScene->SetSize({ 1280,720 });
 	spriteChangeScene->SettexSize({ 1280,720 });
+
+	spriteSceneCut = Sprite::Create(spriteCommon, 8);
+
+	spriteCommon->SpriteCommonLoadTexture(8, L"Resources/UI/SceneCut.png");
+	spriteSceneCut->SetPosition({ 640,360,0 });
+	spriteSceneCut->SetSize({ 1280,720 });
+	spriteSceneCut->SettexSize({ 1280,720 });
 
 
 	//デバックテキスト
@@ -280,35 +306,28 @@ void GameScene::EditInitialize()
 
 void GameScene::SceneUpdate()
 {
-
+	lightGroup->Update();
+	//初期化
 	if (scene->GetScene() == -1)
 	{
-
 		redBullet->Initialize2();
 		blueBullet->Initialize2();
 		player->Initialize2();
-
 		scene->SceneInitialize();
 		camera->Initialize2();
-
 		redBullet->SetScale({ 0.05, 0.05,0.05 });
 		blueBullet->SetScale({ 0.05, 0.05,0.05 });
-
 		redBullet->SetPosition({ 0, 0, -20 });
 		player->SetPosition({ 0, 0, -20 });
-
 		redExit->SetPosition({ 0,0,0 });
 		redExit->SetScale({ 0.1,0.1,0.1 });
 		redExit->SetRotate({ 0,0,270 });
-
 		blueExit->SetPosition({ 0,0,0 });
 		blueExit->SetScale({ 0.1,0.1,0.1 });
 		blueExit->SetRotate({ 0,0,270 });
-
 		fbx3d34->SetPosition({ 300,10,60 });
 		fbx3d34->SetScale({ 0.1,0.1, 0.1 });
 		fbx3d34->SetRotate({ 0,0,180 });
-
 		fbx3d36->SetPosition({ 307,10,60 });
 		fbx3d36->SetScale({ 0.1,0.1, 0.1 });
 		fbx3d36->SetRotate({ 0,0,180 });
@@ -325,41 +344,27 @@ void GameScene::SceneUpdate()
 	mapedit->SetMyPosition(player->GetMyPosition());
 	mapedit->SetCameraAxisZ(camera->GetCameraZAxis());
 	mapedit->SetTarget(camera->GetTargetPos());
-
 	redExit->SetMyposition(player->GetMyPosition());
 	blueExit->SetMyposition(player->GetMyPosition());
-
 	redBullet->SetMove(player->GetMove());
 	blueBullet->SetMove(player->GetMove());
 	redBullet->SetPos(camera->GetPos());
 	blueBullet->SetPos(camera->GetPos());
-
 	camera->SetWarpPosition(player->GetPosition());
 	camera->SetGround(player->Getground());
 	camera->SetScene(scene->GetScene());
-
 	mapedit->SetShotBlue(blueBullet->GetShot());
 	mapedit->SetShotRed(redBullet->GetShot2());
 	mapedit->SetWark(player->GetWark());
-
 	redExit->GetFlag(redBullet->GetWarpFlag());
 	redExit->GetExitPosition(redBullet->GetPosition());
-
 	blueExit->GetFlag(blueBullet->GetWarpFlag2());
 	blueExit->GetExitPosition(blueBullet->GetPosition());
-
 	Bluecamera->SetEyePos(blueExit->GetMyPosition());
 	Redcamera->SetEyePos(redExit->GetMyPosition());
 
 	//sprintf_s(moji2, "camera=%f", camera->GetPositionY());
 	//sprintf_s(moji2,"%d",camera->GetAngleY());
-
-
-
-
-
-
-
 
 	// DirectX毎フレーム処理　ここから
 
@@ -375,6 +380,7 @@ void GameScene::SceneUpdate()
 	{
 		scene->ChangeScene();
 	}
+
 	lightGroup->Update();
 	input_->Update();
 
@@ -434,7 +440,6 @@ void GameScene::SceneUpdate()
 
 			if (i > 14 && player->Getground() == true)
 			{
-
 				camera->SetEye(posi);
 				player->SetPos(camera->GetPos());
 			}
@@ -499,10 +504,17 @@ void GameScene::SceneUpdate()
 		fbx3d38->Update();
 		camera->MapEditUpdate();
 	}
+
+	if (scene->GetScene() == 100)
+	{
+		End_flag = true;
+	}
 }
 
 void GameScene::SceneDraw()
 {
+	
+
 	//FBX描画
 	redExit->RenPreDraw(dxCommon_->GetCmdList());
 
@@ -534,6 +546,51 @@ void GameScene::SceneDraw()
 
 	//バックバッファの番号を取得（2つなので0番か1番）
 	dxCommon_->ImguiPre();
+
+	//Imgui確認用(デバッグ)
+	
+	lightGroup->SetPointLightPos(0, XMFLOAT3(pointLightPos));
+	lightGroup->SetPointLightColor(0, XMFLOAT3(pointLightColor));
+	lightGroup->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
+	ImGui::Begin("Light");
+	ImGui::SetWindowPos(ImVec2(0, 0));
+	ImGui::SetWindowSize(ImVec2(500, 200));
+	//ImGui::ColorEdit3("ambientColor", ambientColor0, ImGuiColorEditFlags_Float);
+	//ImGui::InputFloat3("lightDir0", lightDir0);
+	//ImGui::ColorEdit3("lightColor0", lightColor0, ImGuiColorEditFlags_Float);
+	//ImGui::InputFloat3("lightDir1", lightDir1);
+	//ImGui::ColorEdit3("lightColor1", lightColor1, ImGuiColorEditFlags_Float);
+	//ImGui::InputFloat3("lightDir2", lightDir2);
+	//ImGui::ColorEdit3("lightColor2", lightColor2, ImGuiColorEditFlags_Float);
+	ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
+	ImGui::InputFloat3("pointLightPos", pointLightPos);
+	ImGui::InputFloat3("pointLightAtten", pointLightAtten);
+	ImGui::End();
+
+	
+	/*
+	lightGroup->SetSpotLightDir(0, XMVECTOR({ spotLightDir[0], spotLightDir[1], spotLightDir[2], 0 }));
+	lightGroup->SetSpotLightPos(0, XMFLOAT3(spotLightPos));
+	lightGroup->SetSpotLightColor(0, XMFLOAT3(spotLightColor));
+	lightGroup->SetSpotLightAtten(0, XMFLOAT3(spotLightAtten));
+	lightGroup->SetSpotLightFactorAngle(0, XMFLOAT2(spotLightFactorAngle));
+	ImGui::Begin("Light");
+	ImGui::SetWindowPos(ImVec2(0, 0));
+	ImGui::SetWindowSize(ImVec2(500, 200));
+	//ImGui::ColorEdit3("ambientColor", ambientColor0, ImGuiColorEditFlags_Float);
+	//ImGui::InputFloat3("lightDir0", lightDir0);
+	//ImGui::ColorEdit3("lightColor0", lightColor0, ImGuiColorEditFlags_Float);
+	//ImGui::InputFloat3("lightDir1", lightDir1);
+	//ImGui::ColorEdit3("lightColor1", lightColor1, ImGuiColorEditFlags_Float);
+	//ImGui::InputFloat3("lightDir2", lightDir2);
+	//ImGui::ColorEdit3("lightColor2", lightColor2, ImGuiColorEditFlags_Float);
+	ImGui::InputFloat3("spotLightDir", spotLightDir);
+	ImGui::ColorEdit3("spotLightColor", spotLightColor, ImGuiColorEditFlags_Float);
+	ImGui::InputFloat3("spotLightPos", spotLightPos);
+	ImGui::InputFloat3("spotLightAtten", spotLightAtten);
+	ImGui::InputFloat2("spotLightFactorAngle", spotLightFactorAngle);
+	ImGui::End();
+	*/
 
 	if (scene->GetEdit() == false)
 	{
@@ -604,6 +661,12 @@ void GameScene::SceneDraw()
 	}
 	else  if (scene->GetScene() == 1)
 	{
+		Cut_y_size += 1.0f;
+		//シーンカット
+		spriteSceneCut->SpriteTransVertexBuffer();
+		spriteSceneCut->SetSize({ 1280, 720+Cut_y_size});
+		spriteSceneCut->Update();
+		spriteSceneCut->SpriteDraw();
 		//自キャラ
 		spriteAim->SpriteTransVertexBuffer();
 		spriteAim->Update();

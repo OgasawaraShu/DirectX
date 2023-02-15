@@ -6,6 +6,11 @@
 #include "../../Engine/Collision/CollisionAttribute.h"
 #include "../../Engine/Collision/Collision.h"
 #include <imgui.h>
+#include "stdio.h"
+#include <cassert>
+#include <sstream>
+#include <iomanip>
+
 #include <fstream>
 
 Camera* MapEdit::M_camera = nullptr;
@@ -844,7 +849,6 @@ void MapEdit::AdjustmentObj(std::unique_ptr<MapEdit>& obj_)
 	slider_scale = obj_->GetScale();
 	slider_rotate = obj_->GetRotation();
 	slider_colisionsize = obj_->GetColisionSize();
-
 
 	//Obj‚Ìî•ñ’²®
 	//position

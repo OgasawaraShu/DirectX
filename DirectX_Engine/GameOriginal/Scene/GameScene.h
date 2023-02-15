@@ -47,6 +47,8 @@ private: // 静的メンバ変数
 public:
 	GameScene();
 
+	~GameScene();
+
 	//シーン初期化
 	void SceneInitialize(DirectXCommon* dxCommon, Input* input, Audio* audio,WinApp*winApp);
 	//sprite初期化
@@ -62,16 +64,37 @@ public:
 	//シーン描画
 	void SceneDraw();
 
+
+	bool GetGameEnd() { return End_flag; }
+
 private://クラス変数
 
 	int c = 0;
 	int portaltime = 0;
 	XMVECTOR mo;
 	XMFLOAT3 posi;
+	int demo = 0;
+	float Cut_y_size = 0;
 
 	//ゲームシーン処理関連
 	char moji[64];
 	char moji2[64];
+
+	BYTE key[256] = {};
+	BYTE olds[256] = {};
+
+	bool End_flag = false;
+
+	//Imgui用の調整データ
+	float pointLightPos[3] = { 0,0,0 };
+	float pointLightColor[3] = { 1,1,1 };
+	float pointLightAtten[3] = { 0.0001f,0.0001f,0.0001f };
+
+	float spotLightDir[3] = { 0,-1,0 };
+	float spotLightPos[3] = { 0,5,0 };
+	float spotLightColor[3] = { 1,1,1 };
+	float spotLightAtten[3] = { 0.0f,0.0f,0.0f };
+	float spotLightFactorAngle[2] = { 20.0f, 30.0f };
 
 private://ポインタ
     
@@ -104,6 +127,7 @@ private://ポインタ
 	Sprite* spriteOP = nullptr;
 	Sprite* spriteNameOP = nullptr;
 	Sprite* spriteChangeScene = nullptr;
+	Sprite* spriteSceneCut = nullptr;
 
 	//デバックテキスト
 	DebugText* debugtext = nullptr;
