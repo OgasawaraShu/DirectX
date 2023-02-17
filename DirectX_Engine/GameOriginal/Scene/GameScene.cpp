@@ -70,7 +70,7 @@ void GameScene::SceneInitialize(DirectXCommon* dxCommon, Input* input, Audio* au
 	lightGroup->SetDirLightActive(2, false);
 	lightGroup->SetPointLightActive(0, true);
 	pointLightPos[0] = 0.5f;
-	pointLightPos[1] = 1.0f;
+	pointLightPos[1] = 100.0f;
 	pointLightPos[2] = 0.0f;
 	lightGroup->SetSpotLightActive(0, false);
 	//ライトセット
@@ -517,6 +517,7 @@ void GameScene::SceneDraw()
 
 	//FBX描画
 	redExit->RenPreDraw(dxCommon_->GetCmdList());
+
 
 	/*
 	if (fbx3d3->GetWarpFlag() == true && fbx3d4->GetWarpFlag2() == true)

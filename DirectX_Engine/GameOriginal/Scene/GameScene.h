@@ -88,7 +88,7 @@ private://クラス変数
 	//Imgui用の調整データ
 	float pointLightPos[3] = { 0,0,0 };
 	float pointLightColor[3] = { 1,1,1 };
-	float pointLightAtten[3] = { 0.0001f,0.0001f,0.0001f };
+	float pointLightAtten[3] = { 0.00005f,0.00005f,0.00005f };
 
 	float spotLightDir[3] = { 0,-1,0 };
 	float spotLightPos[3] = { 0,5,0 };

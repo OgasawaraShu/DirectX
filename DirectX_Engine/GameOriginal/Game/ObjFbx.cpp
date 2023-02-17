@@ -22,6 +22,11 @@ ObjFbx::ObjFbx(Input* input)
 	this->input = input;
 }
 
+void ObjFbx::OnCollision(const CollisionInfo& info)
+{
+	
+}
+
 void ObjFbx::ObjInitialize()
 {
 	//変数の初期化
@@ -194,7 +199,7 @@ void ObjFbx::RayCheck()
 
 
 	//レイが当たったのなら取得する
-	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ, &raycastHit,20.0f)&&input->TriggerMouseMid()&&!cursorOn) {
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ, &raycastHit,20.0f)&&input->TriggerKey(DIK_F) && !cursorOn) {
 		cursorOn = true;
 
 		rotation.x = 0;
@@ -226,7 +231,7 @@ void ObjFbx::BoxObjUpdate(float angleX, float angleY)
 	//レイのチェック
 	BoxRayCheck();
 	//重力処理
-	//ObjFall();
+	ObjFall();
 	//平行移動
 	matTrans = XMMatrixTranslation(position.x , position.y += fallV.m128_f32[1], position.z);
 
@@ -250,10 +255,10 @@ void ObjFbx::BoxRayCheck()
 	ray.dir = CammeraZAxis;
 
 	//レイが当たっているのなら取得
-	if (CollisionManager::GetInstance()->Raycast(ray,COLLISION_ATTR_OBJ2, &raycastHit, 35.0f) && input->TriggerMouseMid() && !cursorOn2) {
+	if (CollisionManager::GetInstance()->Raycast(ray,COLLISION_ATTR_OBJ2, &raycastHit, 35.0f) && input->TriggerKey(DIK_F) && !cursorOn2) {
 		cursorOn2 = true;
 	}
-	else if (input->TriggerMouseMid() && cursorOn2 == true)
+	else if (input->TriggerKey(DIK_F) && cursorOn2 == true)
 	{
 		//離す処理
 		cursorOn2 = false;
@@ -288,53 +293,17 @@ void ObjFbx::ObjFall()
 	}
 
 	// レイのスタート地点を設定
-	Ray ray;
-	ray.start = { position.x,position.y,position.z,0 };
-	ray.start.m128_f32[1] += 5.0f;
-	ray.dir = { 0,-1,0,0 };
+	Sphere sphere;
+    sphere.center = { MyPosition.x,MyPosition.y,MyPosition.z,0 };
+	sphere.redius = 5.0f;
 	RaycastHit raycastHit;
 
-	//プレーンの設定
-	Plane plane;
-	plane.normal = XMVectorSet(0, 1, 0, 0);
-	plane.distance = 0.0f;
-
-
-	XMVECTOR inter;
-	float distance;
-	bool hit = Collision::CheckRay2Plane(ray, plane, &distance, &inter);
-	//プレーンに当たったら着地
-	if (hit && distance <= 0.5f) {
-
+	if (CollisionManager::GetInstance()->Spherecast(sphere, COLLISION_ATTR_WALL, &raycastHit, 35.0f)) {
 		onGround = true;
 	}
 	else
 	{
 		onGround = false;
-	}
-
-
-	// 接地状態
-	if (onGround) {
-		// スムーズに坂を下る為の吸着距離
-		const float adsDistance = 0.2f;
-		// 接地を維持
-		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ, &raycastHit, 5.0 * 2.0f + adsDistance)) {
-			//onGround = false;
-			position.y -= (raycastHit.distance - 3.0 * 2.0f);
-		}
-		// 地面がないので落下
-		else {
-			fallV = {};
-		}
-	}
-	// 落下状態
-	else if (fallV.m128_f32[1] <= 0.0f) {
-		if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_LANDSHAPE, &raycastHit, 5.0 * 2.0f)) {
-			// 着地
-			onGround = true;
-			position.y -= (raycastHit.distance - 3.0 * 2.0f);
-		}
 	}
 }
 

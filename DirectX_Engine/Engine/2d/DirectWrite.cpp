@@ -8,6 +8,7 @@
 #pragma comment(lib,"dxgi.lib")
 #pragma comment(lib, "dxguid.lib")
 using namespace Microsoft::WRL;
+const std::string DirectWrite::baseDirectory = "GameOriginal/Text";
 
 
 void DirectWrite::DirectWritePre(const std::string& key)
@@ -47,11 +48,25 @@ void DirectWrite::DirectWritePreDraw()
     d2dDeviceContext->SetTransform(D2D1::Matrix3x2F::Identity());
 }
 
-void DirectWrite::DirectWriteTextLoad()
+void DirectWrite::DirectWriteTextLoad(const std::string& key)
 {
+
+    MapCommands.str("");
+
+    // 状態をクリアします。
+    MapCommands.clear(std::stringstream::goodbit);
+
+
+    //同じ名前から読み込む
+    const  std::string directoryPath = baseDirectory +"/";
+    //拡張子追加
+    const  std::string fileName = key + ".txt";
+    //連結してフルパスを得る
+    const  std::string fullpath = directoryPath + fileName;
+
     //ファイルを開く
     std::ifstream file;
-    file.open(L"GameOriginal/Text/Ivent.txt");
+    file.open(fullpath);
     assert(file.is_open());
 
     //ファイルの内容をコピー
@@ -65,7 +80,7 @@ void DirectWrite::DirectWriteDraw(const std::string& textFormatKey, const std::s
 {
     const auto textFormat = textFormatMap.at(textFormatKey);
     const auto solidColorBrush = solidColorBrushMap.at(solidColorBrushKey);
-    d2dDeviceContext->DrawTextW(text.c_str(), static_cast<UINT32>(text.length()), textFormat.Get(), D2D1::RectF(376, 450, 1004, 700), solidColorBrush.Get());
+    d2dDeviceContext->DrawTextW(text.c_str(), static_cast<UINT32>(text.length()), textFormat.Get(), D2D1::RectF(276, 450, 1104, 700), solidColorBrush.Get());
     // Direct2Dの描画を終了する
     const auto backBufferIndex = swapchain->GetCurrentBackBufferIndex();
     const auto wrappedBackBuffer = wrappedBackBuffers[backBufferIndex];
@@ -74,7 +89,7 @@ void DirectWrite::DirectWriteDraw(const std::string& textFormatKey, const std::s
     d3d11On12DeviceContext->Flush();
 }
 
-void DirectWrite::DirectWriteText()
+void DirectWrite::DirectWriteText(const std::string& key)
 {
     //１行分の文字列を入れる変数
     std::string line;
@@ -188,12 +203,11 @@ void DirectWrite::DirectWriteText()
     //カウントの数によって一文字ずつ表示させていく範囲を決める
     std::wstring text2 = Text.substr(0, Draw_string_end);
 
-    std::string keys = "a";
 
 
     DirectWritePreDraw();
 
-    DirectWriteDraw(keys, keys, text2);
+    DirectWriteDraw(key, key, text2);
 }
 
 void DirectWrite::DirectWriteInitialize()

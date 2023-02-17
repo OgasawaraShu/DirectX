@@ -6,6 +6,7 @@ class ObjFbx :
     public Fbx3d
 {
 public:
+    void OnCollision(const CollisionInfo& info) override;
     //Obj‚ÌInitialize
     void ObjInitialize();
     //ƒ|ƒCƒ“ƒ^

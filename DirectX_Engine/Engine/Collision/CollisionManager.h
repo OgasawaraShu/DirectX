@@ -65,6 +65,15 @@ public:// メンバ関数
 	/// <returns>レイが任意のコライダーと交わる場合はtrue、それ以外はfalse</returns>
 	bool Spherecast(const Sphere& sphere, unsigned short attribute, RaycastHit* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
 
+	/// <summary>
+	/// 球と四角
+	/// </summary>
+	/// <param name="sphere">球</param>
+	/// <param name="attribute>属性
+	/// <param name="hitInfo">対象の衝突属性</param>
+	/// <param name="hitInfo">衝突情報</param>
+	/// <param name="maxDistance">最大距離</param>
+	bool Spherewall(const Sphere& sphere, unsigned short attribute, RaycastHit* hitInfo = nullptr, float maxDistance = D3D12_FLOAT32_MAX);
 
 private:
 	CollisionManager() = default;

@@ -101,10 +101,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     input->Intialize(winApp);
 
     //DirectWrite
-    std::string keys="a";
-    directWrite->DirectWritePre(keys);
-    directWrite->registerTextFormat(keys, 44);
-    directWrite->DirectWriteTextLoad();
+    std::string Ivent_key="Ivent";
+    directWrite->DirectWritePre(Ivent_key);
+    directWrite->registerTextFormat(Ivent_key, 44);
+    directWrite->DirectWriteTextLoad(Ivent_key);
 
     result = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
     //マスターボイスを作成 
@@ -112,13 +112,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //オーディオ初期化
     audio = new Audio();
     audio->Initialize();
-
+    //ゲームシーン初期化
     gameScene = new GameScene();
     gameScene->SceneInitialize(dxCommon, input, audio, winApp);
-
-    int demo = 0;
     while (true)  // ゲームループ
     {
+        Ivent_key = "Ivent_2";
+        directWrite->DirectWritePre(Ivent_key);
+        directWrite->registerTextFormat(Ivent_key, 44);
+        directWrite->DirectWriteTextLoad(Ivent_key);
         //ゲームシーン更新
         gameScene->SceneUpdate();
     
@@ -146,7 +148,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         // DirectX毎フレーム処理　ここまで
         dxCommon->PostDrawPreDirectWrite();
         directWrite->SetSwapChain(dxCommon->GetSwapChain());
-        directWrite->DirectWriteText();
+        directWrite->DirectWriteText(Ivent_key);
         dxCommon->PostDrawPostDirectWrite();
     }
     //入力開放

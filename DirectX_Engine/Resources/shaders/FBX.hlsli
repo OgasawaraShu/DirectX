@@ -49,6 +49,7 @@ struct SpotLight
 	float2 lightfactoranglecos; // ライト減衰角度のコサイン
 	uint active;
 };
+
 cbuffer cbuff2 : register(b2)
 {
 	float3 ambientColor;

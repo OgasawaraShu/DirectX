@@ -16,11 +16,11 @@ public://メンバ関数
 
 	void DirectWritePreDraw();
 
-	void DirectWriteTextLoad();
+	void DirectWriteTextLoad(const std::string& key);
 
 	void DirectWriteDraw(const std::string& textFormatKey, const std::string& solidColorBrushKey, const std::wstring& text /*,const D2D1_RECT_F& rect*/);
 
-	void DirectWriteText();
+	void DirectWriteText(const std::string& key);
 
 	void SetWard(const std::wstring& ward_) { Text = ward_; }
 
@@ -84,4 +84,8 @@ private://メンバ変数
 	std::stringstream MapCommands;
 
 	std::list<std::unique_ptr<DirectWrite>> Wards;
+
+	//モデル格納√パス
+	static const std::string baseDirectory;
+
 };
