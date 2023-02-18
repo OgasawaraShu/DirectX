@@ -133,6 +133,30 @@ void SceneSelect::ChangeScene()
 		{
 			change = 0;
 		}
+
+		if (Tutorial == true)
+		{
+			Tutorial_time += 1;
+
+			int End_tutoirial_time = 1020;
+
+			if (Tutorial_time > End_tutoirial_time)
+			{
+				Tutorial = false;
+			}
+		}
+
+		if (Tutorial_2 == true&&Walk_tutorial==true)
+		{
+			Tutorial_time_2 += 1;
+
+			int End_tutoirial_time_2 = 1020;
+
+			if (Tutorial_time_2 > End_tutoirial_time_2)
+			{
+				Tutorial_2 = false;
+			}
+		}
 	}
 
 	//ロード画面で演出が終わったら初期化画面に行く

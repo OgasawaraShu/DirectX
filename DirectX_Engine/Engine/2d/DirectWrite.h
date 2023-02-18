@@ -9,6 +9,8 @@ class DirectWrite:
 	public DirectXCommon
 {
 public://ƒƒ“ƒoŠÖ”
+	void DirectWriteLost();
+
 	void DirectWritePre(const std::string& key);
 
 	void registerTextFormat(const std::string& key,

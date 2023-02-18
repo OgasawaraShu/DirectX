@@ -11,6 +11,19 @@ using namespace Microsoft::WRL;
 const std::string DirectWrite::baseDirectory = "GameOriginal/Text";
 
 
+void DirectWrite::DirectWriteLost()
+{
+    MapCommands.str("");
+    // 状態をクリア
+    MapCommands.clear(std::stringstream::goodbit);
+    //変数の中身をリセット
+     Wait_time = 0;
+     Next_text_wait_time = 0;
+     Draw_string_end = 1;
+     Next_text_flag = true;
+     Ward_num = 1;
+}
+
 void DirectWrite::DirectWritePre(const std::string& key)
 {
     HRESULT result;
@@ -50,13 +63,6 @@ void DirectWrite::DirectWritePreDraw()
 
 void DirectWrite::DirectWriteTextLoad(const std::string& key)
 {
-
-    MapCommands.str("");
-
-    // 状態をクリアします。
-    MapCommands.clear(std::stringstream::goodbit);
-
-
     //同じ名前から読み込む
     const  std::string directoryPath = baseDirectory +"/";
     //拡張子追加
@@ -73,7 +79,6 @@ void DirectWrite::DirectWriteTextLoad(const std::string& key)
     MapCommands << file.rdbuf();
     //ファイルを閉じる
     file.close();
-
 }
 
 void DirectWrite::DirectWriteDraw(const std::string& textFormatKey, const std::string& solidColorBrushKey, const std::wstring& text)

@@ -1,13 +1,10 @@
 WORD,よくやりました！。テストの規定に準して次のセクションに移行します。3...2...1...。
 SPEED,5
 
-WORD, 次は端にあるPortalGunを取得して実際にPortalを出してみましょう。
+WORD, 次はフェンスの間にある箱を持ち上げてどかして、奥にあるGunをとりましょう
 SPEED,5
 
-WORD, OBJの取得はF Key。Portalの出し方はGunを持った状態で左クリック右クリック
-SPEED,5
-
-WORD, RボタンでPortalをリセットすることができます
+WORD, OBJの取得はF Key。とったOBJを置きたいときはもう一度F Keyを押しましょう
 SPEED,5
 
 

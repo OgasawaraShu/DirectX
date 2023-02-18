@@ -356,6 +356,8 @@ void GameScene::SceneUpdate()
 	mapedit->SetShotBlue(blueBullet->GetShot());
 	mapedit->SetShotRed(redBullet->GetShot2());
 	mapedit->SetWark(player->GetWark());
+	mapedit->SetTutorial(scene->GetTutorial_2());
+
 	redExit->GetFlag(redBullet->GetWarpFlag());
 	redExit->GetExitPosition(redBullet->GetPosition());
 	blueExit->GetFlag(blueBullet->GetWarpFlag2());
@@ -387,6 +389,7 @@ void GameScene::SceneUpdate()
 	camera->SetColision(player->GetColision());
 	camera->SetMove(player->GetMove());
 	camera->SetColisionVec(player->GetColisionVec());
+	camera->SetTutorial(scene->GetTutorial());
 	if (scene->GetEdit() == false)camera->Update();
 
 	sprintf_s(moji2, "%f", camera->GetPositionX());
@@ -400,6 +403,7 @@ void GameScene::SceneUpdate()
 	player->SetCameraAxis(camera->GetCameraZAxis());
 	player->SetPos(camera->GetEye());
 	player->GetmoveOld(camera->GetMove());
+	player->SetTutorial(scene->GetTutorial());
 
 	//追加
 	player->CollisionAfter();
@@ -509,6 +513,8 @@ void GameScene::SceneUpdate()
 	{
 		End_flag = true;
 	}
+
+	scene->SetWalkTutorial(player->GetTutorialWalk());
 }
 
 void GameScene::SceneDraw()
@@ -548,50 +554,9 @@ void GameScene::SceneDraw()
 	//バックバッファの番号を取得（2つなので0番か1番）
 	dxCommon_->ImguiPre();
 
-	//Imgui確認用(デバッグ)
-	
 	lightGroup->SetPointLightPos(0, XMFLOAT3(pointLightPos));
 	lightGroup->SetPointLightColor(0, XMFLOAT3(pointLightColor));
 	lightGroup->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
-	ImGui::Begin("Light");
-	ImGui::SetWindowPos(ImVec2(0, 0));
-	ImGui::SetWindowSize(ImVec2(500, 200));
-	//ImGui::ColorEdit3("ambientColor", ambientColor0, ImGuiColorEditFlags_Float);
-	//ImGui::InputFloat3("lightDir0", lightDir0);
-	//ImGui::ColorEdit3("lightColor0", lightColor0, ImGuiColorEditFlags_Float);
-	//ImGui::InputFloat3("lightDir1", lightDir1);
-	//ImGui::ColorEdit3("lightColor1", lightColor1, ImGuiColorEditFlags_Float);
-	//ImGui::InputFloat3("lightDir2", lightDir2);
-	//ImGui::ColorEdit3("lightColor2", lightColor2, ImGuiColorEditFlags_Float);
-	ImGui::ColorEdit3("pointLightColor", pointLightColor, ImGuiColorEditFlags_Float);
-	ImGui::InputFloat3("pointLightPos", pointLightPos);
-	ImGui::InputFloat3("pointLightAtten", pointLightAtten);
-	ImGui::End();
-
-	
-	/*
-	lightGroup->SetSpotLightDir(0, XMVECTOR({ spotLightDir[0], spotLightDir[1], spotLightDir[2], 0 }));
-	lightGroup->SetSpotLightPos(0, XMFLOAT3(spotLightPos));
-	lightGroup->SetSpotLightColor(0, XMFLOAT3(spotLightColor));
-	lightGroup->SetSpotLightAtten(0, XMFLOAT3(spotLightAtten));
-	lightGroup->SetSpotLightFactorAngle(0, XMFLOAT2(spotLightFactorAngle));
-	ImGui::Begin("Light");
-	ImGui::SetWindowPos(ImVec2(0, 0));
-	ImGui::SetWindowSize(ImVec2(500, 200));
-	//ImGui::ColorEdit3("ambientColor", ambientColor0, ImGuiColorEditFlags_Float);
-	//ImGui::InputFloat3("lightDir0", lightDir0);
-	//ImGui::ColorEdit3("lightColor0", lightColor0, ImGuiColorEditFlags_Float);
-	//ImGui::InputFloat3("lightDir1", lightDir1);
-	//ImGui::ColorEdit3("lightColor1", lightColor1, ImGuiColorEditFlags_Float);
-	//ImGui::InputFloat3("lightDir2", lightDir2);
-	//ImGui::ColorEdit3("lightColor2", lightColor2, ImGuiColorEditFlags_Float);
-	ImGui::InputFloat3("spotLightDir", spotLightDir);
-	ImGui::ColorEdit3("spotLightColor", spotLightColor, ImGuiColorEditFlags_Float);
-	ImGui::InputFloat3("spotLightPos", spotLightPos);
-	ImGui::InputFloat3("spotLightAtten", spotLightAtten);
-	ImGui::InputFloat2("spotLightFactorAngle", spotLightFactorAngle);
-	ImGui::End();
-	*/
 
 	if (scene->GetEdit() == false)
 	{
@@ -662,7 +627,7 @@ void GameScene::SceneDraw()
 	}
 	else  if (scene->GetScene() == 1)
 	{
-		Cut_y_size += 1.0f;
+		if(scene->GetTutorial()==false&& Cut_y_size<600)Cut_y_size += 1.0f;
 		//シーンカット
 		spriteSceneCut->SpriteTransVertexBuffer();
 		spriteSceneCut->SetSize({ 1280, 720+Cut_y_size});
@@ -674,12 +639,17 @@ void GameScene::SceneDraw()
 		spriteAim->SpriteDraw();
 	}
 
-
+	if (player->GetTutorialWalk() == true)
+	{
+		Tutorial_num = 2;
+	}
 	spriteChangeScene->SpriteTransVertexBuffer();
 	spriteChangeScene->Update();
 	spriteChangeScene->SpriteDraw();
 	spriteChangeScene->SetColor({ 1,1,1,scene->GetChange() });
 	if (player->GetColision() == false && scene->GetEdit() == false)camera->ColisionAfterCameraSet(player->GetMyPosition());
+
+	scene_ = scene->GetScene();
 
 	// ４．描画コマンドここまで
 	collisionManager->CheckAllCollisions();

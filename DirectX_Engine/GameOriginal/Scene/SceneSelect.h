@@ -37,6 +37,12 @@ public:
 	void SetExit(bool a) { Exit = a; }
 	//エディットシーンに行くか参照
 	bool GetEdit() { return MapEdit; }
+	//チュートリアルのフラグ
+	bool GetTutorial() { return Tutorial; }
+	//チュートリアルのフラグ
+	bool GetTutorial_2() { return Tutorial_2; }
+
+	void SetWalkTutorial(bool flag) { Walk_tutorial = flag; }
 private:
 
 	//出口
@@ -55,6 +61,12 @@ private:
 	float mouseY;
 	//文字を赤くするかの選択
 	float TitleRed = 0;
+	bool Tutorial = true;
+
+	bool Tutorial_2 = true;
+	bool Walk_tutorial = true;
+	int Tutorial_time = 0;
+	int Tutorial_time_2 = 0;
 	//input
 	Input* input;
 	//シーン

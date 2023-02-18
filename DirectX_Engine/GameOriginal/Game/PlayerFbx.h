@@ -88,6 +88,10 @@ public:
 	XMVECTOR GetColisionVec() { return ColisionPoint; }
 	//一フレーム前の動き
 	void GetmoveOld(XMVECTOR a) { moveOld = a; }
+
+	void SetTutorial(bool flag) { Tutorial = flag; }
+
+	bool GetTutorialWalk() { return Tutorial_walk; }
 private:
 
 	//クラスのポインタ
@@ -95,7 +99,7 @@ private:
 	//
 	Physics* physics;//物理クラス
 
-
+	bool Tutorial=true;
 	//変数
 	bool debugCheck = false;
 	//ワープの時間
@@ -129,6 +133,9 @@ private:
 	//コリジョンの１フレーム前
 	bool ColOld2;
 
+	int Tutorial_time = 0;
+
+	bool Tutorial_walk = false;
 
 	//
 	float acceleration_g = 9.81 / 60;//加速度

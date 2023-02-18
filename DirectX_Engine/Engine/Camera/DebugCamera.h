@@ -89,7 +89,7 @@ public:
 
 	void SetRed(XMMATRIX a) { RotRed = a; }
 	void SetBlue(XMMATRIX a) { RotBlue = a; }
-
+	void SetTutorial(bool flag) { Tutorial = flag; }
 	
 private:
 	// 入力クラスのポインタ
@@ -114,7 +114,7 @@ private:
 	XMMATRIX RotBlue = DirectX::XMMatrixIdentity();;
 
 
-
+	bool Tutorial = true;
 	XMFLOAT2 RedAngle;
 	XMFLOAT2 BlueAngle;
 

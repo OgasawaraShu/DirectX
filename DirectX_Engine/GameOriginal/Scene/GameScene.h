@@ -67,8 +67,14 @@ public:
 
 	bool GetGameEnd() { return End_flag; }
 
+	int GetScene() { return scene_; }
+
+	int GetTutorialNum() { return Tutorial_num; }
+
 private://ƒNƒ‰ƒX•Ï”
 
+	int Tutorial_num = 1;
+	int scene_ = 0;
 	int c = 0;
 	int portaltime = 0;
 	XMVECTOR mo;

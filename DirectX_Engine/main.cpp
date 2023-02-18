@@ -100,12 +100,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     input = new Input();
     input->Intialize(winApp);
 
-    //DirectWrite
-    std::string Ivent_key="Ivent";
-    directWrite->DirectWritePre(Ivent_key);
-    directWrite->registerTextFormat(Ivent_key, 44);
-    directWrite->DirectWriteTextLoad(Ivent_key);
-
     result = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
     //マスターボイスを作成 
     result = xAudio2->CreateMasteringVoice(&masterVoice);
@@ -115,16 +109,43 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     //ゲームシーン初期化
     gameScene = new GameScene();
     gameScene->SceneInitialize(dxCommon, input, audio, winApp);
+
+    //DirectWrite
+    std::string Ivent_key = "Ivent_1";
+
+    directWrite->DirectWritePre(Ivent_key);
+    directWrite->registerTextFormat(Ivent_key, 33);
+    directWrite->DirectWriteTextLoad(Ivent_key);
+
+    bool Load_txt = true;
+
     while (true)  // ゲームループ
     {
-        Ivent_key = "Ivent_2";
-        directWrite->DirectWritePre(Ivent_key);
-        directWrite->registerTextFormat(Ivent_key, 44);
-        directWrite->DirectWriteTextLoad(Ivent_key);
         //ゲームシーン更新
         gameScene->SceneUpdate();
-    
 
+        //OBJの名前
+        char str[1024] = { 'I','v','e','n','t','_'};
+        //番号割りあて
+        char str2[1024];
+        //intをstringに変換
+        sprintf_s(str2, "%d", gameScene->GetTutorialNum());
+        //文字列を結合
+        strcat_s(str, str2);
+
+        if (gameScene->GetTutorialNum() == 2)
+        {
+            if (Load_txt == true)
+            {
+                directWrite->DirectWriteLost();
+                Load_txt = false;
+            }
+
+            Ivent_key = str;
+            directWrite->DirectWritePre(Ivent_key);
+            directWrite->registerTextFormat(Ivent_key, 33);
+            directWrite->DirectWriteTextLoad(Ivent_key);
+        }
 
         if (winApp->ProcessMessage())
         {
@@ -148,7 +169,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         // DirectX毎フレーム処理　ここまで
         dxCommon->PostDrawPreDirectWrite();
         directWrite->SetSwapChain(dxCommon->GetSwapChain());
-        directWrite->DirectWriteText(Ivent_key);
+        if(gameScene->GetScene())directWrite->DirectWriteText(Ivent_key);
         dxCommon->PostDrawPostDirectWrite();
     }
     //入力開放

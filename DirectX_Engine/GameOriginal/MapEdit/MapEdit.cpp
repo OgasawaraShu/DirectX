@@ -1135,6 +1135,7 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 			mapObj_->SetCameraAxisZ(CammeraZAxis);
 			mapObj_->SetTarget(Target);
 
+			mapObj_->SetTutorial(Tutorial);
 
 			mapObj_->BoxObjUpdate(0, 0);
 		}

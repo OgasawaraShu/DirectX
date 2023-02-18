@@ -231,7 +231,7 @@ void ObjFbx::BoxObjUpdate(float angleX, float angleY)
 	//レイのチェック
 	BoxRayCheck();
 	//重力処理
-	ObjFall();
+	//ObjFall();
 	//平行移動
 	matTrans = XMMatrixTranslation(position.x , position.y += fallV.m128_f32[1], position.z);
 
@@ -255,7 +255,7 @@ void ObjFbx::BoxRayCheck()
 	ray.dir = CammeraZAxis;
 
 	//レイが当たっているのなら取得
-	if (CollisionManager::GetInstance()->Raycast(ray,COLLISION_ATTR_OBJ2, &raycastHit, 35.0f) && input->TriggerKey(DIK_F) && !cursorOn2) {
+	if (CollisionManager::GetInstance()->Raycast(ray,COLLISION_ATTR_OBJ2, &raycastHit, 35.0f) && input->TriggerKey(DIK_F) && !cursorOn2&&Tutorial==false) {
 		cursorOn2 = true;
 	}
 	else if (input->TriggerKey(DIK_F) && cursorOn2 == true)

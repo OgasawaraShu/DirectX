@@ -387,29 +387,35 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 	// WASDÇ™âüÇ≥ÇÍÇƒÇ¢ÇΩÇÁï¿çsà⁄ìÆÇ≥ÇπÇÈ
 	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
-		if (onGround == true&&WallCollision==false)
+		if (onGround == true&&WallCollision==false&&Tutorial==false)
 		{
 			wark = true;
 			if (input->PushKey(DIK_A))
 			{
 				dx -= 0.3f;
+
+				if(Tutorial_time<180)Tutorial_time += 1;
 			}
 
 			if (input->PushKey(DIK_D))
 			{
 				dx += 0.3f;
 				
+				if (Tutorial_time < 180)Tutorial_time += 1;
 			}
 
 			if (input->PushKey(DIK_W))
 			{
 				dz += 0.3f;
 			
+				if (Tutorial_time < 180)Tutorial_time += 1;
 			}
 
 			if (input->PushKey(DIK_S))
 			{
 				dz -= 0.3f;
+
+				if (Tutorial_time < 180)Tutorial_time += 1;
 			}
 		}
 			
@@ -419,6 +425,14 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 		//ìÆÇ¢ÇƒÇ¢Ç»Ç¢ÇÃÇ»ÇÁÉtÉâÉOÇfalseÇ…Ç∑ÇÈ
 		wark = false;
 	}
+
+
+
+	if (Tutorial_time >= 180)
+	{
+		Tutorial_walk = true;
+	}
+
     //ïœêîÇ…ë„ì¸
 	moveCamera = { dx += fallV.m128_f32[0], dy += fallV.m128_f32[1], dz += fallV.m128_f32[2], 0 };
 }

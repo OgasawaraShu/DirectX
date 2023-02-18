@@ -193,13 +193,19 @@ volatile void DebugCamera::MainSceneUpdate()
 	//パッドの更新
 	GP->Update();
 
+	if (Tutorial == true)
+	{
+		mouseMove.lX = 0;
+		mouseMove.lY = 0;
+		mouseMove.lZ = 0;
+	}
 
-
-    float dy = mouseMove.lX * scaleY;
+	float dy = mouseMove.lX * scaleY;
 	float dx = mouseMove.lY * scaleX;
 
 	angleX = -dx * XM_PI;
 	angleY = -dy * XM_PI;
+
 	
 	oldx += angleX;
 	oldy += angleY;

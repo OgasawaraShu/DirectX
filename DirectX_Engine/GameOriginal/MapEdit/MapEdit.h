@@ -84,6 +84,8 @@ public:
     //OBJの取ったかの参照
 	bool GetGetGun() { return Cursor_on; }
 
+	bool GetTutorial() { return Tutorial_box; }
+
 	//デバック用モデル
 	//スタート場所モデル
 	void SetRespawnModel(Model* model) { respawn_model = model; }
@@ -145,6 +147,8 @@ private:
 	int Copy_model_num=100;
 
 	int Copy_ver=0;
+
+	bool Tutorial_box = false;
 
 	//矢印の位置
 	XMFLOAT3 Arow_pos{};

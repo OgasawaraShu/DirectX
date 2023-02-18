@@ -44,6 +44,7 @@ public:
     //歩いてるかのセット
     void SetWark(bool a) { wark = a; }
    
+    void SetTutorial(bool Flag) { Tutorial = Flag; }
 protected:
     //クラスのポインタ
     Input* input;//入力クラス
@@ -74,6 +75,8 @@ protected:
     bool onGround = true;//地面の判定
     //落ちるベクトル
     XMVECTOR fallV;
+
+    bool Tutorial = true;
 
     //シーン
     int scene;
