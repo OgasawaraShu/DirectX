@@ -72,6 +72,11 @@ void PlayerFbx::OnCollision(const CollisionInfo& info)
 		WallCollision = true;
 		ColisionPoint = info.inter;
 	}
+	else if (info.collider->attribute == 512 && WallCollision == false)
+	{
+		WallCollision = true;
+		ColisionPoint = info.inter;
+	}
 
 	if (info.collider->attribute == 256)
 	{

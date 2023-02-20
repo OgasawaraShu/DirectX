@@ -4,6 +4,6 @@ SPEED,5
 WORD, あなたの身体サンプルの処理が完了したため、これからテストを開始します。
 SPEED,5
 
-WORD, まずはKEYのWASDを押して歩いてみましょう
+WORD, まずはKEYのWASDを押して歩いてみましょう。
 SPEED,5
 

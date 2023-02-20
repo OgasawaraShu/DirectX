@@ -1031,6 +1031,12 @@ void Fbx3d::SetVerExit()
 	collider->SetAttribute(COLLISION_ATTR_EXIT);
 }
 
+void Fbx3d::SetVerBlock()
+{
+	//ブロックする箱
+	collider->SetAttribute(COLLISION_ATTR_BLOCK);
+}
+
 void Fbx3d::RenPreDraw(ID3D12GraphicsCommandList* cmdList)
 {
 	model->RenPreDrawScene(cmdList);

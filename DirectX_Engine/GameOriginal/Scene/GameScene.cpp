@@ -152,6 +152,13 @@ void GameScene::SpriteInitialize(DirectXCommon* dxCommon,WinApp* winApp)
 	spriteSceneCut->SetSize({ 1280,720 });
 	spriteSceneCut->SettexSize({ 1280,720 });
 
+	spriteUnder = Sprite::Create(spriteCommon, 9);
+
+	spriteCommon->SpriteCommonLoadTexture(9, L"Resources/UI/txt_under.png");
+	spriteUnder->SetPosition({ 640,360,0 });
+	spriteUnder->SetSize({ 1280,720 });
+	spriteUnder->SettexSize({ 1280,720 });
+
 
 	//デバックテキスト
 	debugtext = new DebugText();
@@ -198,6 +205,7 @@ void GameScene::ModelLoadInitialize()
 	model28 = FbxLoader::GetInstance()->LoadModelFromFile("RedArow");
 	model29 = FbxLoader::GetInstance()->LoadModelFromFile("GreenArow");
 	model30 = FbxLoader::GetInstance()->LoadModelFromFile("BlueArow");
+	model31 = FbxLoader::GetInstance()->LoadModelFromFile("BlockPortalBox");
 }
 
 void GameScene::FbxInitialize()
@@ -294,6 +302,7 @@ void GameScene::EditInitialize()
 	mapedit->SetExitModel(model2);
 	mapedit->SetGunModel(model12);
 	mapedit->SetBoxModel(model17);
+	mapedit->SetBlockModel(model31);
 	mapedit->SetRespawnModel(model25);
 	mapedit->SetRedArowModel(model28);
 	mapedit->SetGreenArowModel(model29);
@@ -525,26 +534,26 @@ void GameScene::SceneDraw()
 	redExit->RenPreDraw(dxCommon_->GetCmdList());
 
 
-	/*
-	if (fbx3d3->GetWarpFlag() == true && fbx3d4->GetWarpFlag2() == true)
+	
+	if (redBullet->GetWarpFlag() == true && blueBullet->GetWarpFlag2() == true)
 	{
-
+		//mapedit->MapEditDraw(dxCommon_->GetCmdList());
 	}
 	else
 	{
 		portaltime = 0;
 	}
-	*/
+	
 
 	redExit->RenPostDraw(dxCommon_->GetCmdList());
 
 	blueExit->RenPreDraw2(dxCommon_->GetCmdList());
-	/*
-	if (fbx3d3->GetWarpFlag() == true && fbx3d4->GetWarpFlag2() == true)
+	
+	if (redBullet->GetWarpFlag() == true && blueBullet->GetWarpFlag2() == true)
 	{
-
+	//	mapedit->MapEditDraw(dxCommon_->GetCmdList());
 	}
-	*/
+	
 	blueExit->RenPostDraw2(dxCommon_->GetCmdList());
 
 	//レンダ―テクスチャの描画
@@ -564,9 +573,10 @@ void GameScene::SceneDraw()
 
 		if (scene->GetScene() != 99)
 		{
-			mapedit->LoadSet(dxCommon_->GetCmdList());
 			redExit->RenderFbxDraw(dxCommon_->GetCmdList());
 			blueExit->RenderFbxDraw2(dxCommon_->GetCmdList());
+			mapedit->LoadSet(dxCommon_->GetCmdList());
+			mapedit->MapEditDraw(dxCommon_->GetCmdList());
 		}
 		fbx3d34->Draw2(dxCommon_->GetCmdList());
 		fbx3d36->Draw2(dxCommon_->GetCmdList());
@@ -637,12 +647,25 @@ void GameScene::SceneDraw()
 		spriteAim->SpriteTransVertexBuffer();
 		spriteAim->Update();
 		spriteAim->SpriteDraw();
+		//テキスト
+	
+		if (Under_sprite_txt == true)
+		{
+			spriteUnder->SpriteTransVertexBuffer();
+			spriteUnder->Update();
+			spriteUnder->SpriteDraw();
+		}
 	}
 
 	if (player->GetTutorialWalk() == true)
 	{
 		Tutorial_num = 2;
 	}
+	if (mapedit->GetTutorialGun() == true)
+	{
+		Tutorial_num = 3;
+	}
+
 	spriteChangeScene->SpriteTransVertexBuffer();
 	spriteChangeScene->Update();
 	spriteChangeScene->SpriteDraw();

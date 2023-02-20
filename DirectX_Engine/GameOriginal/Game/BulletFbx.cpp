@@ -58,7 +58,7 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 	{
 		if (debug == 0 && TriggerFlag == 1)
 		{
-			if (info.collider->attribute != 64)
+			if (info.collider->attribute != 64&& info.collider->attribute != 512)
 			{
 				//TriggerFlag = 0;
 				debug = 1;
@@ -67,6 +67,7 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 			}
 			else
 			{
+				BlueAttack = false;
 				position = position_;
 				warpFlag = false;
 				TriggerFlag = 0;
@@ -76,7 +77,7 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 		}
 		if (debug2 == 0 && TriggerFlag2 == 1)
 		{
-			if (info.collider->attribute != 64)
+			if (info.collider->attribute != 64 && info.collider->attribute != 512)
 			{
 				debug2 = 1;
 				RedCollision = true;
@@ -84,6 +85,7 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 			}
 			else
 			{
+				RedAttack = false;
 				position = position_;
 				warpFlag2 = false;
 				TriggerFlag2 = 0;

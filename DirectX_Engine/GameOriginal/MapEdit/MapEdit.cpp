@@ -229,6 +229,30 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 			CreateCollisionBox();
 		}
 
+		//箱モデル生成
+		if (ImGui::Button("BlockBox Create"))
+		{
+			//生成
+			std::unique_ptr<MapEdit>block = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+			//初期化
+			block->Initialize();
+			//ここでモデルの形状をセット
+			block->SetModel(block_model);
+			//コリジョンのサイズ登録(初期は０)
+			block->SetColisionSize({ 10,10,10 });
+			//スケールのサイズ
+			block->SetScale({ 0.1,0.1,0.1 });
+			//モデルを指定
+			block->SetFbxmodelType(Block_model_num);
+			//ver指定
+			block->SetFbxVer(block_ver);
+			//登録
+			Blocks.push_back(std::move(block));
+
+			//当たり判定確認用OBJ生成
+			CreateCollisionBox();
+		}
+
 
 		ImGui::TreePop();
 	}
@@ -285,6 +309,10 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 
 		for (std::unique_ptr<MapEdit>& box_ : Boxs) {
 			box_->MapSave(box_);
+		}
+
+		for (std::unique_ptr<MapEdit>& block_ : Blocks) {
+			block_->MapSave(block_);
 		}
 
 		for (std::unique_ptr<MapEdit>& spawn_ : Respawns) {
@@ -461,6 +489,31 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 	}
 
 
+	for (std::unique_ptr<MapEdit>& block_ : Blocks) {
+		if (block_->GetSelectFlag() == true)
+		{
+			block_->AdjustmentObj(block_);
+
+			Arow_draw_flag = true;
+
+
+			//矢印の位置変数代入
+			Arow_pos = block_->GetPosition();
+
+			//矢印による位置の移動
+			ArowUpdate(block_, mouse);
+
+
+
+			//押されたらモデルの情報を一時保存(copy)
+			if (ImGui::Button("Copy") || (input->PushKey(DIK_LCONTROL) && input->PushKey(DIK_C)))
+			{
+				CopyModelInfo(block_->GetFbxmodelType(), block_->GetVer(), block_->GetPosition(), block_->GetScale(), block_->GetRotation(), block_->GetColisionSize());
+			}
+		}
+	}
+
+
 	for (std::unique_ptr<MapEdit>& spawn_ : Respawns) {
 		if (spawn_->GetSelectFlag() == true)
 		{
@@ -486,6 +539,7 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 	int Exit_count = 1;
 	int Gun_count = 1;
 	int Box_count = 1;
+	int Block_count = 1;
 
 	//当たり判定可視化用代入変数
 	int Collision_count = 0;
@@ -750,6 +804,44 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		Collision_count += 1;
 	}
 
+
+	for (std::unique_ptr<MapEdit>& block_ : Blocks) {
+
+
+		//削除フラグが立っているのならOBJを削除
+		Blocks.remove_if([](std::unique_ptr<MapEdit>& block_) {
+			return block_->GetDeadFlag();
+			});
+
+		//OBJの名前
+		char str[1024] = { 'B','l','o','c','k','_'};
+		//番号割りあて
+		char str2[1024];
+		//intをstringに変換
+		sprintf_s(str2, "%d", Block_count);
+		//文字列を結合
+		strcat_s(str, str2);
+		//ツリーに格納
+		if (ImGui::TreeNode(str)) {
+			block_->AdjustmentObj(block_)
+				;
+			ImGui::TreePop();
+		}
+		//Fbxの更新処理
+		block_->Update();
+		//OBJの単独PICKUP
+		block_->ObjSelect(block_, mouse);
+
+
+		//for文で１増やす
+		Block_count += 1;
+
+		pos[Collision_count] = { block_->GetPosition() };
+		rotate[Collision_count] = { block_->GetRotation() };
+		colision_size[Collision_count] = { block_->GetColisionSize() };
+		Collision_count += 1;
+	}
+
 	CreateSpawn();
 	//imguiの終わり
 	ImGui::End();
@@ -803,6 +895,11 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		box_->Draw2(cmdList);
 	}
 
+	for (std::unique_ptr<MapEdit>& block_ : Blocks) {
+		block_->Draw2(cmdList);
+	}
+
+
 	for (std::unique_ptr<MapEdit>& spawn_ : Respawns) {
 		spawn_->Draw2(cmdList);
 	}
@@ -819,7 +916,7 @@ void MapEdit::WriteSet(int type,int ver, XMFLOAT3 pos, XMFLOAT3 scale, XMFLOAT3 
 {
 	FILE* fp1;
 	//テキスト暗号化した状態で保存
-	fp1 = _fsopen("GameOriginal/MapEdit/STAGE2.txt", "a", _SH_DENYNO);
+	fp1 = _fsopen("GameOriginal/MapEdit/STAGE3.txt", "a", _SH_DENYNO);
 
 	if (fp1 == NULL) {
 		assert(0);
@@ -1050,6 +1147,13 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 					//モデルを指定
 					mapObj->SetFbxmodelType(Box_model_num);
 				}
+				else if (type == 8)
+				{
+					//ここでモデルの形状をセット
+					mapObj->SetModel(block_model);
+					//モデルを指定
+					mapObj->SetFbxmodelType(Block_model_num);
+				}
 
 
 
@@ -1090,6 +1194,13 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 					mapObj->SetColider(new SphereCollider(XMVECTOR{ 0,5,0,0 }, 5));
 					mapObj->SetVerObj2();
 				}
+				else if (ver == 4)
+				{
+					//当たり判定のサイズ、形、属性を指定
+					mapObj->SetColider(new WallCollider(XMVECTOR{ ColisionSize.x,ColisionSize.y,ColisionSize.z,0 }));
+					mapObj->SetVerBlock();
+
+				}
 				//作るのに必要な情報が揃ったので登録
 				//登録
 				mapObjs.push_back(std::move(mapObj));
@@ -1123,6 +1234,10 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 			mapObj_->SetShotRed(Shot2);
 			mapObj_->SetWark(wark);
 
+			mapObj_->SetTutorial(Tutorial);
+
+			//Gunを持った時のチュートリアルフラグ
+			Tutorial_gun = mapObj_->GetTutorialGun();
 			//Gunを持ったかのフラグを代入
 			Cursor_on = mapObj_->Getgetobj();
 
@@ -1140,7 +1255,7 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 			mapObj_->BoxObjUpdate(0, 0);
 		}
 		
-		mapObj_->Draw2(cmdList);
+		//mapObj_->Draw2(cmdList);
 	}
 }
 
@@ -1477,6 +1592,32 @@ void MapEdit::PasteInfo()
 		//当たり判定確認用OBJ生成
 		CreateCollisionBox();
 	}
+	else if (Copy_model_num == 8)
+	{
+		//生成
+		std::unique_ptr<MapEdit>block = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+		//初期化
+		block->Initialize();
+		//ここでモデルの形状をセット
+		block->SetModel(block_model);
+		//コリジョンのサイズ登録(初期は０)
+		block->SetColisionSize(Copy_colision_size);
+		//スケールのサイズ
+		block->SetScale(Copy_scale);
+		//ポジションの初期位置設定
+		block->SetPosition(Copy_pos);
+		//回転
+		block->SetRotate(Copy_rotate);
+		//モデルを指定
+		block->SetFbxmodelType(Block_model_num);
+		//ver指定
+		block->SetFbxVer(block_ver);
+		//登録
+		Blocks.push_back(std::move(block));
+
+		//当たり判定確認用OBJ生成
+		CreateCollisionBox();
+	}
 	else
 	{
 	assert(1);
@@ -1761,4 +1902,12 @@ void MapEdit::ArowCollision(std::unique_ptr<MapEdit>& obj_2, std::unique_ptr<Map
 
 	//マウスの座標を保存
 	Old_mouse_move = mouse;
+}
+
+void MapEdit::MapEditDraw(ID3D12GraphicsCommandList* cmdList)
+{
+	//txtから読み込んだ情報をもとに更新、録画
+	for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs) {
+		mapObj_->Draw2(cmdList);
+	}
 }

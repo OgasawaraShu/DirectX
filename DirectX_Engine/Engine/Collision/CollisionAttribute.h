@@ -12,6 +12,7 @@ const unsigned short COLLISION_ATTR_WALL = 0b1 << 5;//•Ç.j
 const unsigned short COLLISION_ATTR_SPHEREOBJ = 0b1 << 6;//‰~Œ`‚Ì•Ç
 const unsigned short COLLISION_ATTR_OBJ2 = 0b1 << 7;//‰~Œ`‚Ì•Ç
 const unsigned short COLLISION_ATTR_EXIT = 0b1 << 8;//oŒû
+const unsigned short COLLISION_ATTR_BLOCK = 0b1 << 9;//“–‚½‚ç‚È‚¢•Ç
 
 
 

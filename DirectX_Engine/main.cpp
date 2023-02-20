@@ -118,6 +118,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     directWrite->DirectWriteTextLoad(Ivent_key);
 
     bool Load_txt = true;
+    bool Load_txt2 = true;
 
     while (true)  // ゲームループ
     {
@@ -139,6 +140,20 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             {
                 directWrite->DirectWriteLost();
                 Load_txt = false;
+            }
+
+            Ivent_key = str;
+            directWrite->DirectWritePre(Ivent_key);
+            directWrite->registerTextFormat(Ivent_key, 33);
+            directWrite->DirectWriteTextLoad(Ivent_key);
+        }
+
+        if (gameScene->GetTutorialNum() == 3)
+        {
+            if (Load_txt2 == true)
+            {
+                directWrite->DirectWriteLost();
+                Load_txt2 = false;
             }
 
             Ivent_key = str;
@@ -171,6 +186,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         directWrite->SetSwapChain(dxCommon->GetSwapChain());
         if(gameScene->GetScene())directWrite->DirectWriteText(Ivent_key);
         dxCommon->PostDrawPostDirectWrite();
+
+        //セット
+        gameScene->SetUnderSpriteFlag(directWrite->GetUnderFlag());
     }
     //入力開放
     delete input;

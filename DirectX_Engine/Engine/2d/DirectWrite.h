@@ -54,6 +54,8 @@ public://メンバ関数
 		return i;
 	}
 
+	bool GetUnderFlag() { return Under_sprite_flag; }
+
 private://メンバ関数
 	
 
@@ -81,6 +83,7 @@ private://メンバ変数
 	int Next_text_flag = true;
 	int Ward_count;
 	int Ward_num = 1;
+	bool Under_sprite_flag = false;
 	std::wstring Text;
 	//ファイル読み取り
 	std::stringstream MapCommands;

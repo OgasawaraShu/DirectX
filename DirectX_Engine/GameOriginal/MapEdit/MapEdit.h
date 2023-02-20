@@ -61,6 +61,8 @@ public:
 	void ArowUpdate(std::unique_ptr<MapEdit>& obj_, XMFLOAT2 mouse);
 	//矢印当たり判定
 	void ArowCollision(std::unique_ptr<MapEdit>& obj_2,std::unique_ptr<MapEdit>& obj_, XMFLOAT2 mouse);
+	//描画
+	void MapEditDraw(ID3D12GraphicsCommandList* cmdList);
 
 	//モデルセット
 	//フェンスモデル
@@ -77,6 +79,8 @@ public:
 	void SetGunModel(Model* model) { gun_model = model; }
 	//箱モデル
 	void SetBoxModel(Model* model) { box_model = model; }
+	//Block箱モデル
+	void SetBlockModel(Model* model) { block_model = model; }
 	//コリジョンモデル
 	void SetCollisionModel(Model* model) { Collision_model = model; }
 
@@ -85,6 +89,8 @@ public:
 	bool GetGetGun() { return Cursor_on; }
 
 	bool GetTutorial() { return Tutorial_box; }
+
+	void SetTutorialGun(bool flag) { Tutorial_gun = flag; }
 
 	//デバック用モデル
 	//スタート場所モデル
@@ -120,6 +126,8 @@ private:
 	std::list<std::unique_ptr<MapEdit>> Guns;
 
 	std::list<std::unique_ptr<MapEdit>> Boxs;
+
+	std::list<std::unique_ptr<MapEdit>> Blocks;
 
 	//エディットデバック可視化用モデル
 	std::list<std::unique_ptr<MapEdit>> Respawns;
@@ -192,6 +200,8 @@ private:
 
 	int Box_model_num = 7;
 
+	int Block_model_num = 8;
+
 	int spawn_model_num = 0;
 
 	int Red_arow_model_num = -1;
@@ -209,6 +219,8 @@ private:
 	int gun_ver = 2;
 
 	int obj_ver = 3;
+
+	int block_ver = 4;
 
 	//portalgunを取ったかのフラグ
 	bool Cursor_on;
@@ -244,6 +256,8 @@ private:
 	Model* gun_model;
 
 	Model* box_model;
+
+	Model* block_model;
 
 	Model* respawn_model;
 

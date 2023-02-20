@@ -199,9 +199,9 @@ void ObjFbx::RayCheck()
 
 
 	//ƒŒƒC‚ª“–‚½‚Á‚½‚Ì‚È‚çŽæ“¾‚·‚é
-	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ, &raycastHit,20.0f)&&input->TriggerKey(DIK_F) && !cursorOn) {
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ, &raycastHit,20.0f)&&input->TriggerKey(DIK_F) && !cursorOn&&Tutorial == false) {
 		cursorOn = true;
-
+		Tutorial_gun = true;
 		rotation.x = 0;
 		rotation.z = 0;
 		rotation.y = 180;

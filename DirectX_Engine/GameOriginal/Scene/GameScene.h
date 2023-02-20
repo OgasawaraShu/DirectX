@@ -71,6 +71,8 @@ public:
 
 	int GetTutorialNum() { return Tutorial_num; }
 
+	void SetUnderSpriteFlag(bool flag) { Under_sprite_txt = flag; }
+
 private://クラス変数
 
 	int Tutorial_num = 1;
@@ -81,6 +83,7 @@ private://クラス変数
 	XMFLOAT3 posi;
 	int demo = 0;
 	float Cut_y_size = 0;
+	bool Under_sprite_txt = false;
 
 	//ゲームシーン処理関連
 	char moji[64];
@@ -134,6 +137,7 @@ private://ポインタ
 	Sprite* spriteNameOP = nullptr;
 	Sprite* spriteChangeScene = nullptr;
 	Sprite* spriteSceneCut = nullptr;
+	Sprite* spriteUnder = nullptr;
 
 	//デバックテキスト
 	DebugText* debugtext = nullptr;
@@ -171,6 +175,7 @@ private://ポインタ
 	Model* model28 = nullptr;
 	Model* model29 = nullptr;
 	Model* model30 = nullptr;
+	Model* model31 = nullptr;
 
 	//オブジェクト
 	BulletFbx* redBullet = nullptr;

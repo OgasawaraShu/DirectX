@@ -85,7 +85,7 @@ void DirectWrite::DirectWriteDraw(const std::string& textFormatKey, const std::s
 {
     const auto textFormat = textFormatMap.at(textFormatKey);
     const auto solidColorBrush = solidColorBrushMap.at(solidColorBrushKey);
-    d2dDeviceContext->DrawTextW(text.c_str(), static_cast<UINT32>(text.length()), textFormat.Get(), D2D1::RectF(276, 450, 1104, 700), solidColorBrush.Get());
+    d2dDeviceContext->DrawTextW(text.c_str(), static_cast<UINT32>(text.length()), textFormat.Get(), D2D1::RectF(215, 530, 1061, 655), solidColorBrush.Get());
     // Direct2D‚Ì•`‰æ‚ðI—¹‚·‚é
     const auto backBufferIndex = swapchain->GetCurrentBackBufferIndex();
     const auto wrappedBackBuffer = wrappedBackBuffers[backBufferIndex];
@@ -188,9 +188,11 @@ void DirectWrite::DirectWriteText(const std::string& key)
         {
             Draw_string_end += 1;
             Wait_time = 0;
+            Under_sprite_flag = true;
         }
         else
         {
+           
             Next_text_wait_time += 1;
             if (Next_text_wait_time > 120)
             {
@@ -199,7 +201,7 @@ void DirectWrite::DirectWriteText(const std::string& key)
                 Draw_string_end = 1;
                 Ward_num += 1;
                 Wait_time = 0;
-            
+                Under_sprite_flag = false;
             }
         }
 

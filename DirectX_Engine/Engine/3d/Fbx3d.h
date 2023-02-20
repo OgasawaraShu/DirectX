@@ -163,6 +163,8 @@ public:
 	void SetVerSPHEREOBJ();
 	//出口属性
 	void SetVerExit();
+	//ブロック属性
+	void SetVerBlock();
     //
 	void SetWorld(XMMATRIX matrot_) { matrot = matrot_; }
     //render前処理

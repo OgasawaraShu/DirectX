@@ -45,6 +45,8 @@ public:
     void SetWark(bool a) { wark = a; }
    
     void SetTutorial(bool Flag) { Tutorial = Flag; }
+
+    bool GetTutorialGun() { return Tutorial_gun; }
 protected:
     //クラスのポインタ
     Input* input;//入力クラス
@@ -75,6 +77,8 @@ protected:
     bool onGround = true;//地面の判定
     //落ちるベクトル
     XMVECTOR fallV;
+
+    bool Tutorial_gun = false;
 
     bool Tutorial = true;
 
