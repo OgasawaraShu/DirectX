@@ -65,7 +65,7 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 				BlueCollision = true;
 				BlueAttack = false;
 			}
-			else
+			else if (info.collider->attribute == 512)
 			{
 				BlueAttack = false;
 				position = position_;
@@ -83,7 +83,7 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 				RedCollision = true;
 				RedAttack = false;
 			}
-			else
+			else if(info.collider->attribute == 512)
 			{
 				RedAttack = false;
 				position = position_;
@@ -184,6 +184,30 @@ void BulletFbx::BlueBulletUpdate(float angleX, float angleY)
 	else
 	{
 		ShotFlag2 = false;
+	}
+
+	//単独リセット
+	if (input->TriggerMouseLeft() && getflag == true&& debug == 1)
+	{
+		matWorld *= matrot;
+		position = position_;
+		Vector.m128_f32[0] = Target.x - position.x;
+		Vector.m128_f32[1] = Target.y - position.y;
+		Vector.m128_f32[2] = Target.z - position.z;
+		Target_ = Target;
+
+		Vector = XMVector3Normalize(Vector) * 4.0f;
+		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+
+
+		position = position_;
+		warpFlag = false;
+		TriggerFlag = 1;
+		debug = 0;
+
+		BlueCollision = false;
+		BlueAttack = true;
+		ShotFlag2 = true;
 	}
 
 
@@ -332,6 +356,29 @@ void BulletFbx::RedBulletUpdate(float angleX, float angleY)
 		RedAttack = false;
 	}
 
+	//単独リセット
+	if (input->TriggerMouseRight() && getflag == true && debug2 == 1)
+	{
+		matWorld *= matrot;
+		position = position_;
+		Vector.m128_f32[0] = Target.x - position.x;
+		Vector.m128_f32[1] = Target.y - position.y;
+		Vector.m128_f32[2] = Target.z - position.z;
+		Target_ = Target;
+
+		Vector = XMVector3Normalize(Vector) * 4.0f;
+		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+
+
+		position = position_;
+		warpFlag2 = false;
+		TriggerFlag2 = 1;
+		debug2 = 0;
+
+		RedCollision = false;
+	     RedAttack = true;
+		ShotFlag = true;
+	}
 
 
 	if (TriggerFlag2 == 1 && debug2 == 0)
@@ -345,7 +392,7 @@ void BulletFbx::RedBulletUpdate(float angleX, float angleY)
 		Vector.m128_f32[1] = Target.y - position.y;
 		Vector.m128_f32[2] = Target.z - position.z;
 		
-		Vector = XMVector3Normalize(Vector) * 2.0f;
+		Vector = XMVector3Normalize(Vector) * 4.0f;
 
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	}

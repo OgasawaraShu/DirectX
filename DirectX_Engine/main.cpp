@@ -154,6 +154,53 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             {
                 directWrite->DirectWriteLost();
                 Load_txt2 = false;
+                Load_txt = true;
+            }
+
+            Ivent_key = str;
+            directWrite->DirectWritePre(Ivent_key);
+            directWrite->registerTextFormat(Ivent_key, 33);
+            directWrite->DirectWriteTextLoad(Ivent_key);
+        }
+
+        if (gameScene->GetTutorialNum() == 4)
+        {
+            if (Load_txt == true)
+            {
+                directWrite->DirectWriteLost();
+                Load_txt = false;
+                Load_txt2 = true;
+            }
+
+            Ivent_key = str;
+            directWrite->DirectWritePre(Ivent_key);
+            directWrite->registerTextFormat(Ivent_key, 33);
+            directWrite->DirectWriteTextLoad(Ivent_key);
+        }
+
+
+        if (gameScene->GetTutorialNum() == 5)
+        {
+            if (Load_txt2 == true)
+            {
+                directWrite->DirectWriteLost();
+                Load_txt2 = false;
+                Load_txt = true;
+            }
+
+            Ivent_key = str;
+            directWrite->DirectWritePre(Ivent_key);
+            directWrite->registerTextFormat(Ivent_key, 33);
+            directWrite->DirectWriteTextLoad(Ivent_key);
+        }
+
+        if (gameScene->GetTutorialNum() == 6)
+        {
+            if (Load_txt == true)
+            {
+                directWrite->DirectWriteLost();
+                Load_txt = false;
+                Load_txt2 = true;
             }
 
             Ivent_key = str;

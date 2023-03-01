@@ -23,6 +23,8 @@ public:
 	float GetMousePoint() { return mouseX; }
 	//シーン参照
 	int GetScene() { return scene; }
+
+	int OldScene() { return Old_scene; }
 	//押したか参照
 	int GetPush() { return push; }
 	//ジカン参照
@@ -45,6 +47,7 @@ public:
 	void SetWalkTutorial(bool flag) { Walk_tutorial = flag; }
 private:
 
+	int Old_scene = 0;
 	//出口
 	bool Exit;
 	//ロード

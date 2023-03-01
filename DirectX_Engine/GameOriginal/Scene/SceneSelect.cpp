@@ -113,7 +113,14 @@ void SceneSelect::ChangeScene()
 	//初期化してタイトルに戻す
 	if (scene == -1)
 	{
-		scene = 0;
+		if (Old_scene == 1)
+		{
+			scene = 2;
+		}
+		else if (Old_scene == 2)
+		{
+			scene = 3;
+		}
 	}
 
 	if (scene == 1)
@@ -122,7 +129,7 @@ void SceneSelect::ChangeScene()
 		if (Exit == true)
 		{
 			change += 0.005;
-
+			Old_scene = 1;
 			if (change > 1)
 			{
 				Exit = false;
@@ -159,6 +166,27 @@ void SceneSelect::ChangeScene()
 		}
 	}
 
+
+	if (scene == 2)
+	{
+
+		//出口に入ったらフェードアウトさせてロード画面
+		if (Exit == true)
+		{
+			change += 0.005;
+			Old_scene = 2;
+			if (change > 1)
+			{
+				Exit = false;
+				scene = 99;
+			}
+		}
+		else
+		{
+			change = 0;
+		}
+	}
+
 	//ロード画面で演出が終わったら初期化画面に行く
 	if (scene == 99)
 	{
@@ -188,13 +216,15 @@ void SceneSelect::ChangeScene()
 			if (change > 1)
 			{
 				change = 0;
+				//ここを次のステージ移動にする
 				scene = -1;
 				DoorRotate = 0;
 			}
 		}
 	}
 
-	
+
+
 }
 
 void SceneSelect::MapEditScene()

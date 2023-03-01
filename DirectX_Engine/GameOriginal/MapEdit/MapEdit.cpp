@@ -916,7 +916,7 @@ void MapEdit::WriteSet(int type,int ver, XMFLOAT3 pos, XMFLOAT3 scale, XMFLOAT3 
 {
 	FILE* fp1;
 	//テキスト暗号化した状態で保存
-	fp1 = _fsopen("GameOriginal/MapEdit/STAGE3.txt", "a", _SH_DENYNO);
+	fp1 = _fsopen("GameOriginal/MapEdit/STAGE4.txt", "a", _SH_DENYNO);
 
 	if (fp1 == NULL) {
 		assert(0);
@@ -994,8 +994,90 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 	XMFLOAT3 rotate{};
 	XMFLOAT3 ColisionSize{};
 
-	//コマンド実行ループ
-	while (getline(MapCommands, line)) {
+	if (scene == 2)
+	{
+		MapSet(cmdList, 400, MapCommands2, mapObjs2);
+	}
+
+	//落ち着いたらここは関数化してcodeを短くするべき
+	if (scene != 1)
+	{
+		MapSet(cmdList, 0, MapCommands, mapObjs);
+	}
+
+	if (scene == 3)
+	{
+		MapSet(cmdList, 800, MapCommands3, mapObjs3);
+	}
+	
+
+	//txtから読み込んだ情報をもとに更新、録画
+	for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs) {
+		//mapObj_->Update();
+		
+		if (mapObj_->GetFbxmodelType() != 6 && mapObj_->GetFbxmodelType() != 7&&scene!=2)
+		{
+			mapObj_->Update();
+		}
+		else if (mapObj_->GetFbxmodelType() == 6)
+		{
+			//必要な情報をセットしていく
+			mapObj_->SetMyPosition(MyPosition);
+			mapObj_->SetCameraAxisZ(CammeraZAxis);
+			mapObj_->SetTarget(Target);
+
+			mapObj_->SetShotBlue(Shot);
+			mapObj_->SetShotRed(Shot2);
+			mapObj_->SetWark(wark);
+
+			mapObj_->SetTutorial(Tutorial);
+
+			//Gunを持った時のチュートリアルフラグ
+			Tutorial_gun = mapObj_->GetTutorialGun();
+			//Gunを持ったかのフラグを代入
+			Cursor_on = mapObj_->Getgetobj();
+
+			if (Cursor_on == true)
+			{
+				mapObj_->SetVerSPHEREOBJ();
+			}
+
+			mapObj_->ObjUpdate(0, 0);
+		}
+		else if (mapObj_->GetFbxmodelType() == 7&&scene!=2)
+		{
+			//必要な情報をセットしていく
+			mapObj_->SetMyPosition(MyPosition);
+			mapObj_->SetCameraAxisZ(CammeraZAxis);
+			mapObj_->SetTarget(Target);
+
+			mapObj_->SetTutorial(Tutorial);
+
+			mapObj_->BoxObjUpdate(0, 0);
+		}
+	}
+
+	int sceneSecond = 2;
+	int sceneThree = 3;
+	ObjMapUpdate(mapObjs2, sceneSecond);
+
+	ObjMapUpdate(mapObjs3, sceneThree);
+}
+
+void MapEdit::MapSet(ID3D12GraphicsCommandList* cmdList, float x, std::istream&txt, std::list<std::unique_ptr<MapEdit>>&  Objs)
+{
+	//１行分の文字列を入れる変数
+	std::string line;
+
+	//各情報宣言
+	int type;
+	int ver;
+	XMFLOAT3 pos{};
+	XMFLOAT3 scale{};
+	XMFLOAT3 rotate{};
+	XMFLOAT3 ColisionSize{};
+
+	while (getline(txt, line)) {
 		//1行分の文字列をっストリーム変換して解析
 		std::istringstream line_stream(line);
 
@@ -1053,7 +1135,7 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 			getline(line_stream, word, ',');
 			scale.z = (float)std::atof(word.c_str());
 
-			
+
 
 		}
 		else if (word.find("ROTATE") == 0) {
@@ -1069,7 +1151,7 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 			getline(line_stream, word, ',');
 			rotate.z = (float)std::atof(word.c_str());
 
-	
+
 
 		}
 		else if (word.find("COLISIONSIZE") == 0) {
@@ -1089,7 +1171,7 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 
 			//集めた情報をここでOBJの中に収納していく
 			//ここでOBJを生成する（モデルや座標の情報をwhile文で取るためここでは入れ物だけ）
-            //生成
+			//生成
 
 			//タイプが０だとスポーン地点なので飛ばす
 			if (type != 0)
@@ -1157,7 +1239,8 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 
 
 
-
+				//posを横にずらす
+				pos.x = pos.x + x;
 				//座標をセット
 				mapObj->SetPosition(pos);
 				//スケールをセット
@@ -1166,21 +1249,22 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 				mapObj->SetRotate(rotate);
 				//colisionsize登録
 				mapObj->SetColisionSize(ColisionSize);
-		
+
+
 				//verで属性を決める
 				if (ver == 0)
 				{
 					//当たり判定のサイズ、形、属性を指定
 					mapObj->SetColider(new WallCollider(XMVECTOR{ ColisionSize.x,ColisionSize.y,ColisionSize.z,0 }));
 					mapObj->SetVerWall();
-					
+
 				}
 				else if (ver == 1)
 				{
 					//当たり判定のサイズ、形、属性を指定
 					mapObj->SetColider(new WallCollider(XMVECTOR{ ColisionSize.x,ColisionSize.y,ColisionSize.z,0 }));
 					mapObj->SetVerExit();
-					
+
 				}
 				else if (ver == 2)
 				{
@@ -1203,7 +1287,7 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 				}
 				//作るのに必要な情報が揃ったので登録
 				//登録
-				mapObjs.push_back(std::move(mapObj));
+				Objs.push_back(std::move(mapObj));
 			}
 			else
 			{
@@ -1212,14 +1296,52 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 			}
 		}
 	}
+}
 
+void MapEdit::Loadtxt()
+{
+	//ファイルを開く
+	std::ifstream file;
+	file.open(L"GameOriginal/MapEdit/STAGE2.txt");
+	assert(file.is_open());
 
+	//ファイルの内容をコピー
+	MapCommands << file.rdbuf();
+	//ファイルを閉じる
+	file.close();
+
+	//ステージ2
+
+	//ファイルを開く
+	std::ifstream file2;
+	file2.open(L"GameOriginal/MapEdit/STAGE3.txt");
+	assert(file2.is_open());
+
+	//ファイルの内容をコピー
+	MapCommands2 << file2.rdbuf();
+	//ファイルを閉じる
+	file2.close();
+
+	//ステージ3
+
+	//ファイルを開く
+	std::ifstream file3;
+	file3.open(L"GameOriginal/MapEdit/STAGE4.txt");
+	assert(file3.is_open());
+
+	//ファイルの内容をコピー
+	MapCommands3 << file3.rdbuf();
+	//ファイルを閉じる
+	file3.close();
+
+}
+
+void MapEdit::ObjMapUpdate(std::list<std::unique_ptr<MapEdit>>& Objs, int sceneSet)
+{
 
 	//txtから読み込んだ情報をもとに更新、録画
-	for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs) {
-		//mapObj_->Update();
-		
-		if (mapObj_->GetFbxmodelType() != 6 && mapObj_->GetFbxmodelType() != 7)
+	for (std::unique_ptr<MapEdit>& mapObj_ : Objs) {
+		if (mapObj_->GetFbxmodelType() != 6 && mapObj_->GetFbxmodelType() != 7 && scene == sceneSet)
 		{
 			mapObj_->Update();
 		}
@@ -1241,9 +1363,15 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 			//Gunを持ったかのフラグを代入
 			Cursor_on = mapObj_->Getgetobj();
 
+
+			if (Cursor_on == true)
+			{
+				mapObj_->SetVerSPHEREOBJ();
+			}
+
 			mapObj_->ObjUpdate(0, 0);
 		}
-		else if (mapObj_->GetFbxmodelType() == 7)
+		else if (mapObj_->GetFbxmodelType() == 7 && scene == sceneSet)
 		{
 			//必要な情報をセットしていく
 			mapObj_->SetMyPosition(MyPosition);
@@ -1254,23 +1382,7 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 
 			mapObj_->BoxObjUpdate(0, 0);
 		}
-		
-		//mapObj_->Draw2(cmdList);
 	}
-}
-
-void MapEdit::Loadtxt()
-{
-	//ファイルを開く
-	std::ifstream file;
-	file.open(L"GameOriginal/MapEdit/STAGE2.txt");
-	assert(file.is_open());
-
-	//ファイルの内容をコピー
-	MapCommands << file.rdbuf();
-	//ファイルを閉じる
-	file.close();
-
 }
 
 void MapEdit::CreateCollisionBox()
@@ -1908,6 +2020,30 @@ void MapEdit::MapEditDraw(ID3D12GraphicsCommandList* cmdList)
 {
 	//txtから読み込んだ情報をもとに更新、録画
 	for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs) {
-		mapObj_->Draw2(cmdList);
+		if (scene != 2 && mapObj_->GetFbxmodelType() != 6)
+		{
+			mapObj_->Draw2(cmdList);
+		}
+
+		if (mapObj_->GetFbxmodelType() == 6)
+		{
+			mapObj_->Draw2(cmdList);
+		}
+	}
+
+	//ステージ2
+	if (scene == 2)
+	{
+		for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs2) {
+			mapObj_->Draw2(cmdList);
+		}
+	}
+
+	//ステージ3
+	if (scene == 3)
+	{
+		for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs3) {
+			mapObj_->Draw2(cmdList);
+		}
 	}
 }

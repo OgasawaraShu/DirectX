@@ -56,23 +56,19 @@ void PlayerFbx::OnCollision(const CollisionInfo& info)
 		redCollision = true;
 	}
 	
+
 	
-	if(info.collider->attribute == 32&&WallCollision==false)
+	if(info.collider->attribute == 32&&WallCollision==false&& info.collider->attribute != 16)
 	{
 		WallCollision = true;
 		ColisionPoint=info.inter;
 	}
-	else if(info.collider->attribute == 64 && WallCollision == false)
+	else if (info.collider->attribute == 128 && WallCollision == false && info.collider->attribute != 16)
 	{
 		WallCollision = true;
 		ColisionPoint = info.inter;
 	}
-	else if (info.collider->attribute == 128 && WallCollision == false)
-	{
-		WallCollision = true;
-		ColisionPoint = info.inter;
-	}
-	else if (info.collider->attribute == 512 && WallCollision == false)
+	else if (info.collider->attribute == 512 && WallCollision == false && info.collider->attribute != 16)
 	{
 		WallCollision = true;
 		ColisionPoint = info.inter;
@@ -145,6 +141,10 @@ void PlayerFbx::FallJump()
 		// 加速
 		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
 	}
+	else
+	{
+		FallCount = 0;
+	}
 }
 
 void PlayerFbx::Landing()
@@ -177,19 +177,32 @@ void PlayerFbx::Landing()
     float distance;
     bool hit = Collision::CheckRay2Plane(ray, plane, &distance, &inter);
 	
+
+	debugCheck = 0;
         
         //OBJの上に載っていたら乗る
 	if (CollisionManager::GetInstance()->Spherecast(sphere, COLLISION_ATTR_WALL, &raycastHit2, 5)) {
-		debugCheck = true;
 		onGround = true;
 	}
 	else
 	{
-		//乗っていないのならfalse
-		debugCheck = false;
+		debugCheck += 1;
+	}
+
+	if (CollisionManager::GetInstance()->Spherecast(sphere, COLLISION_ATTR_BLOCK, &raycastHit2, 5)) {
+		onGround = true;
+	}
+	else
+	{
+		debugCheck += 1;
+	}
+
+	if (debugCheck >= 2)
+	{
 		onGround = false;
 	}
 
+	
 	// 接地状態
 	if (onGround) {
 		// スムーズに坂を下る為の吸着距離
@@ -450,8 +463,9 @@ void PlayerFbx::CollisionAfter()
 
 void PlayerFbx::VectorChange()
 {
+	FallCount += 1;
 	//portalに入った後ベクトルを変換する
-	fallV.m128_f32[2] = -(fallV.m128_f32[1] + fallV.m128_f32[2]);
+	fallV.m128_f32[2] -= ((fallV.m128_f32[1]*FallCount) + fallV.m128_f32[2]);
 }
 
 

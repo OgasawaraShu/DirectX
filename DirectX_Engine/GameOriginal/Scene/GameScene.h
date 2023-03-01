@@ -99,6 +99,10 @@ private://クラス変数
 	float pointLightColor[3] = { 1,1,1 };
 	float pointLightAtten[3] = { 0.00005f,0.00005f,0.00005f };
 
+	float pointLightPos2[3] = { 0,0,0 };
+	float pointLightColor2[3] = { 1,1,1 };
+	float pointLightAtten2[3] = { 0.00005f,0.00005f,0.00005f };
+
 	float spotLightDir[3] = { 0,-1,0 };
 	float spotLightPos[3] = { 0,5,0 };
 	float spotLightColor[3] = { 1,1,1 };
@@ -123,7 +127,6 @@ private://ポインタ
 	DebugCamera* camera = nullptr;
 	BlueCameraDebug* Bluecamera = nullptr;
 	RedCameraDebug* Redcamera = nullptr;
-
 
 	//パーティクル
 	ParticleManager* particleManRed = nullptr;

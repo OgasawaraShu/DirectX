@@ -58,10 +58,20 @@ void PortalExit::OriginalUpdate(float angleX, float angleY)
 	{
 		if (ScaleExit.x < 0.07)
 		{
-			ScaleExit.x += 0.001;
-			ScaleExit.y += 0.001;
-			ScaleExit.z += 0.001;
+			ScaleExit.x += 0.003;
+			ScaleExit.y += 0.003;
+			ScaleExit.z += 0.003;
 
+
+			
+			if (position.x <= -70)
+			{
+				rotation.y = 270;
+			}
+			else if (position.x >= 70)
+			{
+				rotation.y = 90;
+			}
 
 			//‚±‚±‚ÍŠO˜g
 			if (MyPosition.z < position.z)
@@ -71,15 +81,6 @@ void PortalExit::OriginalUpdate(float angleX, float angleY)
 			else
 			{
 				rotation.y = 180;
-			}
-
-			if (position.x <= -70)
-			{
-				rotation.y = 270;
-			}
-			else if (position.x >= 70)
-			{
-				rotation.y = 90;
 			}
 
 			//‚±‚±‚ÉŒÂ•Ê‚ÌOBJ‚É“–‚½‚Á‚½‚Ì¶‰E‚Ì‰ñ“]‚·‚é

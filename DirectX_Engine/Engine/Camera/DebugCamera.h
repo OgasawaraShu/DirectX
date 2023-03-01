@@ -90,10 +90,12 @@ public:
 	void SetRed(XMMATRIX a) { RotRed = a; }
 	void SetBlue(XMMATRIX a) { RotBlue = a; }
 	void SetTutorial(bool flag) { Tutorial = flag; }
+	void SetOldScene(int scene) { Old_scene = scene; }
 	
 private:
 	// 入力クラスのポインタ
 	Input* input;
+	int Old_scene;
 
 	// カメラ注視点までの距離
 	float distance = 20;
@@ -142,7 +144,7 @@ private:
 
 	int Flag = 0;
 
-	bool onGround_ ;
+	bool onGround_=false;
 int s = 0;
 
 	bool redTeleport;

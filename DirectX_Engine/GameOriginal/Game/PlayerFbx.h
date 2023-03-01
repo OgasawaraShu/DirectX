@@ -81,7 +81,7 @@ public:
 	//debug
 	int aGet() { return a; }
 	//debug
-	bool GetDebug() { return debugCheck; }
+	//bool GetDebug() { return debugCheck; }
 	//当たっているか
 	bool GetColision() { return WallCollision; }
 	//コリジョンのベクトル
@@ -92,6 +92,8 @@ public:
 	void SetTutorial(bool flag) { Tutorial = flag; }
 
 	bool GetTutorialWalk() { return Tutorial_walk; }
+
+	float GetPositionZ() { return position.z; }
 private:
 
 	//クラスのポインタ
@@ -99,9 +101,11 @@ private:
 	//
 	Physics* physics;//物理クラス
 
+	float FallCount = 0;
+
 	bool Tutorial=true;
 	//変数
-	bool debugCheck = false;
+	int debugCheck;
 	//ワープの時間
 	int WarpTime = 0;
 	//ワープのフラッグ
@@ -115,7 +119,7 @@ private:
 	//シーン
 	int scene;
 	
-	bool onGround = true;//地面の判定
+	bool onGround = false;//地面の判定
 
 	bool redTeleport = false;//赤への転送
 

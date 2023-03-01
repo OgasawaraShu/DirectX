@@ -42,12 +42,21 @@ void DebugCamera::Initialize2()
 	 trun = false;
 	 time2 = 0;
 	 time3 = 0;
+	 if (Old_scene == 1)
+	 {
+		 eye = { 400,20,-20 };
+	 }
+	 else if (Old_scene == 2)
+	 {
+		 eye = { 800,20,-20 };
+	 }
+	 SetEye(eye);
 	 SetTarget({ eye.x, eye.y, eye.z + 20 });
 }
 #pragma optimize("", off)
 void DebugCamera::Update()
 {
-	if (scene == 1)
+	if (scene == 1||scene==2||scene==3)
 	{
 
 		

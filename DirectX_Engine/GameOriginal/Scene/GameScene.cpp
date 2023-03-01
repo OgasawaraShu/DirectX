@@ -69,9 +69,14 @@ void GameScene::SceneInitialize(DirectXCommon* dxCommon, Input* input, Audio* au
 	lightGroup->SetDirLightActive(1, false);
 	lightGroup->SetDirLightActive(2, false);
 	lightGroup->SetPointLightActive(0, true);
+	lightGroup->SetPointLightActive(1, false);
 	pointLightPos[0] = 0.5f;
 	pointLightPos[1] = 100.0f;
 	pointLightPos[2] = 0.0f;
+
+	pointLightPos2[0] = 400.5f;
+	pointLightPos2[1] = 100.0f;
+	pointLightPos2[2] = 100.0f;
 	lightGroup->SetSpotLightActive(0, false);
 	//ライトセット
 	Fbx3d::SetLightGroup(lightGroup);
@@ -278,7 +283,7 @@ void GameScene::FbxInitialize()
 
 	collisionManager = CollisionManager::GetInstance();
 
-	float radius = 5.0f;
+	float radius = 7.0f;
 	float PlayerRadius = 1.0f;
 
 	redBullet->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
@@ -374,7 +379,17 @@ void GameScene::SceneUpdate()
 	Bluecamera->SetEyePos(blueExit->GetMyPosition());
 	Redcamera->SetEyePos(redExit->GetMyPosition());
 
-	//sprintf_s(moji2, "camera=%f", camera->GetPositionY());
+	float in = 2;
+	if (player->Getground() == true)
+	{
+		in = 1;
+	}
+	else
+	{
+		in = 0;
+	}
+
+	sprintf_s(moji2, "%f", in);
 	//sprintf_s(moji2,"%d",camera->GetAngleY());
 
 	// DirectX毎フレーム処理　ここから
@@ -401,7 +416,7 @@ void GameScene::SceneUpdate()
 	camera->SetTutorial(scene->GetTutorial());
 	if (scene->GetEdit() == false)camera->Update();
 
-	sprintf_s(moji2, "%f", camera->GetPositionX());
+	//sprintf_s(moji2, "%f", camera->GetPositionX());
 
 	//playerのセット
 	player->SetMemo(blueBullet->GetMemo());
@@ -418,6 +433,7 @@ void GameScene::SceneUpdate()
 	player->CollisionAfter();
 
 	int i = 0;
+
 
 	//1フレームの当たり判定
 	if (scene->GetEdit() == false)
@@ -483,7 +499,7 @@ void GameScene::SceneUpdate()
 
 
 
-		sprintf_s(moji, "%d", player->GetDebug());
+		sprintf_s(moji, "%d", 0);
 
 		redExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY());
 		blueExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY());
@@ -514,8 +530,39 @@ void GameScene::SceneUpdate()
 	}
 	else
 	{
+		//mapedit中は見づらいためライトを変える
+		lightGroup->SetDirLightActive(0, true);
+		lightGroup->SetDirLightActive(1, true);
+		lightGroup->SetDirLightActive(2, true);
+		lightGroup->SetPointLightActive(0, false);
+
 		fbx3d38->Update();
 		camera->MapEditUpdate();
+	}
+
+	if (scene->GetScene() == 99)
+	{
+		lightGroup->SetDirLightActive(0, true);
+		lightGroup->SetDirLightActive(1, true);
+		lightGroup->SetDirLightActive(2, true);
+		lightGroup->SetPointLightActive(0, false);
+	}
+	else
+	{
+		lightGroup->SetDirLightActive(0, false);
+		lightGroup->SetDirLightActive(1, false);
+		lightGroup->SetDirLightActive(2, false);
+		lightGroup->SetPointLightActive(0, true);
+	}
+
+	if (scene->GetEdit() == true)
+	{
+		//mapedit中は見づらいためライトを変える
+		lightGroup->SetDirLightActive(0, true);
+		lightGroup->SetDirLightActive(1, true);
+		lightGroup->SetDirLightActive(2, true);
+		lightGroup->SetPointLightActive(0, false);
+
 	}
 
 	if (scene->GetScene() == 100)
@@ -524,6 +571,7 @@ void GameScene::SceneUpdate()
 	}
 
 	scene->SetWalkTutorial(player->GetTutorialWalk());
+	mapedit->SetScene(scene->GetScene());
 }
 
 void GameScene::SceneDraw()
@@ -563,6 +611,26 @@ void GameScene::SceneDraw()
 	//バックバッファの番号を取得（2つなので0番か1番）
 	dxCommon_->ImguiPre();
 
+	if (scene->GetScene() == 2)
+	{
+		pointLightPos[0] = 400.5f;
+		pointLightPos[1] = 100.0f;
+		pointLightPos[2] = 0.0f;
+
+		lightGroup->SetPointLightActive(1, true);
+
+		lightGroup->SetPointLightPos(1, XMFLOAT3(pointLightPos2));
+		lightGroup->SetPointLightColor(1, XMFLOAT3(pointLightColor2));
+		lightGroup->SetPointLightAtten(1, XMFLOAT3(pointLightAtten2));
+	}
+
+	if (scene->GetScene() == 3)
+	{
+		pointLightPos[0] = 800.5f;
+		pointLightPos[1] = 100.0f;
+		pointLightPos[2] = 0.0f;
+
+	}
 	lightGroup->SetPointLightPos(0, XMFLOAT3(pointLightPos));
 	lightGroup->SetPointLightColor(0, XMFLOAT3(pointLightColor));
 	lightGroup->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));
@@ -601,8 +669,8 @@ void GameScene::SceneDraw()
 
 	////スプライト共通コマンド
 	spriteCommon->PreDraw();
-	//    debugtext->Print(moji, 100, 100);
-	//    debugtext->DrawAll();//的カウント
+	   debugtext->Print(moji2, 100, 100);
+	    debugtext->DrawAll();//的カウント
 //
   //     debugtext2->Print(moji2, 100, 200);
   //     debugtext2->DrawAll();//的カウント
@@ -635,7 +703,7 @@ void GameScene::SceneDraw()
 			spriteExitOP->SpriteDraw();
 		}
 	}
-	else  if (scene->GetScene() == 1)
+	else  if (scene->GetScene() == 1|| scene->GetScene() == 2 || scene->GetScene() == 3)
 	{
 		if(scene->GetTutorial()==false&& Cut_y_size<600)Cut_y_size += 1.0f;
 		//シーンカット
@@ -666,6 +734,21 @@ void GameScene::SceneDraw()
 		Tutorial_num = 3;
 	}
 
+
+	if (scene->GetScene() == 2)
+	{
+		Tutorial_num = 4;
+
+		if (player->GetPositionZ() > 65.0f)
+		{
+			Tutorial_num = 5;
+		}
+	}
+	if (scene->GetScene() == 3)
+	{
+		Tutorial_num = 6;
+	}
+
 	spriteChangeScene->SpriteTransVertexBuffer();
 	spriteChangeScene->Update();
 	spriteChangeScene->SpriteDraw();
@@ -673,6 +756,7 @@ void GameScene::SceneDraw()
 	if (player->GetColision() == false && scene->GetEdit() == false)camera->ColisionAfterCameraSet(player->GetMyPosition());
 
 	scene_ = scene->GetScene();
+	camera->SetOldScene(scene->OldScene());
 
 	// ４．描画コマンドここまで
 	collisionManager->CheckAllCollisions();

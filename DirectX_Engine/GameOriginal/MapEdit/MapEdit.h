@@ -41,8 +41,12 @@ public:
 	void MapSave(std::unique_ptr<MapEdit>& obj_);
 	//tｘtの情報をセット
 	void LoadSet(ID3D12GraphicsCommandList* cmdList);
+	//関数化
+	void MapSet(ID3D12GraphicsCommandList* cmdList, float x, std::istream&txt, std::list<std::unique_ptr<MapEdit>>& Objs);
 	//txtの情報を読み込む
 	void Loadtxt();
+
+	void ObjMapUpdate(std::list<std::unique_ptr<MapEdit>>& Objs,int sceneSet);
     //コリジョンボックス作成
 	void CreateCollisionBox();
 	//コリジョンボックスUpdate
@@ -92,6 +96,8 @@ public:
 
 	void SetTutorialGun(bool flag) { Tutorial_gun = flag; }
 
+	void SetScene(int scene_) { scene = scene_; }
+
 	//デバック用モデル
 	//スタート場所モデル
 	void SetRespawnModel(Model* model) { respawn_model = model; }
@@ -110,7 +116,13 @@ public:
 	//ファイル読み取り
 	std::stringstream MapCommands;
 
+	std::stringstream MapCommands2;
+
+	std::stringstream MapCommands3;
+
 private:
+
+	int scene = 0;
 
 	//オブジェクトの可変配列
 	std::list<std::unique_ptr<MapEdit>> Fences;
@@ -140,6 +152,9 @@ private:
 	//出力時のオブジェクト配列
 	std::list<std::unique_ptr<MapEdit>> mapObjs;
 
+	std::list<std::unique_ptr<MapEdit>> mapObjs2;
+
+	std::list<std::unique_ptr<MapEdit>> mapObjs3;
 	//リスポーン地点代入変数
 	XMFLOAT3 Respawn_position{};
 
