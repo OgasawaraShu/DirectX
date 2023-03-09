@@ -330,6 +330,8 @@ void FbxLoader::ParseMeshFaces(Model* model, FbxMesh* fbxMesh)
                     {
                         vertex.uv.x = (float)uvs[0];
                         vertex.uv.y = (float)uvs[1];
+                   
+             
                     }
                 }
 

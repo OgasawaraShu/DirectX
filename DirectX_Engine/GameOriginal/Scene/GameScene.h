@@ -179,11 +179,14 @@ private://ポインタ
 	Model* model29 = nullptr;
 	Model* model30 = nullptr;
 	Model* model31 = nullptr;
-
+	Model* model32 = nullptr;
+	Model* model33 = nullptr;
+	Model* model34 = nullptr;
 	//オブジェクト
 	BulletFbx* redBullet = nullptr;
 	BulletFbx* blueBullet = nullptr;
 	PlayerFbx* player = nullptr;
+	Fbx3d* playerBlue = nullptr;
 	PortalExit* redExit = nullptr;
 	PortalExit* blueExit = nullptr;
 	Fbx3d* fbx3d34 = nullptr;

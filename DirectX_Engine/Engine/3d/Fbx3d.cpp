@@ -363,10 +363,8 @@ void Fbx3d::PortalCreateGraphicsPipeline()
 
 }
 
-void Fbx3d::DrawPortalWindow(ID3D12GraphicsCommandList* cmdList, XMMATRIX matWorld2)
+void Fbx3d::DrawPortalWindowBlue(ID3D12GraphicsCommandList* cmdList)
 {
-	//行列の更新
-	matWorld = matWorld2;
 	//ビュープロジェクション行列
 	const XMMATRIX& matViewProjection =
 		bluecamera->GetViewProjectionMatrix();
@@ -441,39 +439,67 @@ void Fbx3d::DrawPortalWindow(ID3D12GraphicsCommandList* cmdList, XMMATRIX matWor
 		constBuffSkin->GetGPUVirtualAddress());
 
 	// ライトの描画
-	//lightGroup->Draw(cmdList, 3);
+	lightGroup->Draw(cmdList, 3);
 	//描画
 	model->Draw3(cmdList);
 
 }
 
-void Fbx3d::DrawPortalWindowRed(ID3D12GraphicsCommandList* cmdList, XMMATRIX matWorld2)
+void Fbx3d::DrawPortalWindow(int Select)
 {
 	//行列の更新
-	matWorld = matWorld2;
-
-
-	//ビュープロジェクション行列
-	const XMMATRIX& matViewProjection =
-		redcamera->GetViewProjectionMatrix();
-	//メッシュtランスフォーム
-	const XMMATRIX& modelTransform = model->GetModelTransform();
-	//カメラ座標
-	const XMFLOAT3& cameraPos = redcamera->GetEye();
-
+	UpdateWorldMatix();
 	HRESULT result;
 
-	//定数バッファへ転送
-
-	ConstBufferDataTransform* constMap = nullptr;
-	result = constBuffTransform->Map(0, nullptr, (void**)&constMap);
-	if (SUCCEEDED(result))
+	if (Select == 1)
 	{
-		constMap->viewproj = matViewProjection;
-		constMap->world = modelTransform * matWorld;
-		constMap->cameraPos = cameraPos;
-		constBuffTransform->Unmap(0, nullptr);
+		//ビュープロジェクション行列
+		const XMMATRIX& matViewProjection =
+			redcamera->GetViewProjectionMatrix();
+		//メッシュtランスフォーム
+		const XMMATRIX& modelTransform = model->GetModelTransform();
+		//カメラ座標
+		const XMFLOAT3& cameraPos = redcamera->GetEye();
+
+		
+		//定数バッファへ転送
+
+		ConstBufferDataTransform* constMap = nullptr;
+		result = constBuffTransform->Map(0, nullptr, (void**)&constMap);
+		if (SUCCEEDED(result))
+		{
+			constMap->viewproj = matViewProjection;
+			constMap->world = modelTransform * matWorld;
+			constMap->cameraPos = cameraPos;
+			constBuffTransform->Unmap(0, nullptr);
+		}
 	}
+	else if (Select == 2)
+	{
+		//ビュープロジェクション行列
+		const XMMATRIX& matViewProjection =
+			bluecamera->GetViewProjectionMatrix();
+		//メッシュtランスフォーム
+		const XMMATRIX& modelTransform = model->GetModelTransform();
+		//カメラ座標
+		const XMFLOAT3& cameraPos = bluecamera->GetEye();
+
+
+		//定数バッファへ転送
+
+		ConstBufferDataTransform* constMap = nullptr;
+		result = constBuffTransform->Map(0, nullptr, (void**)&constMap);
+		if (SUCCEEDED(result))
+		{
+			constMap->viewproj = matViewProjection;
+			constMap->world = modelTransform * matWorld;
+			constMap->cameraPos = cameraPos;
+			constBuffTransform->Unmap(0, nullptr);
+		}
+	}
+
+
+
 
 	//アニメーション
 	if (isPlay) {
@@ -505,30 +531,106 @@ void Fbx3d::DrawPortalWindowRed(ID3D12GraphicsCommandList* cmdList, XMMATRIX mat
 		constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
 	}
 	constBuffSkin->Unmap(0, nullptr);
+}
 
-	//割り当てなければやらない
-	if (model == nullptr) {
-		return;
+void Fbx3d::DrawPortalWindowMove(XMFLOAT3 pos_, XMFLOAT3 rotate_,int Select)
+{
+
+	XMMATRIX matScale, matRot, matTrans;
+
+	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
+	matRot = XMMatrixIdentity();
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+
+	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+
+	matWorld = XMMatrixIdentity();
+	matWorld *= matScale;
+	matWorld *= matRot;
+	HRESULT result;
+
+	if (Select == 1)
+	{
+		//ビュープロジェクション行列
+		const XMMATRIX& matViewProjection =
+			redcamera->GetViewProjectionMatrix();
+		//メッシュtランスフォーム
+		const XMMATRIX& modelTransform = model->GetModelTransform();
+		//カメラ座標
+		const XMFLOAT3& cameraPos = redcamera->GetEye();
+
+
+
+		//定数バッファへ転送
+
+		ConstBufferDataTransform* constMap = nullptr;
+		result = constBuffTransform->Map(0, nullptr, (void**)&constMap);
+		if (SUCCEEDED(result))
+		{
+			constMap->viewproj = matViewProjection;
+			constMap->world = modelTransform * matWorld;
+			constMap->cameraPos = cameraPos;
+			constBuffTransform->Unmap(0, nullptr);
+		}
+	}
+	else if (Select == 2)
+	{
+		//ビュープロジェクション行列
+		const XMMATRIX& matViewProjection =
+			bluecamera->GetViewProjectionMatrix();
+		//メッシュtランスフォーム
+		const XMMATRIX& modelTransform = model->GetModelTransform();
+		//カメラ座標
+		const XMFLOAT3& cameraPos = bluecamera->GetEye();
+
+
+
+		//定数バッファへ転送
+
+		ConstBufferDataTransform* constMap = nullptr;
+		result = constBuffTransform->Map(0, nullptr, (void**)&constMap);
+		if (SUCCEEDED(result))
+		{
+			constMap->viewproj = matViewProjection;
+			constMap->world = modelTransform * matWorld;
+			constMap->cameraPos = cameraPos;
+			constBuffTransform->Unmap(0, nullptr);
+		}
 	}
 
-	//パイプラインステート
-	cmdList->SetPipelineState(pipelinestate.Get());
-	//ルートシグネチャ
-	cmdList->SetGraphicsRootSignature(rootsignature.Get());
-	//プリミティブ
-	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	cmdList->SetGraphicsRootConstantBufferView(0,
-		constBuffTransform->GetGPUVirtualAddress());
+	//アニメーション
+	if (isPlay) {
+		//1フレーム進める
+		currentTime += frameTime;
 
-	//定数バッファビュー
-	cmdList->SetGraphicsRootConstantBufferView(2,
-		constBuffSkin->GetGPUVirtualAddress());
+		//最後まで行ったら先頭に戻す
+		if (currentTime > endTime) {
+			currentTime = startTime;
+		}
 
-	// ライトの描画
-	//lightGroup->Draw(cmdList, 3);
-	//描画
-	model->Draw3(cmdList);
+	}
+
+
+
+	std::vector<Model::Bone>& bones = model->GetBones();
+
+	ConstBufferDataSkin* constMapSkin = nullptr;
+	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
+	for (int i = 0; i < bones.size(); i++)
+	{
+		XMMATRIX matCurrentPose;
+
+		FbxAMatrix fbxCurrentPose =
+			bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
+
+		FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+
+		constMapSkin->bones[i] = bones[i].invInitialPose * matCurrentPose;
+	}
+	constBuffSkin->Unmap(0, nullptr);
 }
 
 

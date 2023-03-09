@@ -996,75 +996,24 @@ void MapEdit::LoadSet(ID3D12GraphicsCommandList* cmdList)
 
 	if (scene == 2)
 	{
-		MapSet(cmdList, 400, MapCommands2, mapObjs2);
+		MapSet(cmdList, 400, MapCommands2, mapObjs2, mapObjs_red,mapObjs_blue);
 	}
 
 	//落ち着いたらここは関数化してcodeを短くするべき
 	if (scene != 1)
 	{
-		MapSet(cmdList, 0, MapCommands, mapObjs);
+		MapSet(cmdList, 0, MapCommands, mapObjs, mapObjs_red, mapObjs_blue);
 	}
 
 	if (scene == 3)
 	{
-		MapSet(cmdList, 800, MapCommands3, mapObjs3);
+		MapSet(cmdList, 800, MapCommands3, mapObjs3, mapObjs_red, mapObjs_blue);
 	}
 	
 
-	//txtから読み込んだ情報をもとに更新、録画
-	for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs) {
-		//mapObj_->Update();
-		
-		if (mapObj_->GetFbxmodelType() != 6 && mapObj_->GetFbxmodelType() != 7&&scene!=2)
-		{
-			mapObj_->Update();
-		}
-		else if (mapObj_->GetFbxmodelType() == 6)
-		{
-			//必要な情報をセットしていく
-			mapObj_->SetMyPosition(MyPosition);
-			mapObj_->SetCameraAxisZ(CammeraZAxis);
-			mapObj_->SetTarget(Target);
-
-			mapObj_->SetShotBlue(Shot);
-			mapObj_->SetShotRed(Shot2);
-			mapObj_->SetWark(wark);
-
-			mapObj_->SetTutorial(Tutorial);
-
-			//Gunを持った時のチュートリアルフラグ
-			Tutorial_gun = mapObj_->GetTutorialGun();
-			//Gunを持ったかのフラグを代入
-			Cursor_on = mapObj_->Getgetobj();
-
-			if (Cursor_on == true)
-			{
-				mapObj_->SetVerSPHEREOBJ();
-			}
-
-			mapObj_->ObjUpdate(0, 0);
-		}
-		else if (mapObj_->GetFbxmodelType() == 7&&scene!=2)
-		{
-			//必要な情報をセットしていく
-			mapObj_->SetMyPosition(MyPosition);
-			mapObj_->SetCameraAxisZ(CammeraZAxis);
-			mapObj_->SetTarget(Target);
-
-			mapObj_->SetTutorial(Tutorial);
-
-			mapObj_->BoxObjUpdate(0, 0);
-		}
-	}
-
-	int sceneSecond = 2;
-	int sceneThree = 3;
-	ObjMapUpdate(mapObjs2, sceneSecond);
-
-	ObjMapUpdate(mapObjs3, sceneThree);
 }
 
-void MapEdit::MapSet(ID3D12GraphicsCommandList* cmdList, float x, std::istream&txt, std::list<std::unique_ptr<MapEdit>>&  Objs)
+void MapEdit::MapSet(ID3D12GraphicsCommandList* cmdList, float x, std::istream&txt, std::list<std::unique_ptr<MapEdit>>&  Objs, std::list<std::unique_ptr<MapEdit>>& Objs_red, std::list<std::unique_ptr<MapEdit>>& Objs_blue)
 {
 	//１行分の文字列を入れる変数
 	std::string line;
@@ -1177,8 +1126,12 @@ void MapEdit::MapSet(ID3D12GraphicsCommandList* cmdList, float x, std::istream&t
 			if (type != 0)
 			{
 				std::unique_ptr<MapEdit>mapObj = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+				std::unique_ptr<MapEdit>mapObj_red = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+				std::unique_ptr<MapEdit>mapObj_blue = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
 				//初期化
 				mapObj->Initialize();
+				mapObj_red->Initialize();
+				mapObj_blue->Initialize();
 				//type1ならフェンスモデルをセット
 				if (type == 1)
 				{
@@ -1285,9 +1238,152 @@ void MapEdit::MapSet(ID3D12GraphicsCommandList* cmdList, float x, std::istream&t
 					mapObj->SetVerBlock();
 
 				}
+
+
+
+				//赤
+				//type1ならフェンスモデルをセット
+				if (type == 1)
+				{
+					//ここでモデルの形状をセット
+					mapObj_red->SetModel(fence_model);
+					//モデルを指定
+					mapObj_red->SetFbxmodelType(Fence_model_num);
+				}
+				else if (type == 2)
+				{
+					//ここでモデルの形状をセット
+					mapObj_red->SetModel(wall_model);
+					//モデルを指定
+					mapObj_red->SetFbxmodelType(Wall_model_num);
+				}
+				else if (type == 3)
+				{
+					//ここでモデルの形状をセット
+					mapObj_red->SetModel(floor_model);
+					//モデルを指定
+					mapObj_red->SetFbxmodelType(Floor_model_num);
+				}
+				else if (type == 4)
+				{
+					//ここでモデルの形状をセット
+					mapObj_red->SetModel(drum_model);
+					//モデルを指定
+					mapObj_red->SetFbxmodelType(Drum_model_num);
+				}
+				else if (type == 5)
+				{
+					//ここでモデルの形状をセット
+					mapObj_red->SetModel(exit_model);
+					//モデルを指定
+					mapObj_red->SetFbxmodelType(Exit_model_num);
+				}
+				else if (type == 6)
+				{
+					//ここでモデルの形状をセット
+					mapObj_red->SetModel(gun_model);
+					//モデルを指定
+					mapObj_red->SetFbxmodelType(Gun_model_num);
+				}
+				else if (type == 7)
+				{
+					//ここでモデルの形状をセット
+					mapObj_red->SetModel(box_model);
+					//モデルを指定
+					mapObj_red->SetFbxmodelType(Box_model_num);
+				}
+				else if (type == 8)
+				{
+					//ここでモデルの形状をセット
+					mapObj_red->SetModel(block_model);
+					//モデルを指定
+					mapObj_red->SetFbxmodelType(Block_model_num);
+				}
+
+
+				//座標をセット
+				mapObj_red->SetPosition(pos);
+				//スケールをセット
+				mapObj_red->SetScale(scale);
+				//回転をセット
+				mapObj_red->SetRotate(rotate);
+				//colisionsize登録
+				mapObj_red->SetColisionSize(ColisionSize);
+
+				//青
+				//type1ならフェンスモデルをセット
+				if (type == 1)
+				{
+					//ここでモデルの形状をセット
+					mapObj_blue->SetModel(fence_model);
+					//モデルを指定
+					mapObj_blue->SetFbxmodelType(Fence_model_num);
+				}
+				else if (type == 2)
+				{
+					//ここでモデルの形状をセット
+					mapObj_blue->SetModel(wall_model);
+					//モデルを指定
+					mapObj_blue->SetFbxmodelType(Wall_model_num);
+				}
+				else if (type == 3)
+				{
+					//ここでモデルの形状をセット
+					mapObj_blue->SetModel(floor_model);
+					//モデルを指定
+					mapObj_blue->SetFbxmodelType(Floor_model_num);
+				}
+				else if (type == 4)
+				{
+					//ここでモデルの形状をセット
+					mapObj_blue->SetModel(drum_model);
+					//モデルを指定
+					mapObj_blue->SetFbxmodelType(Drum_model_num);
+				}
+				else if (type == 5)
+				{
+					//ここでモデルの形状をセット
+					mapObj_blue->SetModel(exit_model);
+					//モデルを指定
+					mapObj_blue->SetFbxmodelType(Exit_model_num);
+				}
+				else if (type == 6)
+				{
+					//ここでモデルの形状をセット
+					mapObj_blue->SetModel(gun_model);
+					//モデルを指定
+					mapObj_blue->SetFbxmodelType(Gun_model_num);
+				}
+				else if (type == 7)
+				{
+					//ここでモデルの形状をセット
+					mapObj_blue->SetModel(box_model);
+					//モデルを指定
+					mapObj_blue->SetFbxmodelType(Box_model_num);
+				}
+				else if (type == 8)
+				{
+					//ここでモデルの形状をセット
+					mapObj_blue->SetModel(block_model);
+					//モデルを指定
+					mapObj_blue->SetFbxmodelType(Block_model_num);
+				}
+
+
+				//座標をセット
+				mapObj_blue->SetPosition(pos);
+				//スケールをセット
+				mapObj_blue->SetScale(scale);
+				//回転をセット
+				mapObj_blue->SetRotate(rotate);
+				//colisionsize登録
+				mapObj_blue->SetColisionSize(ColisionSize);
+			
 				//作るのに必要な情報が揃ったので登録
 				//登録
 				Objs.push_back(std::move(mapObj));
+				Objs_red.push_back(std::move(mapObj_red));
+				Objs_blue.push_back(std::move(mapObj_blue));
 			}
 			else
 			{
@@ -1343,6 +1439,7 @@ void MapEdit::ObjMapUpdate(std::list<std::unique_ptr<MapEdit>>& Objs, int sceneS
 	for (std::unique_ptr<MapEdit>& mapObj_ : Objs) {
 		if (mapObj_->GetFbxmodelType() != 6 && mapObj_->GetFbxmodelType() != 7 && scene == sceneSet)
 		{
+			
 			mapObj_->Update();
 		}
 		else if (mapObj_->GetFbxmodelType() == 6)
@@ -2046,4 +2143,121 @@ void MapEdit::MapEditDraw(ID3D12GraphicsCommandList* cmdList)
 			mapObj_->Draw2(cmdList);
 		}
 	}
+}
+
+void MapEdit::RedCameraObjUpdate(ID3D12GraphicsCommandList* cmdList)
+{
+
+	XMFLOAT3 Gun_pos{};
+	XMFLOAT3 Gun_rotate{};
+	for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs) {
+		if (mapObj_->GetFbxmodelType() == 6)
+		{
+			Gun_pos=mapObj_->GetPosition();
+			Gun_rotate = mapObj_->GetRotation();
+		}
+	}
+
+
+	int Red_camera_select = 1;
+
+	//txtから読み込んだ情報をもとに更新、録画
+	for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs_red) {
+
+		if (mapObj_->GetFbxmodelType() == 6)
+		{
+			mapObj_->DrawPortalWindowMove(Gun_pos,Gun_rotate, Red_camera_select);
+		}
+		else
+		{
+			mapObj_->DrawPortalWindow(Red_camera_select);
+		}
+		mapObj_->Draw2(cmdList);
+	}
+
+}
+
+void MapEdit::BlueCameraObjUpdate(ID3D12GraphicsCommandList* cmdList)
+{
+	XMFLOAT3 Gun_pos{};
+	XMFLOAT3 Gun_rotate{};
+	for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs) {
+		if (mapObj_->GetFbxmodelType() == 6)
+		{
+			Gun_pos = mapObj_->GetPosition();
+			Gun_rotate = mapObj_->GetRotation();
+		}
+	}
+
+
+	int Blue_camera_select = 2;
+
+	//txtから読み込んだ情報をもとに更新、録画
+	for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs_blue) {
+
+		if (mapObj_->GetFbxmodelType() == 6)
+		{
+			mapObj_->DrawPortalWindowMove(Gun_pos, Gun_rotate, Blue_camera_select);
+		}
+		else
+		{
+			mapObj_->DrawPortalWindow(Blue_camera_select);
+		}
+		mapObj_->Draw2(cmdList);
+	}
+}
+
+
+void MapEdit::MapObjUpdate()
+{
+
+	//txtから読み込んだ情報をもとに更新、録画
+	for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs) {
+		//mapObj_->Update();
+
+		if (mapObj_->GetFbxmodelType() != 6 && mapObj_->GetFbxmodelType() != 7 && scene != 2)
+		{
+			mapObj_->Update();
+		}
+		else if (mapObj_->GetFbxmodelType() == 6)
+		{
+			//必要な情報をセットしていく
+			mapObj_->SetMyPosition(MyPosition);
+			mapObj_->SetCameraAxisZ(CammeraZAxis);
+			mapObj_->SetTarget(Target);
+
+			mapObj_->SetShotBlue(Shot);
+			mapObj_->SetShotRed(Shot2);
+			mapObj_->SetWark(wark);
+
+			mapObj_->SetTutorial(Tutorial);
+
+			//Gunを持った時のチュートリアルフラグ
+			Tutorial_gun = mapObj_->GetTutorialGun();
+			//Gunを持ったかのフラグを代入
+			Cursor_on = mapObj_->Getgetobj();
+
+			if (Cursor_on == true)
+			{
+				mapObj_->SetVerSPHEREOBJ();
+			}
+
+			mapObj_->ObjUpdate(0, 0);
+		}
+		else if (mapObj_->GetFbxmodelType() == 7 && scene != 2)
+		{
+			//必要な情報をセットしていく
+			mapObj_->SetMyPosition(MyPosition);
+			mapObj_->SetCameraAxisZ(CammeraZAxis);
+			mapObj_->SetTarget(Target);
+			mapObj_->SetTutorial(Tutorial);
+
+			mapObj_->BoxObjUpdate(0, 0);
+		}
+	}
+
+	int sceneSecond = 2;
+	int sceneThree = 3;
+	ObjMapUpdate(mapObjs2, sceneSecond);
+	ObjMapUpdate(mapObjs3, sceneThree);
 }

@@ -1,9 +1,5 @@
 #include "PortalExit.h"
-#include "../../Engine/Collision/CollisionManager.h"
-#include "../../Engine/Collision/BaseCollider.h"
-#include "../../Engine/Collision/CollisionAttribute.h"
 #include <d3dcompiler.h>
-#include "../../Engine/Collision/Collision.h"
 
 #pragma comment(lib,"d3dcompiler.lib")
 
@@ -12,14 +8,14 @@ using namespace DirectX;
 
 
 PortalExit::PortalExit(Input* input)
-	:Fbx3d(input)
+	:RenderTexture(input)
 {
 	assert(input);
 
 	this->input = input;
 }
 
-void PortalExit::ExitUpdate(float angleX, float angleY)
+void PortalExit::ExitUpdate(float angleX, float angleY, float colorPattern)
 {
 	XMMATRIX matScale, matRot, matTrans;
 
@@ -40,7 +36,7 @@ void PortalExit::ExitUpdate(float angleX, float angleY)
 	AddMatrixUpdate(angleX, angleY, matRot);
 
 	//Matrix後更新
-	PostMatrixUpdate(matScale, matRot, matTrans);
+	PostMatrixUpdate(matScale, matRot, matTrans, colorPattern);
 
 	
 }
@@ -124,7 +120,7 @@ void PortalExit::AddMatrixUpdate(float angleX, float angleY, XMMATRIX matRot)
 	a = matRot2;
 }
 
-void PortalExit::PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTrans)
+void PortalExit::PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTrans, float colorPattern)
 {
 	matWorld = XMMatrixIdentity();
 	matWorld *= matScale;
@@ -151,6 +147,9 @@ void PortalExit::PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX m
 		constMap->viewproj = matViewProjection;
 		constMap->world = modelTransform * matWorld;
 		constMap->cameraPos = cameraPos;
+		constMap->scale += 0.004f;
+		constMap->Color = colorPattern;
+		constMap->Flag = PortalFlag;
 		constBuffTransform->Unmap(0, nullptr);
 	}
 
@@ -183,10 +182,4 @@ void PortalExit::PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX m
 	}
 	constBuffSkin->Unmap(0, nullptr);
 
-
-
-	//当たり判定更新
-	if (collider) {
-		collider->Update();
-	}
 }

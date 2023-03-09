@@ -42,7 +42,7 @@ public:
 	//tｘtの情報をセット
 	void LoadSet(ID3D12GraphicsCommandList* cmdList);
 	//関数化
-	void MapSet(ID3D12GraphicsCommandList* cmdList, float x, std::istream&txt, std::list<std::unique_ptr<MapEdit>>& Objs);
+	void MapSet(ID3D12GraphicsCommandList* cmdList, float x, std::istream&txt, std::list<std::unique_ptr<MapEdit>>& Objs, std::list<std::unique_ptr<MapEdit>>& Objs_red , std::list<std::unique_ptr<MapEdit>>& Objs_blue);
 	//txtの情報を読み込む
 	void Loadtxt();
 
@@ -67,6 +67,12 @@ public:
 	void ArowCollision(std::unique_ptr<MapEdit>& obj_2,std::unique_ptr<MapEdit>& obj_, XMFLOAT2 mouse);
 	//描画
 	void MapEditDraw(ID3D12GraphicsCommandList* cmdList);
+
+	void RedCameraObjUpdate(ID3D12GraphicsCommandList* cmdList);
+
+	void BlueCameraObjUpdate(ID3D12GraphicsCommandList* cmdList);
+
+	void MapObjUpdate();
 
 	//モデルセット
 	//フェンスモデル
@@ -155,6 +161,11 @@ private:
 	std::list<std::unique_ptr<MapEdit>> mapObjs2;
 
 	std::list<std::unique_ptr<MapEdit>> mapObjs3;
+
+	std::list<std::unique_ptr<MapEdit>> mapObjs_red;
+
+	std::list<std::unique_ptr<MapEdit>> mapObjs_blue;
+
 	//リスポーン地点代入変数
 	XMFLOAT3 Respawn_position{};
 
@@ -239,6 +250,8 @@ private:
 
 	//portalgunを取ったかのフラグ
 	bool Cursor_on;
+
+	
 
 	//コリジョンサイズのモデル可視化フラグ
 	bool Colision_draw_flag = true;

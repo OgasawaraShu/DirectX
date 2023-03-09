@@ -211,6 +211,9 @@ void GameScene::ModelLoadInitialize()
 	model29 = FbxLoader::GetInstance()->LoadModelFromFile("GreenArow");
 	model30 = FbxLoader::GetInstance()->LoadModelFromFile("BlueArow");
 	model31 = FbxLoader::GetInstance()->LoadModelFromFile("BlockPortalBox");
+	model32 = FbxLoader::GetInstance()->LoadModelFromFile("Button");
+	model33 = FbxLoader::GetInstance()->LoadModelFromFile("taletto");
+	model34 = FbxLoader::GetInstance()->LoadModelFromFile("BlueWalk");
 }
 
 void GameScene::FbxInitialize()
@@ -220,6 +223,13 @@ void GameScene::FbxInitialize()
 	Fbx3d::SetBlueCamera(Bluecamera);
 	Fbx3d::SetRedCamera(Redcamera);
 	Fbx3d::CreateGraphicsPipeline();
+
+
+	PlayerFbx::SetRedCamera(Redcamera);
+
+    RenderTexture::SetDevice(dxCommon_->GetDev());
+	RenderTexture::SetCamera(camera);
+	RenderTexture::PortalCreateGraphicsPipeline();
 
 	//3Dオブジェクト生成とモデルのセット
 	blueBullet = new BulletFbx(input_);
@@ -233,7 +243,12 @@ void GameScene::FbxInitialize()
 
 	player = new PlayerFbx(input_, physics);
 	player->Initialize();
-	player->SetModel(model14);
+	player->SetModel(model34);
+
+
+	playerBlue = new Fbx3d(input_);
+	playerBlue->Initialize();
+	playerBlue->SetModel(model34);
 
 	redExit = new PortalExit(input_);
 	redExit->RenderFbxInitialize();
@@ -260,6 +275,8 @@ void GameScene::FbxInitialize()
 
 	blueBullet->SetPosition({ 0, 0, -20 });
 	player->SetPosition({ 0, 0, -20 });
+	player->SetRotate({ 0,0,0 });
+	player->SetScale({ 5,5,5 });
 
 	redExit->SetPosition({ 0,0,0 });
 	redExit->SetScale({ 0.1,0.1,0.1 });
@@ -294,6 +311,8 @@ void GameScene::FbxInitialize()
 	redBullet->SetVerBulletRed();
 	blueBullet->SetVerBulletBlue();
 	player->SetVer();
+	player->PlayAnimation2();
+	playerBlue->PlayAnimation2();
 }
 
 void GameScene::EditInitialize()
@@ -429,6 +448,12 @@ void GameScene::SceneUpdate()
 	player->GetmoveOld(camera->GetMove());
 	player->SetTutorial(scene->GetTutorial());
 
+	playerBlue->SetPosition(player->GetMyPosition());
+
+	playerBlue->SetRotate(player->GetRotation());
+	playerBlue->SetScale(player->GetScale());
+
+
 	//追加
 	player->CollisionAfter();
 
@@ -497,16 +522,27 @@ void GameScene::SceneUpdate()
 		player->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
 
 
+		bool PortalFlag = false;
+
+		if (redBullet->GetWarpFlag() == true && blueBullet->GetWarpFlag2() == true)
+		{
+			PortalFlag = true;
+		}
+		redExit->SetPortalFlag(PortalFlag);
+		blueExit->SetPortalFlag(PortalFlag);
 
 
 		sprintf_s(moji, "%d", 0);
 
-		redExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY());
-		blueExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY());
+		float RedPattern = 1;
+		float BluePattern = 2;
+
+		redExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY(), RedPattern);
+		blueExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY(), BluePattern);
 
 		//追加
 		input_->GetScene(scene->GetScene());
-		redExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY());
+		redExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY(), RedPattern);
 		fbx3d34->Update();
 		fbx3d36->Update();
 		camera->SetRedTeleport(player->GetredTeleport());
@@ -581,25 +617,32 @@ void GameScene::SceneDraw()
 	//FBX描画
 	redExit->RenPreDraw(dxCommon_->GetCmdList());
 
+	int Blue_camera_select = 2;
+	playerBlue->DrawPortalWindow(Blue_camera_select);
 
-	
-	if (redBullet->GetWarpFlag() == true && blueBullet->GetWarpFlag2() == true)
+
+
+	if (redBullet->GetWarpFlag() == true)
 	{
-		//mapedit->MapEditDraw(dxCommon_->GetCmdList());
+		playerBlue->Draw2(dxCommon_->GetCmdList());
+		mapedit->BlueCameraObjUpdate(dxCommon_->GetCmdList());
 	}
-	else
+	
+
+
+	if (redBullet->GetWarpFlag() == false || blueBullet->GetWarpFlag2() == false)
 	{
 		portaltime = 0;
 	}
-	
 
 	redExit->RenPostDraw(dxCommon_->GetCmdList());
 
 	blueExit->RenPreDraw2(dxCommon_->GetCmdList());
 	
-	if (redBullet->GetWarpFlag() == true && blueBullet->GetWarpFlag2() == true)
+	if (blueBullet->GetWarpFlag2() == true)
 	{
-	//	mapedit->MapEditDraw(dxCommon_->GetCmdList());
+		player->Draw2(dxCommon_->GetCmdList());
+		mapedit->RedCameraObjUpdate(dxCommon_->GetCmdList());
 	}
 	
 	blueExit->RenPostDraw2(dxCommon_->GetCmdList());
@@ -644,8 +687,11 @@ void GameScene::SceneDraw()
 			redExit->RenderFbxDraw(dxCommon_->GetCmdList());
 			blueExit->RenderFbxDraw2(dxCommon_->GetCmdList());
 			mapedit->LoadSet(dxCommon_->GetCmdList());
+			mapedit->MapObjUpdate();
 			mapedit->MapEditDraw(dxCommon_->GetCmdList());
 		}
+
+		
 		fbx3d34->Draw2(dxCommon_->GetCmdList());
 		fbx3d36->Draw2(dxCommon_->GetCmdList());
 	}
@@ -669,11 +715,11 @@ void GameScene::SceneDraw()
 
 	////スプライト共通コマンド
 	spriteCommon->PreDraw();
-	   debugtext->Print(moji2, 100, 100);
-	    debugtext->DrawAll();//的カウント
-//
-  //     debugtext2->Print(moji2, 100, 200);
-  //     debugtext2->DrawAll();//的カウント
+//	  debugtext->Print(moji2, 100, 100);
+//    debugtext->DrawAll();//的カウント
+
+//    debugtext2->Print(moji2, 100, 200);
+//    debugtext2->DrawAll();//的カウント
 
 
 		//スプライト表示

@@ -3,6 +3,9 @@ cbuffer cbuff0:register(b0)
 	matrix viewproj;
 	matrix world;
 	float3 cameraPos;
+	float scale;
+	float Color;
+	bool Flag;
 };
 
 struct VSInput

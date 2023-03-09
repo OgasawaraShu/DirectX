@@ -264,11 +264,11 @@ void PlayerFbx::PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX ma
 
 //ビュープロジェクション行列
 	const XMMATRIX& matViewProjection =
-		camera->GetViewProjectionMatrix();
+		redcamera->GetViewProjectionMatrix();
 	//メッシュtランスフォーム
 	const XMMATRIX& modelTransform = model->GetModelTransform();
 	//カメラ座標
-	const XMFLOAT3& cameraPos = camera->GetEye();
+	const XMFLOAT3& cameraPos = redcamera->GetEye();
 
 	HRESULT result;
 

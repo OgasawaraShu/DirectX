@@ -1,22 +1,22 @@
 #pragma once
-#include "../../Engine/3d/Fbx3d.h"
+#include "../../Engine/3d/RenderTexture.h"
 #include "../../Engine/Input/Input.h"
 
 class PortalExit:
-	public Fbx3d
+	public RenderTexture
 {
 
 public:
 	//ポインタ
 	PortalExit(Input* input);
 	//更新
-    void ExitUpdate(float angleX, float angleY);
+    void ExitUpdate(float angleX, float angleY,float colorPattern);
 	//広げる処理
 	void OriginalUpdate(float angleX, float angleY);
 	//追加の回転処理
 	void AddMatrixUpdate(float angleX, float angleY, XMMATRIX matRot);
 	//matrix処理
-	void PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTrans);
+	void PostMatrixUpdate(XMMATRIX matScale, XMMATRIX matRot, XMMATRIX matTrans, float colorPattern);
 
 	//Getter,Setter
 	//弾の当たった位置をセット
@@ -33,6 +33,8 @@ public:
 	XMMATRIX GetRot() { return a; }
 	//球のポジションをもらう
 	void SetMyposition(XMFLOAT3 pos_) { MyPosition = pos_; }
+
+	void SetPortalFlag(bool flag) { PortalFlag = flag; }
 private:
 	//クラスのポインタ
 	Input* input;//入力クラス
@@ -46,5 +48,7 @@ private:
 	XMFLOAT3 ScaleExit;
 	//
 	XMMATRIX a;
+
+	bool PortalFlag = false;
 };
 
