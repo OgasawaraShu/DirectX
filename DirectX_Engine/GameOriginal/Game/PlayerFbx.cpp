@@ -114,6 +114,13 @@ void PlayerFbx::PlayerUpdate(float angleX, float angleY)
 	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
 	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
 	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+
+	if (input->PushKey(DIK_B))
+	{
+		if (Tutorial_time < 180)Tutorial_time += 1;
+	}
+
+
 	//•½sˆÚ“®
 	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 

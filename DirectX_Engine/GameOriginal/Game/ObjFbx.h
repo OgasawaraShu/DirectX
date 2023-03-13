@@ -47,6 +47,8 @@ public:
     void SetTutorial(bool Flag) { Tutorial = Flag; }
 
     bool GetTutorialGun() { return Tutorial_gun; }
+
+    float GetRotationY() { return rotation.y; }
 protected:
     //クラスのポインタ
     Input* input;//入力クラス

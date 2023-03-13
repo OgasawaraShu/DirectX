@@ -300,7 +300,7 @@ void GameScene::FbxInitialize()
 
 	collisionManager = CollisionManager::GetInstance();
 
-	float radius = 7.0f;
+	float radius = 4.0f;
 	float PlayerRadius = 1.0f;
 
 	redBullet->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
@@ -391,6 +391,8 @@ void GameScene::SceneUpdate()
 	mapedit->SetWark(player->GetWark());
 	mapedit->SetTutorial(scene->GetTutorial_2());
 
+	redExit->SetRotateFlag(redBullet->GetCollisionFbxFlag());
+	blueExit->SetRotateFlag(blueBullet->GetCollisionFbxFlag());
 	redExit->GetFlag(redBullet->GetWarpFlag());
 	redExit->GetExitPosition(redBullet->GetPosition());
 	blueExit->GetFlag(blueBullet->GetWarpFlag2());
@@ -438,6 +440,7 @@ void GameScene::SceneUpdate()
 	//sprintf_s(moji2, "%f", camera->GetPositionX());
 
 	//player‚ÌƒZƒbƒg
+	
 	player->SetMemo(blueBullet->GetMemo());
 	player->SetWorld(camera->GetRot());
 	player->SetMemo2(redBullet->GetMemo2());
@@ -688,6 +691,7 @@ void GameScene::SceneDraw()
 			blueExit->RenderFbxDraw2(dxCommon_->GetCmdList());
 			mapedit->LoadSet(dxCommon_->GetCmdList());
 			mapedit->MapObjUpdate();
+			player->SetRotationY(mapedit->GetRotationY());
 			mapedit->MapEditDraw(dxCommon_->GetCmdList());
 		}
 

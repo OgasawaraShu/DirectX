@@ -1459,8 +1459,8 @@ void MapEdit::ObjMapUpdate(std::list<std::unique_ptr<MapEdit>>& Objs, int sceneS
 			Tutorial_gun = mapObj_->GetTutorialGun();
 			//Gun‚ðŽ‚Á‚½‚©‚Ìƒtƒ‰ƒO‚ð‘ã“ü
 			Cursor_on = mapObj_->Getgetobj();
-
-
+			//’Ž‹“_‚ÌŽæ“¾
+			rotation.y = mapObj_->GetRotationY();
 			if (Cursor_on == true)
 			{
 				mapObj_->SetVerSPHEREOBJ();

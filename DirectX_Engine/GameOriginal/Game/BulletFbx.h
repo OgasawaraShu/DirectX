@@ -63,6 +63,8 @@ public://ä÷êî
 	bool GetShot() { return ShotFlag; }
 	bool GetShot2() { return ShotFlag2; }
 
+	int GetCollisionFbxFlag() { return Collision_fbx_flag; }
+
 	XMFLOAT2 GetMemoR() { return memoR; }
 	XMFLOAT2 GetMemoB() { return memoB; }
 
@@ -109,6 +111,9 @@ private://ïœêî
 
 
 	bool BlueAttack = false;
+
+	int Collision_fbx_flag;
+
 	float oldx2;
 
 	float oldy2;

@@ -59,27 +59,31 @@ void PortalExit::OriginalUpdate(float angleX, float angleY)
 			ScaleExit.z += 0.003;
 
 
-			
-			if (position.x <= -70)
-			{
-				rotation.y = 270;
-			}
-			else if (position.x >= 70)
+			if (Rotate_exit_flag == 1)
 			{
 				rotation.y = 90;
 			}
-
-			//‚±‚±‚ÍŠO˜g
-			if (MyPosition.z < position.z)
+			else if (Rotate_exit_flag == 2)
+			{
+				rotation.y = 270;
+			}
+			else if (Rotate_exit_flag == 3)
 			{
 				rotation.y = 0;
 			}
-			else
+			else if (Rotate_exit_flag == 4)
 			{
 				rotation.y = 180;
 			}
-
-			//‚±‚±‚ÉŒÂ•Ê‚ÌOBJ‚É“–‚½‚Á‚½Žž‚Ì¶‰E‚Ì‰ñ“]‚·‚é
+			else if (Rotate_exit_flag == 5)
+			{
+				rotation.x = 90;
+			}
+			else if (Rotate_exit_flag == 6)
+			{
+				rotation.x = 270;
+			}
+	
 		}
 
 		

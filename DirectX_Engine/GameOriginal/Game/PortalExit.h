@@ -35,6 +35,8 @@ public:
 	void SetMyposition(XMFLOAT3 pos_) { MyPosition = pos_; }
 
 	void SetPortalFlag(bool flag) { PortalFlag = flag; }
+
+	void SetRotateFlag(int flag) { Rotate_exit_flag = flag; }
 private:
 	//クラスのポインタ
 	Input* input;//入力クラス
@@ -50,5 +52,7 @@ private:
 	XMMATRIX a;
 
 	bool PortalFlag = false;
+
+	int Rotate_exit_flag;
 };
 

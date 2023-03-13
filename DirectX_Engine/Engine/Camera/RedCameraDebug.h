@@ -28,9 +28,13 @@ public:
 
 	void SetRot(XMMATRIX a) { matRotPortal = a; }
 
+	void SetAngle(XMFLOAT2 angle_) { angle = angle_; }
+
 	XMFLOAT3 GetPos() { return eye; }
 
 	XMMATRIX GetRot() { return matRot; }
+
+
 private:
 	// ÉJÉÅÉâíçéãì_Ç‹Ç≈ÇÃãóó£
 	float distance = 20;
@@ -41,6 +45,7 @@ private:
 	XMMATRIX matRot = DirectX::XMMatrixIdentity();
 	XMMATRIX matRotPortal;
 
+	XMFLOAT2 angle;
 	XMFLOAT3 eye_;
 };
 

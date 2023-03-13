@@ -60,6 +60,44 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 		{
 			if (info.collider->attribute != 64&& info.collider->attribute != 512)
 			{
+				XMFLOAT3 Collision_fbx_pos_min;
+				XMFLOAT3 Collision_fbx_pos_max;
+
+				Collision_fbx_pos_min = info.fbx->GetPosition();
+				Collision_fbx_pos_min.x = Collision_fbx_pos_min.x - info.fbx->GetColision_x();
+				Collision_fbx_pos_min.y = Collision_fbx_pos_min.y - info.fbx->GetColision_y();
+				Collision_fbx_pos_min.z = Collision_fbx_pos_min.z - info.fbx->GetColision_z();
+
+				Collision_fbx_pos_max = info.fbx->GetPosition();
+				Collision_fbx_pos_max.x = Collision_fbx_pos_max.x + info.fbx->GetColision_x();
+				Collision_fbx_pos_max.y = Collision_fbx_pos_max.y + info.fbx->GetColision_y();
+				Collision_fbx_pos_max.z = Collision_fbx_pos_max.z + info.fbx->GetColision_z();
+
+				if (position.x < Collision_fbx_pos_min.x)
+				{
+					Collision_fbx_flag = 1;
+				}
+				else if (position.x > Collision_fbx_pos_max.x)
+				{
+					Collision_fbx_flag = 2;
+				}
+				else if (position.z < Collision_fbx_pos_min.z)
+				{
+					Collision_fbx_flag = 3;
+				}
+				else if (position.z > Collision_fbx_pos_max.z)
+				{
+					Collision_fbx_flag = 4;
+				}
+				else if (position.y < Collision_fbx_pos_min.y)
+				{
+					Collision_fbx_flag = 5;
+				}
+				else if (position.y > Collision_fbx_pos_max.y)
+				{
+					Collision_fbx_flag = 6;
+				}
+
 				//TriggerFlag = 0;
 				debug = 1;
 				BlueCollision = true;
@@ -79,6 +117,44 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 		{
 			if (info.collider->attribute != 64 && info.collider->attribute != 512)
 			{
+				XMFLOAT3 Collision_fbx_pos_min;
+				XMFLOAT3 Collision_fbx_pos_max;
+		
+				Collision_fbx_pos_min = info.fbx->GetPosition();
+				Collision_fbx_pos_min.x = Collision_fbx_pos_min.x - info.fbx->GetColision_x();
+				Collision_fbx_pos_min.y = Collision_fbx_pos_min.y - info.fbx->GetColision_y();
+				Collision_fbx_pos_min.z = Collision_fbx_pos_min.z - info.fbx->GetColision_z();
+
+				Collision_fbx_pos_max = info.fbx->GetPosition();
+				Collision_fbx_pos_max.x = Collision_fbx_pos_max.x + info.fbx->GetColision_x();
+				Collision_fbx_pos_max.y = Collision_fbx_pos_max.y + info.fbx->GetColision_y();
+				Collision_fbx_pos_max.z = Collision_fbx_pos_max.z + info.fbx->GetColision_z();
+
+				if (position.x < Collision_fbx_pos_min.x)
+				{
+					Collision_fbx_flag = 1;
+				}
+				else if (position.x > Collision_fbx_pos_max.x)
+				{
+					Collision_fbx_flag = 2;
+				}
+				else if (position.z < Collision_fbx_pos_min.z)
+				{
+					Collision_fbx_flag = 3;
+				}
+				else if (position.z > Collision_fbx_pos_max.z)
+				{
+					Collision_fbx_flag = 4;
+				}
+				else if (position.y < Collision_fbx_pos_min.y)
+				{
+					Collision_fbx_flag = 5;
+				}
+				else if (position.y > Collision_fbx_pos_max.y)
+				{
+					Collision_fbx_flag = 6;
+				}
+
 				debug2 = 1;
 				RedCollision = true;
 				RedAttack = false;
@@ -96,6 +172,7 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 			}
 		}
 	}
+
 }
 
 BulletFbx::BulletFbx(Input* input)

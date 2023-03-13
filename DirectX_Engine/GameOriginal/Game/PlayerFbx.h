@@ -17,8 +17,6 @@ public:
 	void OnCollision(const CollisionInfo& info) override;
 	//ポインタ
 	PlayerFbx(Input* input, Physics* physics);
-	//初期化
-	void Initialize_Bullet();
 	//アップデート
 	void PlayerUpdate(float angleX,float angleY);
 	//じゃんぷ
@@ -55,6 +53,8 @@ public:
 	void SetPos(XMFLOAT3 pos) { position = pos; }
 	//壁の当たり判定
 	void SetWall(bool a) { WallCollision = a; }
+
+	void SetRotationY(float rotation_) { rotation.y = rotation_; }
 
 	//Gettter
 	XMVECTOR GetMove() { return moveCamera; }
