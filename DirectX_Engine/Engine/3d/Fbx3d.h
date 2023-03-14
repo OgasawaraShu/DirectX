@@ -126,6 +126,7 @@ public:
 	void SetFbxVer(const int& ver_) { ver = ver_; }
 	void SetDeadFlag(const bool flag) { Dead_flag = flag; }
 	void SetSelectFlag(const bool flag) { Select_obj_flag = flag; }
+	void SetIsPlay(const bool flag) { isPlay = flag; }
 
 	void SetPositionY(const float& position_) { position.y = position_; }
 	//getter

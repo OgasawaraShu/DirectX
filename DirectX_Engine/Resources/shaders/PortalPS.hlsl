@@ -51,7 +51,7 @@ if (Flag == false)
   float diffuse = saturate(dot(-light, input.normal));
   float brightness = diffuse + 0.3f;
   float4 shadecolor = float4(brightness, brightness, brightness, 1.0f);
-  output.target0= shadecolor * texcolor;
+  output.target0= texcolor;
   float4 LightColor = output.target0;
 //Žü‚è‚ðˆÃ‚­
   float vignette = length(float2(0.5, 0.5) - input.uv);

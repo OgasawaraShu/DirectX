@@ -115,6 +115,19 @@ void PlayerFbx::PlayerUpdate(float angleX, float angleY)
 	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
 	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
 
+
+	//注視点と自分の位置のベクトル計算
+	Vector.m128_f32[0] = Target.x - position.x;
+	Vector.m128_f32[1] = Target.y - position.y;
+	Vector.m128_f32[2] = Target.z - position.z;
+	//ベクトルの正規化
+	Vector = XMVector3Normalize(Vector) * 2.0f;
+
+	//atanで銃身を向ける方向を算出
+	rotation.y = atan2(Vector.m128_f32[0], Vector.m128_f32[2]) * 60;
+
+
+
 	if (input->PushKey(DIK_B))
 	{
 		if (Tutorial_time < 180)Tutorial_time += 1;
@@ -414,6 +427,7 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 	{
 		if (onGround == true&&WallCollision==false&&Tutorial==false)
 		{
+			isPlay = true;
 			wark = true;
 			if (input->PushKey(DIK_A))
 			{
@@ -447,6 +461,7 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 	}
 	else
 	{
+		isPlay = false;
 		//動いていないのならフラグをfalseにする
 		wark = false;
 	}

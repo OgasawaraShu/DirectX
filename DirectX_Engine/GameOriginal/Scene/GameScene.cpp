@@ -450,6 +450,7 @@ void GameScene::SceneUpdate()
 	player->SetPos(camera->GetEye());
 	player->GetmoveOld(camera->GetMove());
 	player->SetTutorial(scene->GetTutorial());
+	player->SetTarget(camera->GetTarget());
 
 	playerBlue->SetPosition(player->GetMyPosition());
 
@@ -619,8 +620,9 @@ void GameScene::SceneDraw()
 
 	//FBX•`‰æ
 	redExit->RenPreDraw(dxCommon_->GetCmdList());
-
+	    
 	int Blue_camera_select = 2;
+	playerBlue->SetIsPlay(player->GetIsPlay());
 	playerBlue->DrawPortalWindow(Blue_camera_select);
 
 
@@ -691,7 +693,7 @@ void GameScene::SceneDraw()
 			blueExit->RenderFbxDraw2(dxCommon_->GetCmdList());
 			mapedit->LoadSet(dxCommon_->GetCmdList());
 			mapedit->MapObjUpdate();
-			player->SetRotationY(mapedit->GetRotationY());
+			//player->SetRotationY(mapedit->GetRotationY());
 			mapedit->MapEditDraw(dxCommon_->GetCmdList());
 		}
 

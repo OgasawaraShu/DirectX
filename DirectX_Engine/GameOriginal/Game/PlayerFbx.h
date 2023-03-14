@@ -78,6 +78,8 @@ public:
 	bool GetWark() { return wark; }
 	//oŒû‚©
 	bool GetExit() { return Exit; }
+
+	bool GetIsPlay() { return isPlay; }
 	//debug
 	int aGet() { return a; }
 	//debug
@@ -90,6 +92,8 @@ public:
 	void GetmoveOld(XMVECTOR a) { moveOld = a; }
 
 	void SetTutorial(bool flag) { Tutorial = flag; }
+
+	void SetTarget(XMFLOAT3 flag) { Target = flag; }
 
 	bool GetTutorialWalk() { return Tutorial_walk; }
 
@@ -179,6 +183,6 @@ private:
 	//Ì‚Ì‰ñ“]
 	XMMATRIX OldMatrot;
 
-
+	XMFLOAT3 Target;
 };
 
