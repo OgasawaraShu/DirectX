@@ -91,12 +91,13 @@ public:
 	void SetBlue(XMMATRIX a) { RotBlue = a; }
 	void SetTutorial(bool flag) { Tutorial = flag; }
 	void SetOldScene(int scene) { Old_scene = scene; }
-	
+	void SetMenuFlag(bool flag) { Menu_flag = flag; }
 private:
 	// 入力クラスのポインタ
 	Input* input;
 	int Old_scene;
 
+	bool Menu_flag = false;
 	// カメラ注視点までの距離
 	float distance = 20;
 	// スケーリング

@@ -17,6 +17,8 @@ public:
 	void ChangeScene();
 	//ステージエディット
 	void MapEditScene();
+	//メニューシーン
+	void MenuScene();
 	//hwndセット
 	void SetHwnd(HWND hwnd_) { hwnd = hwnd_; }
 	//デバッグ
@@ -45,6 +47,11 @@ public:
 	bool GetTutorial_2() { return Tutorial_2; }
 
 	void SetWalkTutorial(bool flag) { Walk_tutorial = flag; }
+
+	bool GetMenuFlag() { return Menu_flag; }
+
+	int GetMenuType() { return Menu_type; }
+
 private:
 
 	int Old_scene = 0;
@@ -65,6 +72,10 @@ private:
 	//文字を赤くするかの選択
 	float TitleRed = 0;
 	bool Tutorial = true;
+
+	bool Menu_flag = false;
+
+	int Menu_type = 0;
 
 	bool Tutorial_2 = true;
 	bool Walk_tutorial = true;

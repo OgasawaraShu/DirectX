@@ -1114,7 +1114,7 @@ void MapEdit::MapSet(ID3D12GraphicsCommandList* cmdList, float x, std::istream&t
 
 			//colision.z
 			getline(line_stream, word, ',');
-			ColisionSize.z = (float)std::atof(word.c_str());
+  			ColisionSize.z = (float)std::atof(word.c_str());
 
 
 

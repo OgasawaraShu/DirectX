@@ -126,14 +126,6 @@ void PlayerFbx::PlayerUpdate(float angleX, float angleY)
 	//atan‚Åeg‚ðŒü‚¯‚é•ûŒü‚ðŽZo
 	rotation.y = atan2(Vector.m128_f32[0], Vector.m128_f32[2]) * 60;
 
-
-
-	if (input->PushKey(DIK_B))
-	{
-		if (Tutorial_time < 180)Tutorial_time += 1;
-	}
-
-
 	//•½sˆÚ“®
 	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 
@@ -425,7 +417,7 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 	// WASD‚ª‰Ÿ‚³‚ê‚Ä‚¢‚½‚ç•ÀsˆÚ“®‚³‚¹‚é
 	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
 	{
-		if (onGround == true&&WallCollision==false&&Tutorial==false)
+		if (onGround == true&&WallCollision==false&&Tutorial==false&&Menu_flag==false)
 		{
 			isPlay = true;
 			wark = true;

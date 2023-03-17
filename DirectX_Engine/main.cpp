@@ -214,11 +214,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             //ゲームループを抜ける
             break;
         }
-        //ESCAPE押されたら終了
-        if (input->PushKey(DIK_ESCAPE))
-        {
-            break;
-        }
+
         //EXITを押されたら終了
         if (gameScene->GetGameEnd() == true)
         {

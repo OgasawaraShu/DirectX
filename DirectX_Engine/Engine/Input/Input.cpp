@@ -45,11 +45,9 @@ void Input::Update()
 
     result = devkeyboard->GetDeviceState(sizeof(key), key);
 
-    if (scene == 1|| scene == 2||scene==3)
+    if ((scene == 1|| scene == 2||scene==3)&&Menu_flag==false)
     {
         SetCursorPos(640, 360);
-        // マウスカーソルの非表示  
-        ShowCursor(FALSE);
     }
     else
     {

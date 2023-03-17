@@ -141,6 +141,11 @@ private://ポインタ
 	Sprite* spriteChangeScene = nullptr;
 	Sprite* spriteSceneCut = nullptr;
 	Sprite* spriteUnder = nullptr;
+	Sprite* spriteMenu = nullptr;
+	Sprite* spriteMenuGame = nullptr;
+	Sprite* spriteMenuOp = nullptr;
+	Sprite* spriteMenuExit = nullptr;
+
 
 	//デバックテキスト
 	DebugText* debugtext = nullptr;

@@ -28,6 +28,8 @@ public:
 	//‰ñ“]‚ÌƒZƒbƒg
 	void SetRot(XMMATRIX a) { matRotPortal = a; }
 
+	void SetMatRot(XMMATRIX matrot) { Cha_matrot = matrot; }
+
 	//Getter
 	//pos
 	XMFLOAT3 GetPos() { return eye; }
@@ -45,5 +47,7 @@ private:
 	XMMATRIX matRotPortal;
 	//pos‚Ì“ü‚ê•¨•Ï”
 	XMFLOAT3 eye_;
+	XMMATRIX Cha_matrot;
+
 };
 

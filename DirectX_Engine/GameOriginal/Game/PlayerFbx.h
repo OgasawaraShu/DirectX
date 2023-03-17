@@ -98,6 +98,8 @@ public:
 	bool GetTutorialWalk() { return Tutorial_walk; }
 
 	float GetPositionZ() { return position.z; }
+
+	void SetMenu(bool flag) { Menu_flag = flag; }
 private:
 
 	//クラスのポインタ
@@ -144,6 +146,8 @@ private:
 	int Tutorial_time = 0;
 
 	bool Tutorial_walk = false;
+
+	bool Menu_flag = false;
 
 	//
 	float acceleration_g = 9.81 / 60;//加速度

@@ -35,6 +35,8 @@ public:
 	XMMATRIX GetRot() { return matRot; }
 
 
+
+	void SetMatRot(XMMATRIX matrot) { Cha_matrot = matrot; }
 private:
 	// ƒJƒƒ‰’‹“_‚Ü‚Å‚Ì‹——£
 	float distance = 20;
@@ -44,6 +46,7 @@ private:
 	// ‰ñ“]s—ñ
 	XMMATRIX matRot = DirectX::XMMatrixIdentity();
 	XMMATRIX matRotPortal;
+	XMMATRIX Cha_matrot;
 
 	XMFLOAT2 angle;
 	XMFLOAT3 eye_;

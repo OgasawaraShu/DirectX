@@ -164,6 +164,35 @@ void GameScene::SpriteInitialize(DirectXCommon* dxCommon,WinApp* winApp)
 	spriteUnder->SetSize({ 1280,720 });
 	spriteUnder->SettexSize({ 1280,720 });
 
+	spriteMenu = Sprite::Create(spriteCommon, 10);
+
+	spriteCommon->SpriteCommonLoadTexture(10, L"Resources/UI/Menu.png");
+	spriteMenu->SetPosition({ 640,360,0 });
+	spriteMenu->SetSize({ 1280,720 });
+	spriteMenu->SettexSize({ 1280,720 });
+
+	spriteMenuGame = Sprite::Create(spriteCommon, 11);
+
+	spriteCommon->SpriteCommonLoadTexture(11, L"Resources/UI/Menu_game.png");
+	spriteMenuGame->SetPosition({ 640,360,0 });
+	spriteMenuGame->SetSize({ 1280,720 });
+	spriteMenuGame->SettexSize({ 1280,720 });
+
+	spriteMenuOp = Sprite::Create(spriteCommon, 12);
+
+	spriteCommon->SpriteCommonLoadTexture(12, L"Resources/UI/Menu_op.png");
+	spriteMenuOp->SetPosition({ 640,360,0 });
+	spriteMenuOp->SetSize({ 1280,720 });
+	spriteMenuOp->SettexSize({ 1280,720 });
+
+	spriteMenuExit = Sprite::Create(spriteCommon, 13);
+
+	spriteCommon->SpriteCommonLoadTexture(13, L"Resources/UI/Menu_exit.png");
+	spriteMenuExit->SetPosition({ 640,360,0 });
+	spriteMenuExit->SetSize({ 1280,720 });
+	spriteMenuExit->SettexSize({ 1280,720 });
+
+
 
 	//デバックテキスト
 	debugtext = new DebugText();
@@ -386,6 +415,7 @@ void GameScene::SceneUpdate()
 	camera->SetWarpPosition(player->GetPosition());
 	camera->SetGround(player->Getground());
 	camera->SetScene(scene->GetScene());
+	camera->SetMenuFlag(scene->GetMenuFlag());
 	mapedit->SetShotBlue(blueBullet->GetShot());
 	mapedit->SetShotRed(redBullet->GetShot2());
 	mapedit->SetWark(player->GetWark());
@@ -400,6 +430,8 @@ void GameScene::SceneUpdate()
 	Bluecamera->SetEyePos(blueExit->GetMyPosition());
 	Redcamera->SetEyePos(redExit->GetMyPosition());
 
+	Bluecamera->SetMatRot(camera->GetRot());
+	Redcamera->SetMatRot(camera->GetRot());
 	float in = 2;
 	if (player->Getground() == true)
 	{
@@ -425,193 +457,205 @@ void GameScene::SceneUpdate()
 	}
 	else
 	{
+		if (scene->GetMenuFlag() == true)
+		{
+			scene->MouseGet();
+		}
 		scene->ChangeScene();
+		scene->MenuScene();
 	}
 
-	lightGroup->Update();
+	input_->SetMenu(scene->GetMenuFlag());
 	input_->Update();
 
-	camera->SetColision(player->GetColision());
-	camera->SetMove(player->GetMove());
-	camera->SetColisionVec(player->GetColisionVec());
-	camera->SetTutorial(scene->GetTutorial());
-	if (scene->GetEdit() == false)camera->Update();
-
-	//sprintf_s(moji2, "%f", camera->GetPositionX());
-
-	//playerのセット
-	
-	player->SetMemo(blueBullet->GetMemo());
-	player->SetWorld(camera->GetRot());
-	player->SetMemo2(redBullet->GetMemo2());
-	player->SetWarpFlag(redBullet->GetWarpFlag());
-	player->SetWarpFlag2(blueBullet->GetWarpFlag2());
-	player->SetCameraAxis(camera->GetCameraZAxis());
-	player->SetPos(camera->GetEye());
-	player->GetmoveOld(camera->GetMove());
-	player->SetTutorial(scene->GetTutorial());
-	player->SetTarget(camera->GetTarget());
-
-	playerBlue->SetPosition(player->GetMyPosition());
-
-	playerBlue->SetRotate(player->GetRotation());
-	playerBlue->SetScale(player->GetScale());
-
-
-	//追加
-	player->CollisionAfter();
-
-	int i = 0;
-
-
-	//1フレームの当たり判定
-	if (scene->GetEdit() == false)
+	if (scene->GetMenuFlag() == false)
 	{
-		while (1)
-		{
-			collisionManager->CheckAllCollisions();
-			if (player->GetColision() == true)
-			{
-				camera->SetColision(player->GetColision());
-				if (i < 4)
-				{
-					camera->SetMove(player->GetMove());
-				}
-				else if (i % 4 == 0)
-				{
-					camera->SetMove(camera->GetMoveOld());
-					mo = camera->GetMoveOld();
-				}
-				camera->SetColisionVec(player->GetColisionVec());
-				camera->Update();
-				player->SetPos(camera->GetEye2());
-				player->GetmoveOld(camera->GetMove());
-				player->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
-				player->CollisionAfter();
-				i += 1;
-				c = i;
-			}
-			else
-			{
-				break;
-			}
+		lightGroup->Update();
+	
 
-			if (i > 14 && player->Getground() == true)
-			{
-				camera->SetEye(posi);
-				player->SetPos(camera->GetPos());
-			}
+		camera->SetColision(player->GetColision());
+		camera->SetMove(player->GetMove());
+		camera->SetColisionVec(player->GetColisionVec());
+		camera->SetTutorial(scene->GetTutorial());
+		if (scene->GetEdit() == false)camera->Update();
 
-			if (i > 60)
-			{
-				break;
-			}
-		}
+		//sprintf_s(moji2, "%f", camera->GetPositionX());
 
-		Bluecamera->Update();
-		Redcamera->Update();
-		redBullet->SetCameraT(camera->GetTargetPos());
-		blueBullet->SetCameraT(camera->GetTargetPos());
-		redBullet->SetGet(mapedit->GetGetGun());
-		blueBullet->SetGet(mapedit->GetGetGun());
+		//playerのセット
 
+		player->SetMemo(blueBullet->GetMemo());
+		player->SetWorld(camera->GetRot());
+		player->SetMemo2(redBullet->GetMemo2());
+		player->SetWarpFlag(redBullet->GetWarpFlag());
+		player->SetWarpFlag2(blueBullet->GetWarpFlag2());
+		player->SetCameraAxis(camera->GetCameraZAxis());
+		player->SetPos(camera->GetEye());
+		player->GetmoveOld(camera->GetMove());
+		player->SetTutorial(scene->GetTutorial());
+		player->SetTarget(camera->GetTarget());
+		player->SetMenu(scene->GetMenuFlag());
 
+		playerBlue->SetPosition(player->GetMyPosition());
 
+		playerBlue->SetRotate(player->GetRotation());
+		playerBlue->SetScale(player->GetScale());
 
-		redBullet->BlueBulletUpdate(camera->GetAngleX(), camera->GetAngleY());
-		blueBullet->RedBulletUpdate(camera->GetAngleX(), camera->GetAngleY());
-
-		camera->SetBlueAngle(redBullet->GetMemoB());
-		camera->SetRedAngle(blueBullet->GetMemoR());
-		player->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
-
-
-		bool PortalFlag = false;
-
-		if (redBullet->GetWarpFlag() == true && blueBullet->GetWarpFlag2() == true)
-		{
-			PortalFlag = true;
-		}
-		redExit->SetPortalFlag(PortalFlag);
-		blueExit->SetPortalFlag(PortalFlag);
-
-
-		sprintf_s(moji, "%d", 0);
-
-		float RedPattern = 1;
-		float BluePattern = 2;
-
-		redExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY(), RedPattern);
-		blueExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY(), BluePattern);
 
 		//追加
-		input_->GetScene(scene->GetScene());
-		redExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY(), RedPattern);
-		fbx3d34->Update();
-		fbx3d36->Update();
-		camera->SetRedTeleport(player->GetredTeleport());
-		camera->SetAngleBlueY(redBullet->GetAngleY1());
-		camera->SetBlueTeleport(player->GetblueTeleport());
-		camera->SetBlue(redExit->GetRot());
-		camera->SetRed(blueExit->GetRot());
-		Bluecamera->SetRot(blueExit->GetRot());
-		Redcamera->SetRot(redExit->GetRot());
+		player->CollisionAfter();
+
+		int i = 0;
+
+
+		//1フレームの当たり判定
+		if (scene->GetEdit() == false)
+		{
+			while (1)
+			{
+				collisionManager->CheckAllCollisions();
+				if (player->GetColision() == true)
+				{
+					camera->SetColision(player->GetColision());
+					if (i < 4)
+					{
+						camera->SetMove(player->GetMove());
+					}
+					else if (i % 4 == 0)
+					{
+						camera->SetMove(camera->GetMoveOld());
+						mo = camera->GetMoveOld();
+					}
+					camera->SetColisionVec(player->GetColisionVec());
+					camera->Update();
+					player->SetPos(camera->GetEye2());
+					player->GetmoveOld(camera->GetMove());
+					player->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
+					player->CollisionAfter();
+					i += 1;
+					c = i;
+				}
+				else
+				{
+					break;
+				}
+
+				if (i > 14 && player->Getground() == true)
+				{
+					camera->SetEye(posi);
+					player->SetPos(camera->GetPos());
+				}
+
+				if (i > 60)
+				{
+					break;
+				}
+			}
+
+			Bluecamera->Update();
+			Redcamera->Update();
+			redBullet->SetCameraT(camera->GetTargetPos());
+			blueBullet->SetCameraT(camera->GetTargetPos());
+			redBullet->SetGet(mapedit->GetGetGun());
+			blueBullet->SetGet(mapedit->GetGetGun());
 
 
 
-		// パーティクル生成
-		if (blueBullet->RedP_Attack() == true) particleManRed->CreateParticles(blueBullet->GetPosition());
-		if (redBullet->BlueP_Attack() == true) particleManBlue->CreateParticles(redBullet->GetPosition());
 
-		particleManRed->Update();
-		particleManBlue->BlueUpdate();
+			redBullet->BlueBulletUpdate(camera->GetAngleX(), camera->GetAngleY());
+			blueBullet->RedBulletUpdate(camera->GetAngleX(), camera->GetAngleY());
 
-		scene->SetExit(player->GetExit());
+			camera->SetBlueAngle(redBullet->GetMemoB());
+			camera->SetRedAngle(blueBullet->GetMemoR());
+			player->PlayerUpdate(camera->GetAngleX(), camera->GetAngleY());
+
+
+			bool PortalFlag = false;
+
+			if (redBullet->GetWarpFlag() == true && blueBullet->GetWarpFlag2() == true)
+			{
+				PortalFlag = true;
+			}
+			redExit->SetPortalFlag(PortalFlag);
+			blueExit->SetPortalFlag(PortalFlag);
+
+
+			sprintf_s(moji, "%d", 0);
+
+			float RedPattern = 1;
+			float BluePattern = 2;
+
+			redExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY(), RedPattern);
+			blueExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY(), BluePattern);
+
+			//追加
+			input_->GetScene(scene->GetScene());
+			redExit->ExitUpdate(camera->GetAngleX(), camera->GetAngleY(), RedPattern);
+			fbx3d34->Update();
+			fbx3d36->Update();
+			camera->SetRedTeleport(player->GetredTeleport());
+			camera->SetAngleBlueY(redBullet->GetAngleY1());
+			camera->SetBlueTeleport(player->GetblueTeleport());
+			camera->SetBlue(redExit->GetRot());
+			camera->SetRed(blueExit->GetRot());
+			Bluecamera->SetRot(blueExit->GetRot());
+			Redcamera->SetRot(redExit->GetRot());
+
+
+
+			// パーティクル生成
+			if (blueBullet->RedP_Attack() == true) particleManRed->CreateParticles(blueBullet->GetPosition());
+			if (redBullet->BlueP_Attack() == true) particleManBlue->CreateParticles(redBullet->GetPosition());
+
+			particleManRed->Update();
+			particleManBlue->BlueUpdate();
+
+			scene->SetExit(player->GetExit());
+		}
+		else
+		{
+			//mapedit中は見づらいためライトを変える
+			lightGroup->SetDirLightActive(0, true);
+			lightGroup->SetDirLightActive(1, true);
+			lightGroup->SetDirLightActive(2, true);
+			lightGroup->SetPointLightActive(0, false);
+
+			fbx3d38->Update();
+			camera->MapEditUpdate();
+		}
+
+		if (scene->GetScene() == 99)
+		{
+			lightGroup->SetDirLightActive(0, true);
+			lightGroup->SetDirLightActive(1, true);
+			lightGroup->SetDirLightActive(2, true);
+			lightGroup->SetPointLightActive(0, false);
+		}
+		else
+		{
+			lightGroup->SetDirLightActive(0, false);
+			lightGroup->SetDirLightActive(1, false);
+			lightGroup->SetDirLightActive(2, false);
+			lightGroup->SetPointLightActive(0, true);
+		}
+
+		if (scene->GetEdit() == true)
+		{
+			//mapedit中は見づらいためライトを変える
+			lightGroup->SetDirLightActive(0, true);
+			lightGroup->SetDirLightActive(1, true);
+			lightGroup->SetDirLightActive(2, true);
+			lightGroup->SetPointLightActive(0, false);
+
+		}
 	}
-	else
-	{
-		//mapedit中は見づらいためライトを変える
-		lightGroup->SetDirLightActive(0, true);
-		lightGroup->SetDirLightActive(1, true);
-		lightGroup->SetDirLightActive(2, true);
-		lightGroup->SetPointLightActive(0, false);
+		if (scene->GetScene() == 100)
+		{
+			End_flag = true;
+		}
 
-		fbx3d38->Update();
-		camera->MapEditUpdate();
-	}
-
-	if (scene->GetScene() == 99)
-	{
-		lightGroup->SetDirLightActive(0, true);
-		lightGroup->SetDirLightActive(1, true);
-		lightGroup->SetDirLightActive(2, true);
-		lightGroup->SetPointLightActive(0, false);
-	}
-	else
-	{
-		lightGroup->SetDirLightActive(0, false);
-		lightGroup->SetDirLightActive(1, false);
-		lightGroup->SetDirLightActive(2, false);
-		lightGroup->SetPointLightActive(0, true);
-	}
-
-	if (scene->GetEdit() == true)
-	{
-		//mapedit中は見づらいためライトを変える
-		lightGroup->SetDirLightActive(0, true);
-		lightGroup->SetDirLightActive(1, true);
-		lightGroup->SetDirLightActive(2, true);
-		lightGroup->SetPointLightActive(0, false);
-
-	}
-
-	if (scene->GetScene() == 100)
-	{
-		End_flag = true;
-	}
-
-	scene->SetWalkTutorial(player->GetTutorialWalk());
-	mapedit->SetScene(scene->GetScene());
+		scene->SetWalkTutorial(player->GetTutorialWalk());
+		mapedit->SetScene(scene->GetScene());
+	
 }
 
 void GameScene::SceneDraw()
@@ -693,7 +737,6 @@ void GameScene::SceneDraw()
 			blueExit->RenderFbxDraw2(dxCommon_->GetCmdList());
 			mapedit->LoadSet(dxCommon_->GetCmdList());
 			mapedit->MapObjUpdate();
-			//player->SetRotationY(mapedit->GetRotationY());
 			mapedit->MapEditDraw(dxCommon_->GetCmdList());
 		}
 
@@ -800,6 +843,33 @@ void GameScene::SceneDraw()
 	{
 		Tutorial_num = 6;
 	}
+
+
+	if (scene->GetMenuType() == 0&&scene->GetMenuFlag() ==true)
+	{
+		spriteMenu->SpriteTransVertexBuffer();
+		spriteMenu->Update();
+		spriteMenu->SpriteDraw();
+	}
+	else if (scene->GetMenuType() == 1 && scene->GetMenuFlag() == true)
+	{
+		spriteMenuGame->SpriteTransVertexBuffer();
+		spriteMenuGame->Update();
+		spriteMenuGame->SpriteDraw();
+	}
+	else if (scene->GetMenuType() == 2 && scene->GetMenuFlag() == true)
+	{
+		spriteMenuOp->SpriteTransVertexBuffer();
+		spriteMenuOp->Update();
+		spriteMenuOp->SpriteDraw();
+	}
+	else if (scene->GetMenuType() == 3 && scene->GetMenuFlag() == true)
+	{
+		spriteMenuExit->SpriteTransVertexBuffer();
+		spriteMenuExit->Update();
+		spriteMenuExit->SpriteDraw();
+	}
+
 
 	spriteChangeScene->SpriteTransVertexBuffer();
 	spriteChangeScene->Update();

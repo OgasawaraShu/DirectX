@@ -65,10 +65,15 @@ public://関数
 
 	int GetCollisionFbxFlag() { return Collision_fbx_flag; }
 
+	void SetMenu(bool flag) { Menu_flag = flag; }
+
 	XMFLOAT2 GetMemoR() { return memoR; }
 	XMFLOAT2 GetMemoB() { return memoB; }
 
 private://変数
+
+
+	bool Menu_flag = false;
 
 	Input* input;//入力クラスのポインタ
 

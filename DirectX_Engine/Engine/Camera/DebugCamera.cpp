@@ -92,7 +92,7 @@ void DebugCamera::Update()
 	}
 
 
-	if (viewDirty) {
+	if (Menu_flag==false&&viewDirty) {
 		// ’Ç‰Á‰ñ“]•ª‚Ì‰ñ“]s—ñ‚ğ¶¬
 		XMMATRIX matRotNew = XMMatrixIdentity();
  
@@ -209,12 +209,15 @@ volatile void DebugCamera::MainSceneUpdate()
 		mouseMove.lZ = 0;
 	}
 
-	float dy = mouseMove.lX * scaleY;
-	float dx = mouseMove.lY * scaleX;
+	if (Menu_flag == false)
+	{
+		float dy = mouseMove.lX * scaleY;
+		float dx = mouseMove.lY * scaleX;
 
-	angleX = -dx * XM_PI;
-	angleY = -dy * XM_PI;
+		angleX = -dx * XM_PI;
+		angleY = -dy * XM_PI;
 
+	}
 	
 	oldx += angleX;
 	oldy += angleY;

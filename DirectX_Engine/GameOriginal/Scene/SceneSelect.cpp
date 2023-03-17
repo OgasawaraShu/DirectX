@@ -222,9 +222,6 @@ void SceneSelect::ChangeScene()
 			}
 		}
 	}
-
-
-
 }
 
 void SceneSelect::MapEditScene()
@@ -233,5 +230,65 @@ void SceneSelect::MapEditScene()
 	if (input->TriggerKey(DIK_M))
 	{
 		MapEdit = true;
+	}
+}
+
+void SceneSelect::MenuScene()
+{
+	if (input->TriggerKey(DIK_ESCAPE) && scene != 99 && scene != 0)
+	{
+		Menu_flag = true;
+	}
+
+
+	if (Menu_flag == true)
+	{
+		if (mouseX >= 50 && mouseX <= 258 && mouseY >= 322 && mouseY <= 388)
+		{
+			//start•¶Žš‚ðÔ‚É‚µ‚ÄƒƒCƒ“‚É”ò‚Î‚·
+			Menu_type = 1;
+			if (input->TriggerMouseLeft())
+			{
+				Menu_flag = false;
+
+				push = 1;
+			}
+			else
+			{
+				push = 0;
+			}
+		}
+		else if (mouseX >= 50 && mouseX <= 290 && mouseY >= 402 && mouseY <= 454)
+		{
+			//start•¶Žš‚ðÔ‚É‚µ‚ÄƒƒCƒ“‚É”ò‚Î‚·
+			Menu_type = 2;
+			if (input->TriggerMouseLeft())
+			{
+	
+				push = 1;
+			}
+			else
+			{
+				push = 0;
+			}
+		}
+		else if (mouseX >= 50 && mouseX <= 218 && mouseY >= 490 && mouseY <= 542)
+		{
+			//start•¶Žš‚ðÔ‚É‚µ‚ÄƒƒCƒ“‚É”ò‚Î‚·
+			Menu_type = 3;
+			if (input->TriggerMouseLeft())
+			{
+				scene = 100;
+				push = 1;
+			}
+			else
+			{
+				push = 0;
+			}
+		}
+		else
+		{
+			Menu_type = 0;
+		}
 	}
 }

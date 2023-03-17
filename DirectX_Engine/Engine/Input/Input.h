@@ -90,11 +90,14 @@ public:
 	//ƒV[ƒ“‚ğ“n‚·
 	void GetScene(int s) { scene = s; }
 
+	void SetMenu(bool flag) { Menu_flag = flag; }
+
 private://ƒƒ“ƒo•Ï”
 	ComPtr<IDirectInputDevice8> devMouse;
 	DIMOUSESTATE2 mouseState = {};
 	DIMOUSESTATE2 mouseStatePre = {};
 
 	int scene;
+	bool Menu_flag = false;
 };
 

@@ -155,6 +155,9 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 					Collision_fbx_flag = 6;
 				}
 
+		
+
+
 				debug2 = 1;
 				RedCollision = true;
 				RedAttack = false;
