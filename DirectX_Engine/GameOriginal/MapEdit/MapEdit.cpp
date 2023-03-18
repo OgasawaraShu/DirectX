@@ -28,7 +28,24 @@ MapEdit::MapEdit(int window_width, int window_height, Input* input)
 
 void MapEdit::MapInitialize()
 {
-
+	//txtから読み込んだ情報をもとに更新、録画
+	for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs) {
+		
+		if (mapObj_->GetFbxmodelType() == 6)
+		{
+			//必要な情報をセットしていく
+			mapObj_->SetTutorialGun(false);
+			mapObj_->SetCursorOn(false);
+			mapObj_->SetVerObj();
+			mapObj_->SetPosition(mapObj_->GetInitPosition());
+			mapObj_->SetRotate(mapObj_->GetInitRotate());
+		}
+		else if (mapObj_->GetFbxmodelType() == 7)
+		{
+			mapObj_->SetPosition(mapObj_->GetInitPosition());
+			mapObj_->SetRotate(mapObj_->GetInitRotate());
+		}
+	}
 }
 
 void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
@@ -1196,10 +1213,12 @@ void MapEdit::MapSet(ID3D12GraphicsCommandList* cmdList, float x, std::istream&t
 				pos.x = pos.x + x;
 				//座標をセット
 				mapObj->SetPosition(pos);
+				mapObj->SetInitPosition(pos);
 				//スケールをセット
 				mapObj->SetScale(scale);
 				//回転をセット
 				mapObj->SetRotate(rotate);
+				mapObj->SetInitRotate(rotate);
 				//colisionsize登録
 				mapObj->SetColisionSize(ColisionSize);
 

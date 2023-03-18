@@ -121,6 +121,18 @@ void SceneSelect::ChangeScene()
 		{
 			scene = 3;
 		}
+		else if (Old_scene == 3)
+		{
+		    Tutorial = true;
+		    Menu_flag = false;
+		    Menu_type = 0;
+			Tutorial_2 = true;
+			Walk_tutorial = true;
+			Tutorial_time = 0;
+			Tutorial_time_2 = 0;
+
+			scene = 0;
+		}
 	}
 
 	if (scene == 1)
@@ -175,6 +187,26 @@ void SceneSelect::ChangeScene()
 		{
 			change += 0.005;
 			Old_scene = 2;
+			if (change > 1)
+			{
+				Exit = false;
+				scene = 99;
+			}
+		}
+		else
+		{
+			change = 0;
+		}
+	}
+
+	if (scene == 3)
+	{
+
+		//出口に入ったらフェードアウトさせてロード画面
+		if (Exit == true)
+		{
+			change += 0.005;
+			Old_scene = 3;
 			if (change > 1)
 			{
 				Exit = false;

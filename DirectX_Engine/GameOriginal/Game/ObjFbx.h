@@ -46,10 +46,26 @@ public:
    
     void SetTutorial(bool Flag) { Tutorial = Flag; }
 
+    void SetTutorialGun(bool Flag) { Tutorial_gun = Flag; }
+
     bool GetTutorialGun() { return Tutorial_gun; }
 
     float GetRotationY() { return rotation.y; }
+
+    void SetInitPosition(XMFLOAT3 pos) { Init_pos = pos; }
+
+    XMFLOAT3 GetInitPosition() { return Init_pos; }
+
+    void SetInitRotate(XMFLOAT3 rotate) { Init_rotate = rotate; }
+
+    void SetCursorOn(bool flag) { cursorOn = flag; }
+
+    XMFLOAT3 GetInitRotate() { return Init_rotate; }
 protected:
+
+    XMFLOAT3 Init_pos;
+    XMFLOAT3 Init_rotate;
+
     //クラスのポインタ
     Input* input;//入力クラス
     //変数

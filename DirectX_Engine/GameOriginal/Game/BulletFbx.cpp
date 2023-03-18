@@ -89,11 +89,11 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 				{
 					Collision_fbx_flag = 4;
 				}
-				else if (position.y < Collision_fbx_pos_min.y)
+				else if (position.y <= Collision_fbx_pos_min.y+3)
 				{
 					Collision_fbx_flag = 5;
 				}
-				else if (position.y > Collision_fbx_pos_max.y)
+				else if (position.y >= Collision_fbx_pos_max.y-3)
 				{
 					Collision_fbx_flag = 6;
 				}
@@ -291,7 +291,7 @@ void BulletFbx::BlueBulletUpdate(float angleX, float angleY)
 	}
 
 
-	if (input->PushKey(DIK_R) && debug == 1)
+	if (input->PushKey(DIK_R))
 	{
 		position = position_;
 		warpFlag = false;
@@ -423,7 +423,7 @@ void BulletFbx::RedBulletUpdate(float angleX, float angleY)
 		ShotFlag = false;
 	}
 
-	if (input->PushKey(DIK_R) && debug2 == 1)
+	if (input->PushKey(DIK_R))
 	{
 		position = position_;
 		warpFlag2 = false;

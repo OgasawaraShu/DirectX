@@ -1,9 +1,6 @@
 WORD, テストLEVEL2にようこそ。
 SPEED,5
 
-WORD, とても順調ですね。
-SPEED,5
-
 WORD, Aperture Science-携帯ポータル装置を使用してのポータルは入った際の勢いを保持することができます。
 SPEED,5
 

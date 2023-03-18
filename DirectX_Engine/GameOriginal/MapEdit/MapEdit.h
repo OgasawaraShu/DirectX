@@ -74,6 +74,7 @@ public:
 
 	void MapObjUpdate();
 
+
 	//モデルセット
 	//フェンスモデル
 	void SetFenceModel(Model* model) { fence_model = model; }

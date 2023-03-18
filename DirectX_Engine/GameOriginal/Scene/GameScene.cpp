@@ -399,6 +399,26 @@ void GameScene::SceneUpdate()
 		posi = camera->GetEye();
 	}
 
+	if (scene->GetScene() == 0)
+	{
+	    Cut_y_size = 0;
+		Tutorial_num = 1;
+		player->PlayerResetTitle();
+		mapedit->MapInitialize();
+		lightGroup->SetDirLightActive(0, false);
+		lightGroup->SetDirLightActive(1, false);
+		lightGroup->SetDirLightActive(2, false);
+		lightGroup->SetPointLightActive(0, true);
+		lightGroup->SetPointLightActive(1, false);
+		pointLightPos[0] = 0.5f;
+		pointLightPos[1] = 100.0f;
+		pointLightPos[2] = 0.0f;
+
+		pointLightPos2[0] = 400.5f;
+		pointLightPos2[1] = 100.0f;
+		pointLightPos2[2] = 100.0f;
+		lightGroup->SetSpotLightActive(0, false);
+	}
 
 	scene->MapEditScene();
 
@@ -820,11 +840,11 @@ void GameScene::SceneDraw()
 		}
 	}
 
-	if (player->GetTutorialWalk() == true)
+	if (player->GetTutorialWalk() == true && scene->GetScene() == 1)
 	{
 		Tutorial_num = 2;
 	}
-	if (mapedit->GetTutorialGun() == true)
+	if (mapedit->GetTutorialGun() == true&&Tutorial_num==2&&scene->GetScene()==1)
 	{
 		Tutorial_num = 3;
 	}
@@ -834,7 +854,7 @@ void GameScene::SceneDraw()
 	{
 		Tutorial_num = 4;
 
-		if (player->GetPositionZ() > 65.0f)
+		if (player->GetPositionZ() > 65.0f&&Tutorial_num == 4)
 		{
 			Tutorial_num = 5;
 		}

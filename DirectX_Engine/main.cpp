@@ -111,12 +111,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     gameScene->SceneInitialize(dxCommon, input, audio, winApp);
 
     //DirectWrite
-    std::string Ivent_key = "Ivent_1";
-
-    directWrite->DirectWritePre(Ivent_key);
-    directWrite->registerTextFormat(Ivent_key, 33);
-    directWrite->DirectWriteTextLoad(Ivent_key);
-
+    std::string Ivent_key;
     bool Load_txt = true;
     bool Load_txt2 = true;
 
@@ -134,12 +129,30 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //文字列を結合
         strcat_s(str, str2);
 
+        if (gameScene->GetTutorialNum() == 1)
+        {
+            if (Load_txt2 == true)
+            {
+                directWrite->DirectWriteLost();
+                Ivent_key = str;
+                directWrite->DirectWritePre(Ivent_key);
+                directWrite->registerTextFormat(Ivent_key, 33);
+                directWrite->DirectWriteTextLoad(Ivent_key);
+                Load_txt2 = false;
+                Load_txt = true;
+            }
+
+         
+        }
+
+
         if (gameScene->GetTutorialNum() == 2)
         {
             if (Load_txt == true)
             {
                 directWrite->DirectWriteLost();
                 Load_txt = false;
+                Load_txt2 = true;
             }
 
             Ivent_key = str;
@@ -227,7 +240,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         // DirectX毎フレーム処理　ここまで
         dxCommon->PostDrawPreDirectWrite();
         directWrite->SetSwapChain(dxCommon->GetSwapChain());
-        if(gameScene->GetScene())directWrite->DirectWriteText(Ivent_key);
+        if(gameScene->GetScene()!=99&& gameScene->GetScene() != 0)directWrite->DirectWriteText(Ivent_key);
         dxCommon->PostDrawPostDirectWrite();
 
         //セット

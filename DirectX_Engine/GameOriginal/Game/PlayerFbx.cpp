@@ -12,7 +12,6 @@ using namespace DirectX;
 
 void PlayerFbx::Initialize2()
 {
-
 	//•Ï”
 	 WarpTime = 0;
 
@@ -480,6 +479,13 @@ void PlayerFbx::VectorChange()
 	FallCount += 1;
 	//portal‚É“ü‚Á‚½ŒãƒxƒNƒgƒ‹‚ğ•ÏŠ·‚·‚é
 	fallV.m128_f32[2] -= ((fallV.m128_f32[1]*FallCount) + fallV.m128_f32[2]);
+}
+
+void PlayerFbx::PlayerResetTitle()
+{
+	Tutorial_time = 0;
+
+	Tutorial_walk = false;
 }
 
 

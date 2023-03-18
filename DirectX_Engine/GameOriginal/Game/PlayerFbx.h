@@ -100,6 +100,8 @@ public:
 	float GetPositionZ() { return position.z; }
 
 	void SetMenu(bool flag) { Menu_flag = flag; }
+
+	void PlayerResetTitle();
 private:
 
 	//クラスのポインタ
