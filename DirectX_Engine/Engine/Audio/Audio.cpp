@@ -5,6 +5,7 @@
 
 
 #pragma comment(lib,"xaudio2.lib")
+
 using namespace Microsoft::WRL;
 
 
@@ -85,7 +86,6 @@ void Audio::SoundLoadWave(const char* filename)
 
     //return
     Audio::SoundData soundData = {};
-
     soundData.wfex = format.fmt;
     soundData.pBuffer = reinterpret_cast<BYTE*>(pBuffer);
     soundData.bufferSize = data.size;
@@ -105,7 +105,7 @@ void Audio::SoundUnload(SoundData* soundData)
     soundData->wfex = {};
 }
 
-void Audio::SoundPlayWave(std::string filename)
+void Audio::SoundPlayWave(std::string filename,float Volume)
 {
     HRESULT result;
 
@@ -127,10 +127,11 @@ void Audio::SoundPlayWave(std::string filename)
     buf.Flags = XAUDIO2_END_OF_STREAM;
     
     result = pSourceVoice->SubmitSourceBuffer(&buf);
+    result = pSourceVoice->SetVolume(1.0f*Volume);
     result = pSourceVoice->Start();
 }
 
-void Audio::SoundPlayWaveLoop(std::string filename)
+void Audio::SoundPlayWaveLoop(std::string filename, float Volume)
 {
     HRESULT result;
 
@@ -152,6 +153,7 @@ void Audio::SoundPlayWaveLoop(std::string filename)
     buf.Flags = XAUDIO2_END_OF_STREAM;
 
     result = pSourceVoice->SubmitSourceBuffer(&buf);
+    result = pSourceVoice->SetVolume(1.0f*Volume);
     result = pSourceVoice->Start();
 }
 
@@ -163,6 +165,12 @@ void Audio::Initialize()//初期化
 
     //マスターボイスを作成
     result = xAudio2_->CreateMasteringVoice(&masterVoice);
+
+    //サブミックスボイスを作成
+    result = xAudio2_->CreateSubmixVoice(&submixVoice, 1, 44100, 0, 0, 0, 0);
+
+    XAUDIO2_SEND_DESCRIPTOR SFXSend = { 0, submixVoice };
+    XAUDIO2_VOICE_SENDS SFXSendList = { 1, &SFXSend }
 }
 
 void Audio::Finalize()

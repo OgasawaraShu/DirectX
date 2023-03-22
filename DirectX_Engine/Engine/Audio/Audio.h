@@ -2,6 +2,7 @@
 
 #include <Windows.h>
 #include <xaudio2.h>
+#include <x3daudio.h>
 #include <wrl.h>
 #include <cstdint>
 #include <map>
@@ -48,19 +49,21 @@ public : //メンバ関数
     //サウンドアンロード
     void SoundUnload(SoundData* soundData);
     //サウンド再生
-    void SoundPlayWave(std::string filename);
+    void SoundPlayWave(std::string filename, float Volume);
     //サウンドループ
-    void SoundPlayWaveLoop(std::string filename);
+    void SoundPlayWaveLoop(std::string filename, float Volume);
 
     //初期化
     void Initialize();
     //解放
     void Finalize();
-private://メンバ変数
+protected://メンバ変数
 
     ComPtr<IXAudio2> xAudio2_;
 
     IXAudio2MasteringVoice* masterVoice;
+
+    IXAudio2SubmixVoice* submixVoice;
 
     std::map<std::string, SoundData> soudDatas_;
 };
