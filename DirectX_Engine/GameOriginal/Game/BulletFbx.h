@@ -2,6 +2,7 @@
 #include "../../Engine/3d/Fbx3d.h"
 #include "../../Engine/Input/Input.h"
 #include "PlayerFbx.h"
+#include "../../Engine/Input/GamePad.h"
 
 class BulletFbx :
 	public Fbx3d
@@ -135,4 +136,8 @@ private://ïœêî
 	XMFLOAT3 Target_;
 
 	XMVECTOR Vector;
+
+	int Old_iPad_left = 0, Old_iPad_right = 0, iOld_Pad_up = 0, Old_iPad_down = 0;
+	int Old_iPad_leftshoulder = 0, Old_iPad_rightshoulder = 0;
+	int Old_iPad_A = 0, Old_iPad_B = 0, Old_iPad_X = 0, Old_iPad_Y = 0;
 };

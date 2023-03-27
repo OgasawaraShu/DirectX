@@ -55,6 +55,8 @@ void X3DAuio::X3dAudioUpdate(std::string filename, XMFLOAT3 CameraPos, XMFLOAT3 
 	//Emitter.OrientTop = EmitterOrientTop;
 	Emitter.Position = AudioPos;
 	//Emitter.Velocity = EmitterVelocity;
+	
+
 	//Listener.OrientFront = ListenerOrientFront;
 	//Listener.OrientTop = ListenerOrientTop;
 	Listener.Position = CameraPos;

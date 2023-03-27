@@ -45,14 +45,15 @@ void Input::Update()
 
     result = devkeyboard->GetDeviceState(sizeof(key), key);
 
+    ShowCursor(FALSE);
+
     if ((scene == 1|| scene == 2||scene==3)&&Menu_flag==false)
     {
         SetCursorPos(640, 360);
     }
     else
     {
-        // マウスカーソルの表示
-        ShowCursor(TRUE);
+       
     }
     // マウス
     result = devMouse->Acquire();	// マウス動作開始

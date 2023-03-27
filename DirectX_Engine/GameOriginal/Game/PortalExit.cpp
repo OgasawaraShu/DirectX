@@ -77,11 +77,11 @@ void PortalExit::OriginalUpdate(float angleX, float angleY)
 			}
 			else if (Rotate_exit_flag == 5)
 			{
-				rotation.x = 90;
+				rotation.y = 90;
 			}
 			else if (Rotate_exit_flag == 6)
 			{
-				rotation.x = 270;
+				rotation.y = 90;
 			}
 	
 		}

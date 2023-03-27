@@ -192,7 +192,12 @@ void GameScene::SpriteInitialize(DirectXCommon* dxCommon,WinApp* winApp)
 	spriteMenuExit->SetSize({ 1280,720 });
 	spriteMenuExit->SettexSize({ 1280,720 });
 
+	spriteCusor = Sprite::Create(spriteCommon, 14);
 
+	spriteCommon->SpriteCommonLoadTexture(14, L"Resources/cusor.png");
+	spriteCusor->SetPosition({ 640,360,0 });
+	spriteCusor->SetSize({ 40,40 });
+	spriteCusor->SettexSize({ 1600,1200 });
 
 	//デバックテキスト
 	debugtext = new DebugText();
@@ -888,6 +893,14 @@ void GameScene::SceneDraw()
 		spriteMenuExit->SpriteTransVertexBuffer();
 		spriteMenuExit->Update();
 		spriteMenuExit->SpriteDraw();
+	}
+
+	if (scene->GetMenuFlag() == true || scene->GetScene() == 0|| scene->GetEdit() == true)
+	{
+		spriteCusor->SetPosition({scene->GetMouseX(),scene->GetMouseY(),0});
+		spriteCusor->SpriteTransVertexBuffer();
+		spriteCusor->Update();
+		spriteCusor->SpriteDraw();
 	}
 
 

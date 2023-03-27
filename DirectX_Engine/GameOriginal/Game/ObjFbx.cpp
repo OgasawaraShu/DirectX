@@ -198,14 +198,28 @@ void ObjFbx::RayCheck()
 	ray.dir = CammeraZAxis;
 
 
+	//パッドのポインタ
+	GamePad* GP = nullptr;
+	GP = new GamePad();
+
+	//パッドの更新
+	GP->Update();
+
+
 	//レイが当たったのなら取得する
-	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ, &raycastHit,20.0f)&&input->TriggerKey(DIK_F) && !cursorOn&&Tutorial == false) {
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ, &raycastHit,20.0f)&&(input->TriggerKey(DIK_F)|| (GP->iPad_B == 1 && Old_iPad_B == 0)) && !cursorOn&&Tutorial == false) {
 		cursorOn = true;
 		Tutorial_gun = true;
 		rotation.x = 0;
 		rotation.z = 0;
 		rotation.y = 180;
 	}
+
+	//トリガー処理のための記憶
+	Old_iPad_left = GP->iPad_left, Old_iPad_right = GP->iPad_right, iOld_Pad_up = GP->iPad_up, Old_iPad_down = GP->iPad_down;
+	Old_iPad_leftshoulder = GP->iPad_leftshoulder, Old_iPad_rightshoulder = GP->iPad_rightshoulder;
+	Old_iPad_A = GP->iPad_A, Old_iPad_B = GP->iPad_B, Old_iPad_X = GP->iPad_X, Old_iPad_Y = GP->iPad_Y;
+
 }
 
 void ObjFbx::BoxObjUpdate(float angleX, float angleY)
@@ -254,11 +268,19 @@ void ObjFbx::BoxRayCheck()
 	RaycastHit raycastHit;
 	ray.dir = CammeraZAxis;
 
+
+	//パッドのポインタ
+	GamePad* GP = nullptr;
+	GP = new GamePad();
+
+	//パッドの更新
+	GP->Update();
+
 	//レイが当たっているのなら取得
-	if (CollisionManager::GetInstance()->Raycast(ray,COLLISION_ATTR_OBJ2, &raycastHit, 35.0f) && input->TriggerKey(DIK_F) && !cursorOn2&&Tutorial==false) {
+	if (CollisionManager::GetInstance()->Raycast(ray,COLLISION_ATTR_OBJ2, &raycastHit, 35.0f) && (input->TriggerKey(DIK_F) || (GP->iPad_B == 1 && Old_iPad_B == 0)) && !cursorOn2&&Tutorial==false) {
 		cursorOn2 = true;
 	}
-	else if (input->TriggerKey(DIK_F) && cursorOn2 == true)
+	else if ((input->TriggerKey(DIK_F)||(GP->iPad_B == 1 && Old_iPad_B == 0)) && cursorOn2 == true)
 	{
 		//離す処理
 		cursorOn2 = false;
@@ -279,6 +301,11 @@ void ObjFbx::BoxRayCheck()
 			Vector.m128_f32[2] = MyPosition.z + 2 - Target.z + 2;
 		}
 	}
+
+	//トリガー処理のための記憶
+	Old_iPad_left = GP->iPad_left, Old_iPad_right = GP->iPad_right, iOld_Pad_up = GP->iPad_up, Old_iPad_down = GP->iPad_down;
+	Old_iPad_leftshoulder = GP->iPad_leftshoulder, Old_iPad_rightshoulder = GP->iPad_rightshoulder;
+	Old_iPad_A = GP->iPad_A, Old_iPad_B = GP->iPad_B, Old_iPad_X = GP->iPad_X, Old_iPad_Y = GP->iPad_Y;
 }
 
 void ObjFbx::ObjFall()

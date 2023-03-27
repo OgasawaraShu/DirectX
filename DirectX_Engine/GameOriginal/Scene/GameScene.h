@@ -145,6 +145,7 @@ private://ポインタ
 	Sprite* spriteMenuGame = nullptr;
 	Sprite* spriteMenuOp = nullptr;
 	Sprite* spriteMenuExit = nullptr;
+	Sprite* spriteCusor = nullptr;
 
 
 	//デバックテキスト

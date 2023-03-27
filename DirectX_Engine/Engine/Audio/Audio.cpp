@@ -170,7 +170,7 @@ void Audio::Initialize()//‰Šú‰»
     result = xAudio2_->CreateSubmixVoice(&submixVoice, 1, 44100, 0, 0, 0, 0);
 
     XAUDIO2_SEND_DESCRIPTOR SFXSend = { 0, submixVoice };
-    XAUDIO2_VOICE_SENDS SFXSendList = { 1, &SFXSend }
+    XAUDIO2_VOICE_SENDS SFXSendList = { 1, &SFXSend };
 }
 
 void Audio::Finalize()

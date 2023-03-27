@@ -4,7 +4,7 @@ SPEED,5
 WORD, 次はフェンスの間にある箱を持ち上げてどかして、奥にあるGunをとりましょう。
 SPEED,5
 
-WORD, OBJの取得はF Key。とったOBJを置きたいときはもう一度F Keyを押しましょう。
+WORD, OBJの取得はFキー又はBボタン。とったOBJを置きたいときはもう一度押しましょう。
 SPEED,5
 
 

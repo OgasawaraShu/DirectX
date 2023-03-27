@@ -218,12 +218,9 @@ volatile void DebugCamera::MainSceneUpdate()
 		angleY = -dy * XM_PI;
 
 	}
-	
-	oldx += angleX;
-	oldy += angleY;
 
 	//ゲームパッドアナログスティックR入力時処理(視点移動)
-	if (GP->state.Gamepad.sThumbRX != 0 || GP->state.Gamepad.sThumbRY != 0)
+	if ((GP->state.Gamepad.sThumbRX != 0 || GP->state.Gamepad.sThumbRY != 0) && Menu_flag == false && Tutorial == false)
 	{
 		float dy = static_cast<FLOAT>(GP->state.Gamepad.sThumbRX / 32767.0 * (0.02f));
 		float dx = static_cast<FLOAT>(GP->state.Gamepad.sThumbRY / 32767.0 * (0.02f));
@@ -231,6 +228,11 @@ volatile void DebugCamera::MainSceneUpdate()
 		angleX = dx * XM_PI;
 		angleY = -dy * XM_PI;
 	}
+	
+	oldx += angleX;
+	oldy += angleY;
+
+
 	move = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
 	move = move_;

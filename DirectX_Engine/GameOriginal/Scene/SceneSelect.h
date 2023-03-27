@@ -52,6 +52,8 @@ public:
 
 	int GetMenuType() { return Menu_type; }
 
+	float GetMouseX() { return mouseX; }
+	float GetMouseY() { return mouseY; }
 private:
 
 	int Old_scene = 0;

@@ -96,12 +96,7 @@ void PlayerFbx::PlayerUpdate(float angleX, float angleY)
 	// マウスの入力を取得
 	Input::MouseMove mouseMove = input->GetMouseMove();
 
-	//パッドのポインタ
-	GamePad* GP = nullptr;
-	GP = new GamePad();
-
-	//パッドの更新
-	GP->Update();
+	
 	//マウス角度出力Ver
 	angleX_ = angleX;
 	angleY_ = angleY;
@@ -413,8 +408,18 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 	float dy = 0;
 	moveCamera = { 0,0,0,0 };
 
+	//パッドのポインタ
+	GamePad* GP = nullptr;
+	GP = new GamePad();
+
+	//パッドの更新
+	GP->Update();
+
+	float dx_pad=0;
+	float dz_pad=0;
+
 	// WASDが押されていたら並行移動させる
-	if (input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))
+	if ((input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))|| (GP->state.Gamepad.sThumbLX != 0 || GP->state.Gamepad.sThumbLY != 0))
 	{
 		if (onGround == true&&WallCollision==false&&Tutorial==false&&Menu_flag==false)
 		{
@@ -447,6 +452,14 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 
 				if (Tutorial_time < 180)Tutorial_time += 1;
 			}
+
+			if (GP->state.Gamepad.sThumbLX != 0 || GP->state.Gamepad.sThumbLY != 0)
+			{
+				 dx_pad = static_cast<FLOAT>(GP->state.Gamepad.sThumbLX / 32767.0 * (0.3f));
+				 dz_pad = static_cast<FLOAT>(GP->state.Gamepad.sThumbLY / 32767.0 * (0.3f));
+
+				 if (Tutorial_time < 180)Tutorial_time += 1;
+			}
 		}
 			
 	}
@@ -465,7 +478,8 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 	}
 
     //変数に代入
-	moveCamera = { dx += fallV.m128_f32[0], dy += fallV.m128_f32[1], dz += fallV.m128_f32[2], 0 };
+	moveCamera = { dx += fallV.m128_f32[0]+dx_pad, dy += fallV.m128_f32[1], dz += fallV.m128_f32[2]+dz_pad, 0 };
+
 }
 
 void PlayerFbx::CollisionAfter()

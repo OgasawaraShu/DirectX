@@ -193,6 +193,13 @@ void BulletFbx::BlueBulletUpdate(float angleX, float angleY)
 	//角度のフラグ
 	bool dirty = false;
 
+	GamePad* GP = nullptr;
+	GP = new GamePad();
+
+	//パッドの更新
+	GP->Update();
+
+
 	//マウス角度出力Ver
 	if (TriggerFlag == 0)
 	{
@@ -255,7 +262,7 @@ void BulletFbx::BlueBulletUpdate(float angleX, float angleY)
 	moveCamera = XMVector3Transform(moveCamera, matRot);
 
 
-	if (input->TriggerMouseLeft()&&getflag==true)
+	if ((input->TriggerMouseLeft() || (GP->iPad_leftshoulder == 1 && Old_iPad_leftshoulder == 0))&&getflag==true)
 	{
 		TriggerFlag = 1;
 		BlueAttack = true;
@@ -267,7 +274,7 @@ void BulletFbx::BlueBulletUpdate(float angleX, float angleY)
 	}
 
 	//単独リセット
-	if (input->TriggerMouseLeft() && getflag == true&& debug == 1)
+	if ((input->TriggerMouseLeft() || (GP->iPad_leftshoulder == 1 && Old_iPad_leftshoulder == 0)) && getflag == true&& debug == 1)
 	{
 		matWorld *= matrot;
 		position = position_;
@@ -291,7 +298,7 @@ void BulletFbx::BlueBulletUpdate(float angleX, float angleY)
 	}
 
 
-	if (input->PushKey(DIK_R))
+	if (input->PushKey(DIK_R)||(GP->iPad_X == 1 && Old_iPad_X == 0))
 	{
 		position = position_;
 		warpFlag = false;
@@ -301,6 +308,10 @@ void BulletFbx::BlueBulletUpdate(float angleX, float angleY)
 		BlueCollision = false;
 	}
 
+	//トリガー処理のための記憶
+	Old_iPad_left = GP->iPad_left, Old_iPad_right = GP->iPad_right, iOld_Pad_up = GP->iPad_up, Old_iPad_down = GP->iPad_down;
+	Old_iPad_leftshoulder = GP->iPad_leftshoulder, Old_iPad_rightshoulder = GP->iPad_rightshoulder;
+	Old_iPad_A = GP->iPad_A, Old_iPad_B = GP->iPad_B, Old_iPad_X = GP->iPad_X, Old_iPad_Y = GP->iPad_Y;
 
 
 	if (TriggerFlag == 1 && debug == 0)
@@ -347,6 +358,13 @@ void BulletFbx::RedBulletUpdate(float angleX, float angleY)
 {
 	// マウスの入力を取得
 	Input::MouseMove mouseMove = input->GetMouseMove();
+
+	GamePad* GP = nullptr;
+	GP = new GamePad();
+
+	//パッドの更新
+	GP->Update();
+
 
 	//角度のフラグ
 	bool dirty = false;
@@ -412,7 +430,7 @@ void BulletFbx::RedBulletUpdate(float angleX, float angleY)
 
 
 
-	if (input->TriggerMouseRight() && getflag == true)
+	if ((input->TriggerMouseRight() || (GP->iPad_rightshoulder == 1 && Old_iPad_rightshoulder == 0)) && getflag == true)
 	{
 		TriggerFlag2 = 1;
 		RedAttack = true;
@@ -423,7 +441,7 @@ void BulletFbx::RedBulletUpdate(float angleX, float angleY)
 		ShotFlag = false;
 	}
 
-	if (input->PushKey(DIK_R))
+	if (input->PushKey(DIK_R) || (GP->iPad_X == 1 && Old_iPad_X == 0))
 	{
 		position = position_;
 		warpFlag2 = false;
@@ -437,7 +455,7 @@ void BulletFbx::RedBulletUpdate(float angleX, float angleY)
 	}
 
 	//単独リセット
-	if (input->TriggerMouseRight() && getflag == true && debug2 == 1)
+	if ((input->TriggerMouseRight()||(GP->iPad_rightshoulder == 1 && Old_iPad_rightshoulder == 0)) && getflag == true && debug2 == 1)
 	{
 		matWorld *= matrot;
 		position = position_;
@@ -459,6 +477,12 @@ void BulletFbx::RedBulletUpdate(float angleX, float angleY)
 	     RedAttack = true;
 		ShotFlag = true;
 	}
+
+	//トリガー処理のための記憶
+	Old_iPad_left = GP->iPad_left, Old_iPad_right = GP->iPad_right, iOld_Pad_up = GP->iPad_up, Old_iPad_down = GP->iPad_down;
+	Old_iPad_leftshoulder = GP->iPad_leftshoulder, Old_iPad_rightshoulder = GP->iPad_rightshoulder;
+	Old_iPad_A = GP->iPad_A, Old_iPad_B = GP->iPad_B, Old_iPad_X = GP->iPad_X, Old_iPad_Y = GP->iPad_Y;
+
 
 
 	if (TriggerFlag2 == 1 && debug2 == 0)
