@@ -92,6 +92,8 @@ public:
 	void SetBoxModel(Model* model) { box_model = model; }
 	//Block箱モデル
 	void SetBlockModel(Model* model) { block_model = model; }
+	//タレットモデル
+	void SetTalletModel(Model * model) { tallet_model = model; }
 	//コリジョンモデル
 	void SetCollisionModel(Model* model) { Collision_model = model; }
 
@@ -147,6 +149,8 @@ private:
 	std::list<std::unique_ptr<MapEdit>> Boxs;
 
 	std::list<std::unique_ptr<MapEdit>> Blocks;
+
+	std::list<std::unique_ptr<MapEdit>> Tallets;
 
 	//エディットデバック可視化用モデル
 	std::list<std::unique_ptr<MapEdit>> Respawns;
@@ -229,6 +233,8 @@ private:
 
 	int Block_model_num = 8;
 
+	int Tallet_model_num = 9;
+
 	int spawn_model_num = 0;
 
 	int Red_arow_model_num = -1;
@@ -287,6 +293,8 @@ private:
 	Model* box_model;
 
 	Model* block_model;
+
+	Model* tallet_model;
 
 	Model* respawn_model;
 

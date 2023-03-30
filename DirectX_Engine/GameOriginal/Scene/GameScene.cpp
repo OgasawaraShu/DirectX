@@ -361,6 +361,7 @@ void GameScene::EditInitialize()
 	mapedit->SetGunModel(model12);
 	mapedit->SetBoxModel(model17);
 	mapedit->SetBlockModel(model31);
+	mapedit->SetTalletModel(model33);
 	mapedit->SetRespawnModel(model25);
 	mapedit->SetRedArowModel(model28);
 	mapedit->SetGreenArowModel(model29);
@@ -425,6 +426,8 @@ void GameScene::SceneUpdate()
 		lightGroup->SetSpotLightActive(0, false);
 	}
 
+
+
 	scene->MapEditScene();
 
 	//À•WSetŠÖ˜A   
@@ -479,12 +482,14 @@ void GameScene::SceneUpdate()
 	{
 		scene->MouseGet();
 		scene->Title();
+		scene->PadScene();
 	}
 	else
 	{
 		if (scene->GetMenuFlag() == true)
 		{
 			scene->MouseGet();
+			scene->PadScene();
 		}
 		scene->ChangeScene();
 		scene->MenuScene();

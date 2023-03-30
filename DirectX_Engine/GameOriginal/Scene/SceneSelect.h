@@ -1,5 +1,6 @@
 #pragma once
 #include "../../Engine/Input/Input.h"
+#include "../../Engine/Input/GamePad.h"
 
 class SceneSelect
 {
@@ -19,6 +20,9 @@ public:
 	void MapEditScene();
 	//メニューシーン
 	void MenuScene();
+	//アフター
+	void PadScene();
+
 	//hwndセット
 	void SetHwnd(HWND hwnd_) { hwnd = hwnd_; }
 	//デバッグ
@@ -71,6 +75,10 @@ private:
 	float mouseX;
 	//
 	float mouseY;
+
+	float padX;
+	//
+	float padY;
 	//文字を赤くするかの選択
 	float TitleRed = 0;
 	bool Tutorial = true;
@@ -118,6 +126,16 @@ private:
 
 	//ウィンドウハンドル
 	HWND hwnd = nullptr;
+
+	int Pad_select = 0;
+
+	bool Mouse_flag = true;
+
+
+	int Old_iPad_left = 0, Old_iPad_right = 0, iOld_Pad_up = 0, Old_iPad_down = 0;
+	int Old_iPad_leftshoulder = 0, Old_iPad_rightshoulder = 0;
+	int Old_iPad_A = 0, Old_iPad_B = 0, Old_iPad_X = 0, Old_iPad_Y = 0;
+	int Old_ipad_start = 0;
 
 };
 

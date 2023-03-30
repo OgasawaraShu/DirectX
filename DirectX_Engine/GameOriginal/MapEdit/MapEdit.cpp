@@ -270,7 +270,28 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 			CreateCollisionBox();
 		}
 
+		if (ImGui::Button("Tallet Create"))
+		{
+			//生成
+			std::unique_ptr<MapEdit>tallet = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+			//初期化
+			tallet->Initialize();
+			//ここでモデルの形状をセット
+			tallet->SetModel(tallet_model);
+			//コリジョンのサイズ登録(初期は０)
+			tallet->SetColisionSize({ 3,6,6 });
+			//スケールのサイズ
+			tallet->SetScale({ 0.05,0.05,0.05 });
+			//モデルを指定
+			tallet->SetFbxmodelType(Tallet_model_num);
+			//ver指定
+			tallet->SetFbxVer(obj_ver);
+			//登録
+			Tallets.push_back(std::move(tallet));
 
+			//当たり判定確認用OBJ生成
+			CreateCollisionBox();
+		}
 		ImGui::TreePop();
 	}
 
@@ -331,6 +352,11 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		for (std::unique_ptr<MapEdit>& block_ : Blocks) {
 			block_->MapSave(block_);
 		}
+
+		for (std::unique_ptr<MapEdit>& tallet_ : Tallets) {
+			tallet_->MapSave(tallet_);
+		}
+
 
 		for (std::unique_ptr<MapEdit>& spawn_ : Respawns) {
 			spawn_->MapSave(spawn_);
@@ -530,6 +556,30 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		}
 	}
 
+	for (std::unique_ptr<MapEdit>& tallet_ : Tallets) {
+		if (tallet_->GetSelectFlag() == true)
+		{
+			tallet_ ->AdjustmentObj(tallet_);
+
+			Arow_draw_flag = true;
+
+
+			//矢印の位置変数代入
+			Arow_pos = tallet_->GetPosition();
+
+			//矢印による位置の移動
+			ArowUpdate(tallet_, mouse);
+
+
+
+			//押されたらモデルの情報を一時保存(copy)
+			if (ImGui::Button("Copy") || (input->PushKey(DIK_LCONTROL) && input->PushKey(DIK_C)))
+			{
+				CopyModelInfo(tallet_->GetFbxmodelType(), tallet_->GetVer(), tallet_->GetPosition(), tallet_->GetScale(), tallet_->GetRotation(), tallet_->GetColisionSize());
+			}
+		}
+	}
+
 
 	for (std::unique_ptr<MapEdit>& spawn_ : Respawns) {
 		if (spawn_->GetSelectFlag() == true)
@@ -557,6 +607,7 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 	int Gun_count = 1;
 	int Box_count = 1;
 	int Block_count = 1;
+	int Tallet_count = 1;
 
 	//当たり判定可視化用代入変数
 	int Collision_count = 0;
@@ -859,6 +910,45 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		Collision_count += 1;
 	}
 
+
+
+	for (std::unique_ptr<MapEdit>& tallet_ : Tallets) {
+
+
+		//削除フラグが立っているのならOBJを削除
+		Tallets.remove_if([](std::unique_ptr<MapEdit>& tallet_) {
+			return tallet_->GetDeadFlag();
+			});
+
+		//OBJの名前
+		char str[1024] = { 'T','a','l','l','e','t','_'};
+		//番号割りあて
+		char str2[1024];
+		//intをstringに変換
+		sprintf_s(str2, "%d", Tallet_count);
+		//文字列を結合
+		strcat_s(str, str2);
+		//ツリーに格納
+		if (ImGui::TreeNode(str)) {
+			tallet_->AdjustmentObj(tallet_)
+				;
+			ImGui::TreePop();
+		}
+		//Fbxの更新処理
+		tallet_->Update();
+		//OBJの単独PICKUP
+		tallet_->ObjSelect(tallet_, mouse);
+
+
+		//for文で１増やす
+		Tallet_count += 1;
+
+		pos[Collision_count] = { tallet_->GetPosition() };
+		rotate[Collision_count] = { tallet_->GetRotation() };
+		colision_size[Collision_count] = { tallet_->GetColisionSize() };
+		Collision_count += 1;
+	}
+
 	CreateSpawn();
 	//imguiの終わり
 	ImGui::End();
@@ -916,6 +1006,9 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 		block_->Draw2(cmdList);
 	}
 
+	for (std::unique_ptr<MapEdit>& tallet_ : Tallets) {
+		tallet_->Draw2(cmdList);
+	}
 
 	for (std::unique_ptr<MapEdit>& spawn_ : Respawns) {
 		spawn_->Draw2(cmdList);
@@ -933,7 +1026,7 @@ void MapEdit::WriteSet(int type,int ver, XMFLOAT3 pos, XMFLOAT3 scale, XMFLOAT3 
 {
 	FILE* fp1;
 	//テキスト暗号化した状態で保存
-	fp1 = _fsopen("GameOriginal/MapEdit/STAGE4.txt", "a", _SH_DENYNO);
+	fp1 = _fsopen("GameOriginal/MapEdit/STAGE5.txt", "a", _SH_DENYNO);
 
 	if (fp1 == NULL) {
 		assert(0);
@@ -1206,7 +1299,13 @@ void MapEdit::MapSet(ID3D12GraphicsCommandList* cmdList, float x, std::istream&t
 					//モデルを指定
 					mapObj->SetFbxmodelType(Block_model_num);
 				}
-
+				else if (type == 9)
+				{
+					//ここでモデルの形状をセット
+					mapObj->SetModel(tallet_model);
+					//モデルを指定
+					mapObj->SetFbxmodelType(Tallet_model_num);
+				}
 
 
 				//posを横にずらす
@@ -1318,7 +1417,13 @@ void MapEdit::MapSet(ID3D12GraphicsCommandList* cmdList, float x, std::istream&t
 					//モデルを指定
 					mapObj_red->SetFbxmodelType(Block_model_num);
 				}
-
+				else if (type == 9)
+				{
+					//ここでモデルの形状をセット
+					mapObj->SetModel(tallet_model);
+					//モデルを指定
+					mapObj->SetFbxmodelType(Tallet_model_num);
+				}
 
 				//座標をセット
 				mapObj_red->SetPosition(pos);
@@ -1387,7 +1492,13 @@ void MapEdit::MapSet(ID3D12GraphicsCommandList* cmdList, float x, std::istream&t
 					//モデルを指定
 					mapObj_blue->SetFbxmodelType(Block_model_num);
 				}
-
+				else if (type == 9)
+				{
+					//ここでモデルの形状をセット
+					mapObj->SetModel(tallet_model);
+					//モデルを指定
+					mapObj->SetFbxmodelType(Tallet_model_num);
+				}
 
 				//座標をセット
 				mapObj_blue->SetPosition(pos);
@@ -1456,7 +1567,7 @@ void MapEdit::ObjMapUpdate(std::list<std::unique_ptr<MapEdit>>& Objs, int sceneS
 
 	//txtから読み込んだ情報をもとに更新、録画
 	for (std::unique_ptr<MapEdit>& mapObj_ : Objs) {
-		if (mapObj_->GetFbxmodelType() != 6 && mapObj_->GetFbxmodelType() != 7 && scene == sceneSet)
+		if (mapObj_->GetFbxmodelType() != 6 && mapObj_->GetFbxmodelType() != 7 && mapObj_->GetFbxmodelType() != 9 && scene == sceneSet)
 		{
 			
 			mapObj_->Update();
@@ -1497,6 +1608,17 @@ void MapEdit::ObjMapUpdate(std::list<std::unique_ptr<MapEdit>>& Objs, int sceneS
 			mapObj_->SetTutorial(Tutorial);
 
 			mapObj_->BoxObjUpdate(0, 0);
+		}
+		else if (mapObj_->GetFbxmodelType() == 9 && scene == sceneSet)
+		{
+			//必要な情報をセットしていく
+			mapObj_->SetMyPosition(MyPosition);
+			mapObj_->SetCameraAxisZ(CammeraZAxis);
+			mapObj_->SetTarget(Target);
+
+			mapObj_->SetTutorial(Tutorial);
+
+			mapObj_->TurettUpdate();
 		}
 	}
 }
@@ -1842,6 +1964,32 @@ void MapEdit::PasteInfo()
 		block->SetFbxVer(block_ver);
 		//登録
 		Blocks.push_back(std::move(block));
+
+		//当たり判定確認用OBJ生成
+		CreateCollisionBox();
+	}
+	else if (Copy_model_num == 9)
+	{
+		//生成
+		std::unique_ptr<MapEdit>tallet = std::make_unique<MapEdit>(Window_Width, Window_Height, input);
+		//初期化
+		tallet->Initialize();
+		//ここでモデルの形状をセット
+		tallet->SetModel(tallet_model);
+		//コリジョンのサイズ登録(初期は０)
+		tallet->SetColisionSize(Copy_colision_size);
+		//スケールのサイズ
+		tallet->SetScale(Copy_scale);
+		//ポジションの初期位置設定
+		tallet->SetPosition(Copy_pos);
+		//回転
+		tallet->SetRotate(Copy_rotate);
+		//モデルを指定
+		tallet->SetFbxmodelType(Tallet_model_num);
+		//ver指定
+		tallet->SetFbxVer(obj_ver);
+		//登録
+		Tallets.push_back(std::move(tallet));
 
 		//当たり判定確認用OBJ生成
 		CreateCollisionBox();
@@ -2234,7 +2382,7 @@ void MapEdit::MapObjUpdate()
 	for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs) {
 		//mapObj_->Update();
 
-		if (mapObj_->GetFbxmodelType() != 6 && mapObj_->GetFbxmodelType() != 7 && scene != 2)
+		if (mapObj_->GetFbxmodelType() != 6 && mapObj_->GetFbxmodelType() != 7 && mapObj_->GetFbxmodelType() != 9&&  scene != 2)
 		{
 			mapObj_->Update();
 		}
@@ -2272,6 +2420,17 @@ void MapEdit::MapObjUpdate()
 			mapObj_->SetTutorial(Tutorial);
 
 			mapObj_->BoxObjUpdate(0, 0);
+		}
+		else if (mapObj_->GetFbxmodelType() == 9 && scene !=2)
+		{
+			//必要な情報をセットしていく
+			mapObj_->SetMyPosition(MyPosition);
+			mapObj_->SetCameraAxisZ(CammeraZAxis);
+			mapObj_->SetTarget(Target);
+
+			mapObj_->SetTutorial(Tutorial);
+
+			mapObj_->TurettUpdate();
 		}
 	}
 

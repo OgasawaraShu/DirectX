@@ -45,11 +45,11 @@ void Input::Update()
 
     result = devkeyboard->GetDeviceState(sizeof(key), key);
 
-    ShowCursor(FALSE);
+    //ShowCursor(FALSE);
 
     if ((scene == 1|| scene == 2||scene==3)&&Menu_flag==false)
     {
-        SetCursorPos(640, 360);
+       // SetCursorPos(640, 360);
     }
     else
     {

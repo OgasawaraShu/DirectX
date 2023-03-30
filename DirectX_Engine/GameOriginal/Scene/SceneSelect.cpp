@@ -1,5 +1,6 @@
 #include "SceneSelect.h"
 
+
 SceneSelect::SceneSelect(int window_width, int window_height, Input* input)
 {
 	this->input = input;
@@ -48,12 +49,13 @@ void SceneSelect::MouseGet()
 	ScreenToClient(hwnd, &p);
 
 	//マウスの座標を代入
-	mouseX = p.x;
-	mouseY = p.y;
+	mouseX = p.x+padX;
+	mouseY = p.y+padY;
 }
 
 void SceneSelect::Title()
 {
+	
 	//タイトルで指定範囲内でクリックしたら適切なシーンにする
 	if (scene == 0)
 	{
@@ -323,4 +325,112 @@ void SceneSelect::MenuScene()
 			Menu_type = 0;
 		}
 	}
+}
+
+void SceneSelect::PadScene()
+{
+	//パッドのポインタ
+	GamePad* GP = nullptr;
+	GP = new GamePad();
+
+	//パッドの更新
+	GP->Update();
+
+	if (GP->state.Gamepad.sThumbLX != 0 || GP->state.Gamepad.sThumbLY != 0)//ゲームパッドアナログスティック入力時処理
+	{
+		padX += static_cast<FLOAT>(GP->state.Gamepad.sThumbLX / 32767.0 * (6.0f));
+		padY -= static_cast<FLOAT>(GP->state.Gamepad.sThumbLY / 32767.0 * (6.0f));
+	}
+
+
+	//パッドの操作
+	if (scene == 0)
+	{
+		if (OverRed==1)
+		{
+			if (GP->iPad_B == 1 && Old_iPad_B == 0)
+			{
+				changeFlag = true;
+
+				push = 1;
+			}
+			else
+			{
+				push = 0;
+			}
+
+		}
+		else if (OverRed==2)
+		{
+			if (GP->iPad_B == 1 && Old_iPad_B == 0)
+			{
+				scene = 100;
+				push = 1;
+			}
+			else
+			{
+				push = 0;
+			}
+		}
+		else
+		{
+			OverRed = 0;
+		}
+
+		
+	}
+
+	if ((GP->iPad_Start == 1 && Old_ipad_start == 0) && scene != 99 && scene != 0)
+	{
+		Menu_flag = true;
+	}
+
+	if (Menu_flag == true)
+	{
+		if (Menu_type ==1)
+		{
+			if (GP->iPad_B == 1 && Old_iPad_B == 0)
+			{
+				Menu_flag = false;
+
+				push = 1;
+			}
+			else
+			{
+				push = 0;
+			}
+		}
+		else if (Menu_type==2)
+		{
+			if (GP->iPad_B == 1 && Old_iPad_B == 0)
+			{
+
+				push = 1;
+			}
+			else
+			{
+				push = 0;
+			}
+		}
+		else if (Menu_type==3)
+		{
+			if (GP->iPad_B == 1 && Old_iPad_B == 0)
+			{
+				scene = 100;
+				push = 1;
+			}
+			else
+			{
+				push = 0;
+			}
+		}
+	}
+
+
+	//トリガー処理のための記憶
+	Old_iPad_left = GP->iPad_left, Old_iPad_right = GP->iPad_right, iOld_Pad_up = GP->iPad_up, Old_iPad_down = GP->iPad_down;
+	Old_iPad_leftshoulder = GP->iPad_leftshoulder, Old_iPad_rightshoulder = GP->iPad_rightshoulder;
+	Old_iPad_A = GP->iPad_A, Old_iPad_B = GP->iPad_B, Old_iPad_X = GP->iPad_X, Old_iPad_Y = GP->iPad_Y;
+	Old_ipad_start = GP->iPad_Start;
+
 }

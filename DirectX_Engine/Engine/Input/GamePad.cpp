@@ -7,6 +7,7 @@ void GamePad::Update()
     iPad_left = 0, iPad_right = 0, iPad_up = 0, iPad_down = 0;
     iPad_leftshoulder = 0, iPad_rightshoulder = 0;
     iPad_A = 0, iPad_B = 0, iPad_X = 0, iPad_Y = 0;
+    iPad_Start = 0;
 
     if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_LEFT) iPad_left = 1;//ゲームパッド十字キー左
     if (state.Gamepad.wButtons & XINPUT_GAMEPAD_DPAD_RIGHT) iPad_right = 1;//ゲームパッド十字キー右
@@ -18,6 +19,7 @@ void GamePad::Update()
     if (state.Gamepad.wButtons & XINPUT_GAMEPAD_B) iPad_B = 1;//ゲームパッドB
     if (state.Gamepad.wButtons & XINPUT_GAMEPAD_X) iPad_X = 1;//ゲームパッドX
     if (state.Gamepad.wButtons & XINPUT_GAMEPAD_Y) iPad_Y = 1;//ゲームパッドY
+    if (state.Gamepad.wButtons & XINPUT_GAMEPAD_START) iPad_Start = 1;//ゲームパッドSTART
     //ゲームパッドアナログスティックのデッドゾーン処理
     if ((state.Gamepad.sThumbLX < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE && state.Gamepad.sThumbLX > -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE) &&
         (state.Gamepad.sThumbLY < XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE && state.Gamepad.sThumbLY > -XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE))

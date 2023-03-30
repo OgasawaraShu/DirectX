@@ -308,6 +308,40 @@ void ObjFbx::BoxRayCheck()
 	Old_iPad_A = GP->iPad_A, Old_iPad_B = GP->iPad_B, Old_iPad_X = GP->iPad_X, Old_iPad_Y = GP->iPad_Y;
 }
 
+void ObjFbx::TurettUpdate()
+{
+	RazerRayCheck();
+
+	BoxRayCheck();
+
+	//FBXの更新
+	Update();
+
+}
+
+void ObjFbx::RazerRayCheck()
+{
+	// レイのスタート地点を設定
+	Ray ray;
+	ray.start = { position.x,position.y,position.z,0 };
+	ray.start.m128_f32[1] += 2.5f;
+	ray.dir = { 0,0,1,0 };
+	RaycastHit raycastHit;
+
+	XMMATRIX matRot;
+
+	matRot = XMMatrixIdentity();
+	matRot *= XMMatrixRotationZ(XMConvertToRadians(rotation.z));
+	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
+	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
+	ray.dir = XMVector3Transform(ray.dir, matRot);
+
+	//レイが当たったのなら取得する
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_PLAYER, &raycastHit, 20.0f)) {
+
+	}
+}
+
 void ObjFbx::ObjFall()
 {
 	// 落下処理

@@ -19,6 +19,10 @@ public:
     void BoxObjUpdate(float angleX, float angleY);
     //Boxのレイチェック
     void BoxRayCheck();
+
+    void TurettUpdate();
+
+    void RazerRayCheck();
     //重力の処理
     void ObjFall();
     //Matrixのアップデート
