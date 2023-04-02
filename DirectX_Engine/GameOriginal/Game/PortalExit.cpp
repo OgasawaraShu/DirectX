@@ -52,7 +52,7 @@ void PortalExit::OriginalUpdate(float angleX, float angleY)
 	//フラグが立ったらワープのスケールを広げる
 	if (WarpFlag == true)
 	{
-		if (ScaleExit.x < 0.07)
+		if (ScaleExit.x < 0.1)
 		{
 			ScaleExit.x += 0.003;
 			ScaleExit.y += 0.003;

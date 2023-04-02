@@ -51,10 +51,7 @@ void Input::Update()
     {
        // SetCursorPos(640, 360);
     }
-    else
-    {
-       
-    }
+
     // マウス
     result = devMouse->Acquire();	// マウス動作開始
     // 前回の入力を保存

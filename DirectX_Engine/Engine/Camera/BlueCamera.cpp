@@ -4,7 +4,7 @@ using namespace DirectX;
 
 BlueCamera::BlueCamera(int window_width, int window_height)
 {
-	aspectRatio = (float)window_width / window_height;
+	aspectRatio = (float)500 / window_height;
 
 	//ビュー行列の計算
 	UpdateViewMatrix();
