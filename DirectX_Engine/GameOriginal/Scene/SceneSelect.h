@@ -54,6 +54,8 @@ public:
 
 	bool GetMenuFlag() { return Menu_flag; }
 
+	bool GetOptionFlag() { return Option_flag; }
+
 	int GetMenuType() { return Menu_type; }
 
 	float GetMouseX() { return mouseX; }
@@ -130,6 +132,8 @@ private:
 	int Pad_select = 0;
 
 	bool Mouse_flag = true;
+
+	bool Option_flag = false;
 
 
 	int Old_iPad_left = 0, Old_iPad_right = 0, iOld_Pad_up = 0, Old_iPad_down = 0;

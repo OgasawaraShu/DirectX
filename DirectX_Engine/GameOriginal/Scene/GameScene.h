@@ -22,6 +22,7 @@
 #include "../Game/PlayerFbx.h"
 #include "../Game/BulletFbx.h"
 #include "../Game/PortalExit.h"
+#include "../Game/Option.h"
 #include "../../Engine/Collision/SphereCollider.h"
 #include "../../Engine/Collision/PlaneCollider.h"
 #include "../../Engine/Collision/BoxCollider.h"
@@ -122,6 +123,7 @@ private://ポインタ
 	PostEffect* postEffect = nullptr;
 	LightGroup* lightGroup = nullptr;
 	Physics* physics = nullptr;
+	Option* option = nullptr;
 
 	//カメラ
 	DebugCamera* camera = nullptr;

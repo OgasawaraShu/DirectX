@@ -89,11 +89,11 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 				{
 					Collision_fbx_flag = 4;
 				}
-				else if (position.y <= Collision_fbx_pos_min.y+3)
+				else if (position.y >= Collision_fbx_pos_min.y)
 				{
 					Collision_fbx_flag = 5;
 				}
-				else if (position.y >= Collision_fbx_pos_max.y-3)
+				else if (position.y <= Collision_fbx_pos_max.y)
 				{
 					Collision_fbx_flag = 6;
 				}
@@ -146,11 +146,11 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 				{
 					Collision_fbx_flag = 4;
 				}
-				else if (position.y < Collision_fbx_pos_min.y)
+				else if (position.y >= Collision_fbx_pos_min.y)
 				{
 					Collision_fbx_flag = 5;
 				}
-				else if (position.y > Collision_fbx_pos_max.y)
+				else if (position.y <= Collision_fbx_pos_max.y)
 				{
 					Collision_fbx_flag = 6;
 				}

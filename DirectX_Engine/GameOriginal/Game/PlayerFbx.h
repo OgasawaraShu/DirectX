@@ -58,6 +58,8 @@ public:
 
 	//Gettter
 	XMVECTOR GetMove() { return moveCamera; }
+
+	XMVECTOR GetFall() { return fallV; }
 	//pos
 	XMFLOAT3 GetPosition() { return Warp2; }
 	//pos
@@ -80,6 +82,7 @@ public:
 	bool GetExit() { return Exit; }
 
 	bool GetIsPlay() { return isPlay; }
+
 	//debug
 	int aGet() { return a; }
 	//debug

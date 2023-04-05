@@ -158,7 +158,7 @@ void DebugCamera::Update()
 			bluefall = false;
 		}
 
-
+		
 
 		// 注視点から視点へのベクトルと、上方向ベクトル  視点
 		XMVECTOR vEyeTarget = { 0.0f, 0.0f, distance, 1.0f };
@@ -211,8 +211,8 @@ volatile void DebugCamera::MainSceneUpdate()
 
 	if (Menu_flag == false)
 	{
-		float dy = mouseMove.lX * scaleY;
-		float dx = mouseMove.lY * scaleX;
+		float dy = mouseMove.lX * scaleY*Mouse_sensitivity;
+		float dx = mouseMove.lY * scaleX*Mouse_sensitivity;
 
 		angleX = -dx * XM_PI;
 		angleY = -dy * XM_PI;
@@ -222,10 +222,17 @@ volatile void DebugCamera::MainSceneUpdate()
 	//ゲームパッドアナログスティックR入力時処理(視点移動)
 	if ((GP->state.Gamepad.sThumbRX != 0 || GP->state.Gamepad.sThumbRY != 0) && Menu_flag == false && Tutorial == false)
 	{
-		float dy = static_cast<FLOAT>(GP->state.Gamepad.sThumbRX / 32767.0 * (0.02f));
-		float dx = static_cast<FLOAT>(GP->state.Gamepad.sThumbRY / 32767.0 * (0.02f));
+		float dy = static_cast<FLOAT>(GP->state.Gamepad.sThumbRX / 32767.0 * (Pad_sensitivity));
+		float dx = static_cast<FLOAT>(GP->state.Gamepad.sThumbRY / 32767.0 * (Pad_sensitivity));
 
-		angleX = dx * XM_PI;
+		if (Reverse_switch == false)
+		{
+			angleX = dx * XM_PI;
+		}
+		else
+		{
+			angleX = -dx * XM_PI;
+		}
 		angleY = -dy * XM_PI;
 	}
 	
@@ -302,14 +309,14 @@ volatile void DebugCamera::MainSceneUpdate()
 		MoveVector(move);
 	}
 
+	MoveVector(fall_);
+
 	//テレポートしたら座標を合わせる
 	if (blueTeleport == true || redTeleport == true)
 	{
 		SetEye(Warp_);
 
 	}
-
-	
 }
 #pragma optimize("", on)
 void DebugCamera::TitleSceneUpdate()

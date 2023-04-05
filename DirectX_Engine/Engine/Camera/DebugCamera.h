@@ -70,6 +70,10 @@ public:
 	float GetVx() { return vect.m128_f32[0]; }
 	float GetVy() { return vect.m128_f32[1]; }
 
+	float GetMouseSensi() { return Mouse_sensitivity; }
+	float GetPadSensi() { return Pad_sensitivity; }
+
+
 
 	void SetMove(XMVECTOR move) { move_ = move; }
 	void SetWarpPosition(XMFLOAT3 Warp) { Warp_=Warp; }
@@ -92,6 +96,12 @@ public:
 	void SetTutorial(bool flag) { Tutorial = flag; }
 	void SetOldScene(int scene) { Old_scene = scene; }
 	void SetMenuFlag(bool flag) { Menu_flag = flag; }
+	void SetFallV(XMVECTOR vec) { fall_ = vec; }
+
+	void SetMouseSensi(float a) { Mouse_sensitivity = a; }
+	void SetPadSensi(float a) { Pad_sensitivity = a; }
+	void SetReverseSwitch(bool flag) { Reverse_switch = flag; }
+
 private:
 	// 入力クラスのポインタ
 	Input* input;
@@ -176,6 +186,7 @@ int s = 0;
 	volatile XMVECTOR movevol{};
 
 	XMVECTOR move_ = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR fall_ = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR vect= DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMFLOAT3 Warp_={0,0,0};
 	XMFLOAT3 eye_ = { 0,0,0 };
@@ -183,7 +194,11 @@ int s = 0;
 	XMFLOAT3 position1{};
 
 	bool trun = false;
+	bool Reverse_switch;
 	int time2 = 0;
 	int time3 = 0;
+
+	float Mouse_sensitivity=1.0f;
+	float Pad_sensitivity=0.02f;
 };
 

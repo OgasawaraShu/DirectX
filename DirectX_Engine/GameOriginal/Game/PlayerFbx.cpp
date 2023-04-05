@@ -478,7 +478,7 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 	}
 
     //•Ï”‚É‘ã“ü
-	moveCamera = { dx += fallV.m128_f32[0]+dx_pad, dy += fallV.m128_f32[1], dz += fallV.m128_f32[2]+dz_pad, 0 };
+	moveCamera = { dx += dx_pad, dy , dz +=dz_pad, 0 };
 
 }
 

@@ -92,6 +92,8 @@ public:
 
 	void SetMenu(bool flag) { Menu_flag = flag; }
 
+	void SetEdit(bool flag) { Edit_flag = flag; }
+
 private://ƒƒ“ƒo•Ï”
 	ComPtr<IDirectInputDevice8> devMouse;
 	DIMOUSESTATE2 mouseState = {};
@@ -99,5 +101,6 @@ private://ƒƒ“ƒo•Ï”
 
 	int scene;
 	bool Menu_flag = false;
+	bool Edit_flag = false;
 };
 

@@ -34,6 +34,7 @@ void GameScene::SceneInitialize(DirectXCommon* dxCommon, Input* input, Audio* au
 	//‰Šú‰»ˆ—
 	//•¨—
 	physics = new Physics();
+	option = new Option();
 	//ƒV[ƒ“¶¬
 	scene = new SceneSelect(WinApp::window_width, WinApp::window_height, input);
 	//ƒJƒƒ‰¶¬
@@ -334,7 +335,7 @@ void GameScene::FbxInitialize()
 
 	collisionManager = CollisionManager::GetInstance();
 
-	float radius = 4.0f;
+	float radius = 5.0f;
 	float PlayerRadius = 1.0f;
 
 	redBullet->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
@@ -458,6 +459,9 @@ void GameScene::SceneUpdate()
 	Bluecamera->SetEyePos(blueExit->GetMyPosition());
 	Redcamera->SetEyePos(redExit->GetMyPosition());
 
+
+
+
 	Bluecamera->SetMatRot(camera->GetRot());
 	Redcamera->SetMatRot(camera->GetRot());
 	float in = 2;
@@ -496,6 +500,7 @@ void GameScene::SceneUpdate()
 	}
 
 	input_->SetMenu(scene->GetMenuFlag());
+	input_->SetEdit(scene->GetEdit());
 	input_->Update();
 
 	if (scene->GetMenuFlag() == false)
@@ -505,9 +510,18 @@ void GameScene::SceneUpdate()
 
 		camera->SetColision(player->GetColision());
 		camera->SetMove(player->GetMove());
+		camera->SetFallV(player->GetFall());
 		camera->SetColisionVec(player->GetColisionVec());
 		camera->SetTutorial(scene->GetTutorial());
 		if (scene->GetEdit() == false)camera->Update();
+
+
+
+		option->SetMouseSensi(camera->GetMouseSensi());
+		option->SetPadSensi(camera->GetPadSensi());
+	
+
+
 
 		//sprintf_s(moji2, "%f", camera->GetPositionX());
 
@@ -892,6 +906,8 @@ void GameScene::SceneDraw()
 		spriteMenuOp->SpriteTransVertexBuffer();
 		spriteMenuOp->Update();
 		spriteMenuOp->SpriteDraw();
+
+		
 	}
 	else if (scene->GetMenuType() == 3 && scene->GetMenuFlag() == true)
 	{
@@ -900,14 +916,13 @@ void GameScene::SceneDraw()
 		spriteMenuExit->SpriteDraw();
 	}
 
-	if (scene->GetMenuFlag() == true || scene->GetScene() == 0|| scene->GetEdit() == true)
+	if(scene->GetMenuFlag()==true&&scene->GetOptionFlag() == true)
 	{
-		spriteCusor->SetPosition({scene->GetMouseX(),scene->GetMouseY(),0});
-		spriteCusor->SpriteTransVertexBuffer();
-		spriteCusor->Update();
-		spriteCusor->SpriteDraw();
+		option->SettingSensi();
+		camera->SetReverseSwitch(option->GetPadReverse());
+		camera->SetMouseSensi(option->GetMouseSensi());
+		camera->SetPadSensi(option->GetPadSensi());
 	}
-
 
 	spriteChangeScene->SpriteTransVertexBuffer();
 	spriteChangeScene->Update();

@@ -284,6 +284,7 @@ void SceneSelect::MenuScene()
 			if (input->TriggerMouseLeft())
 			{
 				Menu_flag = false;
+				Option_flag = false;
 
 				push = 1;
 			}
@@ -298,7 +299,7 @@ void SceneSelect::MenuScene()
 			Menu_type = 2;
 			if (input->TriggerMouseLeft())
 			{
-	
+				Option_flag = true;
 				push = 1;
 			}
 			else
@@ -392,6 +393,7 @@ void SceneSelect::PadScene()
 			if (GP->iPad_B == 1 && Old_iPad_B == 0)
 			{
 				Menu_flag = false;
+				Option_flag = false;
 
 				push = 1;
 			}
@@ -404,7 +406,7 @@ void SceneSelect::PadScene()
 		{
 			if (GP->iPad_B == 1 && Old_iPad_B == 0)
 			{
-
+				Option_flag = true;
 				push = 1;
 			}
 			else
