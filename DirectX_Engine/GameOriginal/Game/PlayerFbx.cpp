@@ -421,42 +421,51 @@ void PlayerFbx::MoveMatrixUpdate(XMMATRIX matRot,XMMATRIX matTrans)
 	// WASD‚ª‰Ÿ‚³‚ê‚Ä‚¢‚½‚ç•ÀsˆÚ“®‚³‚¹‚é
 	if ((input->PushKey(DIK_A) || input->PushKey(DIK_D) || input->PushKey(DIK_W) || input->PushKey(DIK_S))|| (GP->state.Gamepad.sThumbLX != 0 || GP->state.Gamepad.sThumbLY != 0))
 	{
-		if (onGround == true&&WallCollision==false&&Tutorial==false&&Menu_flag==false)
+		if (WallCollision==false&&Tutorial==false&&Menu_flag==false)
 		{
 			isPlay = true;
 			wark = true;
+
+			float Speed = 0.3f;
+
+			//’nã‚¶‚á‚È‚¢‚Ì‚È‚ç’x‚­‚·‚é
+			if (onGround == false)
+			{
+				Speed = 0.1f;
+			}
+
 			if (input->PushKey(DIK_A))
 			{
-				dx -= 0.3f;
+				dx -= Speed;
 
 				if(Tutorial_time<180)Tutorial_time += 1;
 			}
 
 			if (input->PushKey(DIK_D))
 			{
-				dx += 0.3f;
+				dx += Speed;
 				
 				if (Tutorial_time < 180)Tutorial_time += 1;
 			}
 
 			if (input->PushKey(DIK_W))
 			{
-				dz += 0.3f;
+				dz += Speed;
 			
 				if (Tutorial_time < 180)Tutorial_time += 1;
 			}
 
 			if (input->PushKey(DIK_S))
 			{
-				dz -= 0.3f;
+				dz -= Speed;
 
 				if (Tutorial_time < 180)Tutorial_time += 1;
 			}
 
 			if (GP->state.Gamepad.sThumbLX != 0 || GP->state.Gamepad.sThumbLY != 0)
 			{
-				 dx_pad = static_cast<FLOAT>(GP->state.Gamepad.sThumbLX / 32767.0 * (0.3f));
-				 dz_pad = static_cast<FLOAT>(GP->state.Gamepad.sThumbLY / 32767.0 * (0.3f));
+				 dx_pad = static_cast<FLOAT>(GP->state.Gamepad.sThumbLX / 32767.0 * (Speed));
+				 dz_pad = static_cast<FLOAT>(GP->state.Gamepad.sThumbLY / 32767.0 * (Speed));
 
 				 if (Tutorial_time < 180)Tutorial_time += 1;
 			}

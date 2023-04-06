@@ -523,7 +523,7 @@ void GameScene::SceneUpdate()
 
 
 
-		//sprintf_s(moji2, "%f", camera->GetPositionX());
+		sprintf_s(moji2, "%f", camera->GetUpx());
 
 		//playerのセット
 
@@ -808,8 +808,8 @@ void GameScene::SceneDraw()
 
 	////スプライト共通コマンド
 	spriteCommon->PreDraw();
-//	  debugtext->Print(moji2, 100, 100);
-//    debugtext->DrawAll();//的カウント
+	//debugtext->Print(moji2, 100, 100);
+    //debugtext->DrawAll();//的カウント
 
 //    debugtext2->Print(moji2, 100, 200);
 //    debugtext2->DrawAll();//的カウント

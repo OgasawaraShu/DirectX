@@ -93,19 +93,39 @@ void DebugCamera::Update()
 
 
 	if (Menu_flag==false&&viewDirty) {
-		// 追加回転分の回転行列を生成
-		XMMATRIX matRotNew = XMMatrixIdentity();
- 
-		matRotNew *= XMMatrixRotationX(-angleX);
-		matRotNew *= XMMatrixRotationY(-angleY);
-		
-		// 累積の回転行列を合成
-		// ※回転行列を累積していくと、誤差でスケーリングがかかる危険がある為
-		// クォータニオンを使用する方が望ましい
 
-		matRot = matRotNew * matRot;
+		if (scene == 1 || scene == 2 || scene == 3)
+		{
+			// 追加回転分の回転行列を生成
+			XMMATRIX matRotNew = XMMatrixIdentity();
 
-		FXMVECTOR Quatenion=XMQuaternionRotationMatrix(matRot);
+			matRotNew *= XMMatrixRotationX(-oldx);
+			matRotNew *= XMMatrixRotationY(-oldy);
+
+			// 累積の回転行列を合成
+			// ※回転行列を累積していくと、誤差でスケーリングがかかる危険がある為
+			// クbォータニオンを使用する方が望ましい
+
+			matRot = matRotNew;
+
+			FXMVECTOR Quatenion = XMQuaternionRotationMatrix(matRot);
+		}
+		else
+		{
+			// 追加回転分の回転行列を生成
+			XMMATRIX matRotNew = XMMatrixIdentity();
+
+			matRotNew *= XMMatrixRotationX(-angleX);
+			matRotNew *= XMMatrixRotationY(-angleY);
+
+			// 累積の回転行列を合成
+			// ※回転行列を累積していくと、誤差でスケーリングがかかる危険がある為
+			// クbォータニオンを使用する方が望ましい
+
+			matRot = matRotNew * matRot;
+		}
+
+
 
 		//テレポートしたら角度を球の逆にする
 		if (redTeleport == true)
@@ -239,6 +259,14 @@ volatile void DebugCamera::MainSceneUpdate()
 	oldx += angleX;
 	oldy += angleY;
 
+	if (oldx<1.5 && oldx>-1.5)
+	{
+		Old_oldx = oldx;
+	}
+	else
+	{
+		oldx = Old_oldx;
+	}
 
 	move = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 

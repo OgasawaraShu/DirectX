@@ -103,6 +103,7 @@ bool Input::KeepKey(BYTE keyNumber)
     return false;
 }
 
+
 void Input::PadUpdate()
 {
     XINPUT_STATE state;

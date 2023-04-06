@@ -45,7 +45,7 @@ public:
 	float GetPositionX();
 	float GetPositionY();
 
-	float GetUpx() { return up.x; }
+	float GetUpx() { return oldx; }
 	float GetUpy() { return up.y; }
 
 
@@ -141,6 +141,8 @@ private:
 
 	bool redfall = false;
 	bool bluefall = false;
+
+	float Old_oldx;
 
 	XMMATRIX RotRedFall = DirectX::XMMatrixIdentity();;
 	XMMATRIX RotBlueFall = DirectX::XMMatrixIdentity();;
