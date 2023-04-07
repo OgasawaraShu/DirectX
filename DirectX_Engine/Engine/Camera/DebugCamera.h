@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "../Input/Input.h"
 #include "../Input/GamePad.h"
+#include "../../GameOriginal/Game/Physics.h"
 
 /// <summary>
 /// デバッグ用カメラ
@@ -97,6 +98,9 @@ public:
 	void SetOldScene(int scene) { Old_scene = scene; }
 	void SetMenuFlag(bool flag) { Menu_flag = flag; }
 	void SetFallV(XMVECTOR vec) { fall_ = vec; }
+
+	void SetRedRotate(XMFLOAT3 rotate) { Red_rotate = rotate; }
+	void SetBlueRotate(XMFLOAT3 rotate) { Blue_rotate = rotate; }
 
 	void SetMouseSensi(float a) { Mouse_sensitivity = a; }
 	void SetPadSensi(float a) { Pad_sensitivity = a; }
@@ -194,6 +198,11 @@ int s = 0;
 	XMFLOAT3 eye_ = { 0,0,0 };
 	XMFLOAT3 oldeye = { 0,0,0 };
 	XMFLOAT3 position1{};
+
+	XMFLOAT3 Red_rotate;
+	XMFLOAT3 Blue_rotate;
+
+
 
 	bool trun = false;
 	bool Reverse_switch;

@@ -639,8 +639,22 @@ void GameScene::SceneUpdate()
 			camera->SetRedTeleport(player->GetredTeleport());
 			camera->SetAngleBlueY(redBullet->GetAngleY1());
 			camera->SetBlueTeleport(player->GetblueTeleport());
-			camera->SetBlue(redExit->GetRot());
+
+			if(player->GetredTeleport() == true)
+			{
 			camera->SetRed(blueExit->GetRot());
+			}
+
+
+
+			if (player->GetblueTeleport() == true)
+			{
+				camera->SetBlue(redExit->GetRot());
+			}
+
+			camera->SetRedRotate(blueExit->GetMyRotate());
+			camera->SetBlueRotate(redExit->GetMyRotate());
+
 			Bluecamera->SetRot(blueExit->GetRot());
 			Redcamera->SetRot(redExit->GetRot());
 

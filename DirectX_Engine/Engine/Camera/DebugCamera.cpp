@@ -107,8 +107,6 @@ void DebugCamera::Update()
 			// クbォータニオンを使用する方が望ましい
 
 			matRot = matRotNew;
-
-			FXMVECTOR Quatenion = XMQuaternionRotationMatrix(matRot);
 		}
 		else
 		{
@@ -132,6 +130,18 @@ void DebugCamera::Update()
 		{
 			matRot = RotRed;
 			RotRedFall = matRot;
+
+			if (Red_rotate.y == 180)
+			{
+				Red_rotate.y = 0;
+			}
+
+			if (Red_rotate.y == 0)
+			{
+				Red_rotate.y = 180;
+			}
+			oldy = XMConvertToRadians(Red_rotate.y);
+		
 			XMVECTOR movewarp;
 			movewarp = { 0,0,2,0 };
 			movewarp = XMVector3Transform(movewarp, matRot);
@@ -145,6 +155,18 @@ void DebugCamera::Update()
 		{
 			matRot = RotBlue;
 			RotBlueFall = matRot;
+
+			if (Blue_rotate.y == 180)
+			{
+				Blue_rotate.y = 0;
+			}
+
+			if (Blue_rotate.y == 0)
+			{
+				Blue_rotate.y = 180;
+			}
+
+			oldy = XMConvertToRadians(Blue_rotate.y);
 
 			XMVECTOR movewarp;
 			movewarp = { 0,0,2,0 };
