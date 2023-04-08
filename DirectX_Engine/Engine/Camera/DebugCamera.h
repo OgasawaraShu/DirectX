@@ -211,5 +211,11 @@ int s = 0;
 
 	float Mouse_sensitivity=1.0f;
 	float Pad_sensitivity=0.02f;
+
+
+
+	float timeRate;
+
+	size_t startIndex = 1;
 };
 

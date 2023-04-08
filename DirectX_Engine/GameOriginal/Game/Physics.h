@@ -35,7 +35,7 @@ public:
 
 	float Screw(float y,float g);//‰ñ“]‰^“®
 	//ƒXƒvƒ‰ƒCƒ“‹Èü
-    XMFLOAT3 splinePosition(const std::vector<XMFLOAT3>&points, size_t startIndex, float t);
+    static XMFLOAT3 splinePosition(const std::vector<XMFLOAT3>&points, size_t startIndex, float t);
 
 private:
 

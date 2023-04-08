@@ -54,12 +54,16 @@ void BulletFbx::Initialize2()
 
 void BulletFbx::OnCollision(const CollisionInfo& info)
 {
+
 	if (info.collider->attribute != 2&& info.collider->attribute != 4&& info.collider->attribute != 8&& info.collider->attribute != 16)
 	{
 		if (debug == 0 && TriggerFlag == 1)
 		{
+		
+
 			if (info.collider->attribute != 64&& info.collider->attribute != 512)
 			{
+				
 				XMFLOAT3 Collision_fbx_pos_min;
 				XMFLOAT3 Collision_fbx_pos_max;
 
@@ -115,8 +119,11 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 		}
 		if (debug2 == 0 && TriggerFlag2 == 1)
 		{
+			
+
 			if (info.collider->attribute != 64 && info.collider->attribute != 512)
 			{
+				
 				XMFLOAT3 Collision_fbx_pos_min;
 				XMFLOAT3 Collision_fbx_pos_max;
 		
@@ -161,6 +168,7 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 				debug2 = 1;
 				RedCollision = true;
 				RedAttack = false;
+
 			}
 			else if(info.collider->attribute == 512)
 			{
@@ -283,7 +291,7 @@ void BulletFbx::BlueBulletUpdate(float angleX, float angleY)
 		Vector.m128_f32[2] = Target.z - position.z;
 		Target_ = Target;
 
-		Vector = XMVector3Normalize(Vector) * 4.0f;
+		Vector = XMVector3Normalize(Vector) * 6.0f;
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 
 
@@ -326,7 +334,7 @@ void BulletFbx::BlueBulletUpdate(float angleX, float angleY)
 		Vector.m128_f32[1] = Target.y - position.y;
 		Vector.m128_f32[2] = Target.z - position.z;
 
-		Vector = XMVector3Normalize(Vector) * 4.0f;
+		Vector = XMVector3Normalize(Vector) * 6.0f;
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	}
 	else if(debug==1)
@@ -464,7 +472,7 @@ void BulletFbx::RedBulletUpdate(float angleX, float angleY)
 		Vector.m128_f32[2] = Target.z - position.z;
 		Target_ = Target;
 
-		Vector = XMVector3Normalize(Vector) * 4.0f;
+		Vector = XMVector3Normalize(Vector);
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 
 
@@ -496,7 +504,7 @@ void BulletFbx::RedBulletUpdate(float angleX, float angleY)
 		Vector.m128_f32[1] = Target.y - position.y;
 		Vector.m128_f32[2] = Target.z - position.z;
 		
-		Vector = XMVector3Normalize(Vector) * 4.0f;
+		Vector = XMVector3Normalize(Vector);
 
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	}

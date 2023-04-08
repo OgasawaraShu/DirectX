@@ -81,7 +81,8 @@ void DebugCamera::Update()
 	}
 	else if (scene == 0)
 	{
-		TitleSceneUpdate();
+		//TitleSceneUpdate();
+		IventMainUpdate();
 	}
 	else if (scene == 99)
 	{
@@ -414,38 +415,48 @@ void DebugCamera::TitleSceneUpdate()
 
 void DebugCamera::IventMainUpdate()
 {
+	std::vector<XMFLOAT3>points;
 
-	IventTime += 1;
-//	eye = { 0,-7,-20 };
-	if (IventNumber == 0)
+	points = {
+		{0,50,0},
+		{0,50,0},
+		{-50,0,0},
+		{50,0,0},
+		{-50,0,0},
+		{0,0,50},
+		{0,0,-50},
+		{0,0,50},
+		{0,0,50},
+	};
+
+	timeRate += 0.0001f;
+
+	if (timeRate >= 1.0f)
 	{
-		trun = false;
-		eye = { 0,-7,-20 };
-		if (IventTime > 180)
+		if (startIndex < points.size() - 3)
 		{
-			IventNumber += 1;
-			IventTime = 0;
-		}
-	}
-	else if (IventNumber == 1)
-	{
-		if (trun == false)
-		{
-			angleY += 0.005;
-			if (oldy > 1)
+			if (startIndex != 7)
 			{
-				trun = true;
+				startIndex += 1;
 			}
+			else
+			{
+				startIndex = 1;
+			}
+			timeRate -= 1.0f;
 		}
 		else
 		{
-			angleY -= 0.005;
+			timeRate = 1.0f;
 		}
 	}
-	oldx += angleX;
-	oldy += angleY;
 
 
+	XMFLOAT3 target_ = Physics::splinePosition(points, startIndex, timeRate);
+	SetTarget(target_);
+
+
+	Camera::Update();
 }
 
 void DebugCamera::MapEditUpdate()

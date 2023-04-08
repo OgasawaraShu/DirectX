@@ -3,6 +3,7 @@
 #include "../../Engine/Input/Input.h"
 #include "PlayerFbx.h"
 #include "../../Engine/Input/GamePad.h"
+#include "../../Engine/Collision/SphereCollider.h"
 
 class BulletFbx :
 	public Fbx3d
