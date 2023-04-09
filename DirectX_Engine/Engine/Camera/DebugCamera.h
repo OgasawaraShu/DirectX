@@ -105,6 +105,7 @@ public:
 	void SetMouseSensi(float a) { Mouse_sensitivity = a; }
 	void SetPadSensi(float a) { Pad_sensitivity = a; }
 	void SetReverseSwitch(bool flag) { Reverse_switch = flag; }
+	bool GetIventFlag() { return First_ivent_flag; }
 
 private:
 	// 入力クラスのポインタ
@@ -182,6 +183,8 @@ int s = 0;
 	int IventNumber = 0;
 
 	int IventTime = 0;
+
+	bool First_ivent_flag = true;
 
 	XMVECTOR fallV = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);;
 	XMVECTOR JumpV = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);;

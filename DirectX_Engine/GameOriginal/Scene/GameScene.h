@@ -76,7 +76,7 @@ public:
 
 private://ƒNƒ‰ƒX•Ï”
 
-	int Tutorial_num = 1;
+	int Tutorial_num = 0;
 	int scene_ = 0;
 	int c = 0;
 	int portaltime = 0;

@@ -114,6 +114,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
     std::string Ivent_key;
     bool Load_txt = true;
     bool Load_txt2 = true;
+    int man = 1;
+    int girl = 0;
 
     while (true)  // ゲームループ
     {
@@ -129,20 +131,36 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
         //文字列を結合
         strcat_s(str, str2);
 
+
+        if (gameScene->GetTutorialNum() == 0)
+        {
+            if (Load_txt == true)
+            {
+                directWrite->DirectWriteLost();
+                Ivent_key = str;
+                directWrite->DirectWritePre(Ivent_key,man);
+                directWrite->registerTextFormat(Ivent_key, 33);
+                directWrite->DirectWriteTextLoad(Ivent_key);
+                Load_txt = false;
+                Load_txt2 = true;
+            }
+
+        }
+
+
         if (gameScene->GetTutorialNum() == 1)
         {
             if (Load_txt2 == true)
             {
                 directWrite->DirectWriteLost();
-                Ivent_key = str;
-                directWrite->DirectWritePre(Ivent_key);
-                directWrite->registerTextFormat(Ivent_key, 33);
-                directWrite->DirectWriteTextLoad(Ivent_key);
                 Load_txt2 = false;
                 Load_txt = true;
             }
 
-         
+            Ivent_key = str;
+            directWrite->DirectWritePre(Ivent_key,girl);
+            directWrite->registerTextFormat(Ivent_key, 33);
+            directWrite->DirectWriteTextLoad(Ivent_key);
         }
 
 
@@ -156,7 +174,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             }
 
             Ivent_key = str;
-            directWrite->DirectWritePre(Ivent_key);
+            directWrite->DirectWritePre(Ivent_key, girl);
             directWrite->registerTextFormat(Ivent_key, 33);
             directWrite->DirectWriteTextLoad(Ivent_key);
         }
@@ -171,7 +189,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             }
 
             Ivent_key = str;
-            directWrite->DirectWritePre(Ivent_key);
+            directWrite->DirectWritePre(Ivent_key, girl);
             directWrite->registerTextFormat(Ivent_key, 33);
             directWrite->DirectWriteTextLoad(Ivent_key);
         }
@@ -186,7 +204,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             }
 
             Ivent_key = str;
-            directWrite->DirectWritePre(Ivent_key);
+            directWrite->DirectWritePre(Ivent_key, girl);
             directWrite->registerTextFormat(Ivent_key, 33);
             directWrite->DirectWriteTextLoad(Ivent_key);
         }
@@ -202,7 +220,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             }
 
             Ivent_key = str;
-            directWrite->DirectWritePre(Ivent_key);
+            directWrite->DirectWritePre(Ivent_key, girl);
             directWrite->registerTextFormat(Ivent_key, 33);
             directWrite->DirectWriteTextLoad(Ivent_key);
         }
@@ -217,7 +235,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             }
 
             Ivent_key = str;
-            directWrite->DirectWritePre(Ivent_key);
+            directWrite->DirectWritePre(Ivent_key, girl);
             directWrite->registerTextFormat(Ivent_key, 33);
             directWrite->DirectWriteTextLoad(Ivent_key);
         }

@@ -11,7 +11,7 @@ class DirectWrite:
 public://ƒƒ“ƒoŠÖ”
 	void DirectWriteLost();
 
-	void DirectWritePre(const std::string& key);
+	void DirectWritePre(const std::string& key,const int color);
 
 	void registerTextFormat(const std::string& key,
 		const FLOAT fontSize);

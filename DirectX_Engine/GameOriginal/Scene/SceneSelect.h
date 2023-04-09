@@ -52,6 +52,8 @@ public:
 
 	void SetWalkTutorial(bool flag) { Walk_tutorial = flag; }
 
+	void SetFirstIvent(bool flag) { First_ivent_flag = flag; }
+
 	bool GetMenuFlag() { return Menu_flag; }
 
 	bool GetOptionFlag() { return Option_flag; }
@@ -132,6 +134,8 @@ private:
 	int Pad_select = 0;
 
 	bool Mouse_flag = true;
+
+	bool First_ivent_flag;
 
 	bool Option_flag = false;
 

@@ -409,7 +409,7 @@ void GameScene::SceneUpdate()
 	if (scene->GetScene() == 0)
 	{
 	    Cut_y_size = 0;
-		Tutorial_num = 1;
+		Tutorial_num = 0;
 		player->PlayerResetTitle();
 		mapedit->MapInitialize();
 		lightGroup->SetDirLightActive(0, false);
@@ -458,6 +458,7 @@ void GameScene::SceneUpdate()
 	blueExit->GetExitPosition(blueBullet->GetPosition());
 	Bluecamera->SetEyePos(blueExit->GetMyPosition());
 	Redcamera->SetEyePos(redExit->GetMyPosition());
+	scene->SetFirstIvent(camera->GetIventFlag());
 
 
 
@@ -714,6 +715,10 @@ void GameScene::SceneUpdate()
 		scene->SetWalkTutorial(player->GetTutorialWalk());
 		mapedit->SetScene(scene->GetScene());
 	
+		if (camera->GetIventFlag() == false&& player->GetTutorialWalk() == false&&scene->GetScene() == 1)
+		{
+			Tutorial_num = 1;
+		}
 }
 
 void GameScene::SceneDraw()
@@ -865,9 +870,13 @@ void GameScene::SceneDraw()
 		spriteSceneCut->Update();
 		spriteSceneCut->SpriteDraw();
 		//自キャラ
-		spriteAim->SpriteTransVertexBuffer();
-		spriteAim->Update();
-		spriteAim->SpriteDraw();
+
+		if (scene->GetTutorial() == false)
+		{
+			spriteAim->SpriteTransVertexBuffer();
+			spriteAim->Update();
+			spriteAim->SpriteDraw();
+		}
 		//テキスト
 	
 		if (Under_sprite_txt == true)
@@ -877,6 +886,8 @@ void GameScene::SceneDraw()
 			spriteUnder->SpriteDraw();
 		}
 	}
+
+
 
 	if (player->GetTutorialWalk() == true && scene->GetScene() == 1)
 	{

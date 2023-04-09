@@ -24,16 +24,25 @@ void DirectWrite::DirectWriteLost()
      Ward_num = 1;
 }
 
-void DirectWrite::DirectWritePre(const std::string& key)
+void DirectWrite::DirectWritePre(const std::string& key, const int color)
 {
     HRESULT result;
+
 
     if (solidColorBrushMap.find(key) != solidColorBrushMap.end()) [[unlikely]] {
         return;
     }
     ComPtr<ID2D1SolidColorBrush> brush = nullptr;
 
-    d2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(0.9f, 0.35f, 0.35f, 1.0f), brush.GetAddressOf());
+    if (color == 0)
+    {
+        d2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(0.9f, 0.35f, 0.35f, 1.0f), brush.GetAddressOf());
+    }
+    else if (color == 1)
+    {
+        d2dDeviceContext->CreateSolidColorBrush(D2D1::ColorF(0.5f, 0.75f, 0.92f, 1.0f), brush.GetAddressOf());
+    }
+
     solidColorBrushMap[key] = brush;
 }
 

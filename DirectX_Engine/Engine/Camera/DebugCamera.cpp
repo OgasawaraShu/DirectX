@@ -42,6 +42,9 @@ void DebugCamera::Initialize2()
 	 trun = false;
 	 time2 = 0;
 	 time3 = 0;
+	// First_ivent_flag = true;
+
+
 	 if (Old_scene == 1)
 	 {
 		 eye = { 400,20,-20 };
@@ -59,30 +62,28 @@ void DebugCamera::Update()
 	if (scene == 1||scene==2||scene==3)
 	{
 
-		
-		MainSceneUpdate();
+		if (First_ivent_flag == false)
+		{
+			MainSceneUpdate();
+		}
+		else
+		{
+			IventMainUpdate();
+		}
 
+		
 		if (time2 == 0)
 		{
-			eye = { 0,0,-20 };
-			angleX = 0.2;
-			angleY = -(oldy);
-
 			oldx = 0;
 			oldy = 0;
-
-
 			time2 += 1;
-
-			SetEye(eye);
-
 		}
 
 	}
 	else if (scene == 0)
 	{
-		//TitleSceneUpdate();
-		IventMainUpdate();
+		TitleSceneUpdate();
+		//IventMainUpdate();
 	}
 	else if (scene == 99)
 	{
@@ -373,13 +374,14 @@ volatile void DebugCamera::MainSceneUpdate()
 void DebugCamera::TitleSceneUpdate()
 {
 
-	
 	eye = { -80,60,-60 };
 	
 	SetEye(eye);
 	
 	oldx += angleX;
 	oldy += angleY;
+	First_ivent_flag = true;
+	startIndex = 1;
 
 	if (time3 == 0)
 	{
@@ -415,33 +417,52 @@ void DebugCamera::TitleSceneUpdate()
 
 void DebugCamera::IventMainUpdate()
 {
+	eye = { 0,7,-50 };
+	SetEye(eye);
+
+	//eyeからtargetへの距離
+	float distance = 20.0f;
+
+	//イベントの視点移動の点
 	std::vector<XMFLOAT3>points;
 
+	//最後と終わりは2つずつ
+	//eyeを基準にdistanceを追加して変化する
 	points = {
-		{0,50,0},
-		{0,50,0},
-		{-50,0,0},
-		{50,0,0},
-		{-50,0,0},
-		{0,0,50},
-		{0,0,-50},
-		{0,0,50},
-		{0,0,50},
+		{eye.x             ,eye.y +  distance   ,eye.z             },
+		{eye.x             ,eye.y +  distance   ,eye.z             },
+		{eye.x             ,eye.y               ,eye.z+(distance/2)},
+		{eye.x             ,eye.y               ,eye.z+  (distance)},
+		{eye.x+(distance/2),eye.y +(distance/14),eye.z+(distance/2)},
+		{eye.x+  (distance),eye.y               ,eye.z             },
+		{eye.x+(distance/2),eye.y               ,eye.z+(distance/2)},
+		{eye.x             ,eye.y               ,eye.z+  (distance)},
+		{eye.x-(distance/2),eye.y               ,eye.z+(distance/2)},
+		{eye.x-  (distance),eye.y               ,eye.z             },
+		{eye.x-(distance/2),eye.y +(distance/20),eye.z+(distance/2)},
+		{eye.x             ,eye.y               ,eye.z + (distance)},
+		{eye.x             ,eye.y               ,eye.z + (distance)},
+		{eye.x             ,eye.y               ,eye.z + (distance)},
+		{eye.x             ,eye.y               ,eye.z + (distance)},
 	};
 
-	timeRate += 0.0001f;
+	//時を進める
+	timeRate += 0.01f;
 
+	//1以上いったら次に進める
 	if (timeRate >= 1.0f)
 	{
 		if (startIndex < points.size() - 3)
 		{
-			if (startIndex != 7)
+			if (startIndex != points.size() - 4)
 			{
 				startIndex += 1;
 			}
 			else
 			{
-				startIndex = 1;
+				//全てのスプライン曲線を移動したら次のイベント
+				//startIndex = 1;
+				First_ivent_flag = false;
 			}
 			timeRate -= 1.0f;
 		}
@@ -451,7 +472,7 @@ void DebugCamera::IventMainUpdate()
 		}
 	}
 
-
+	//計算した点の座標をtargetの座標に代入
 	XMFLOAT3 target_ = Physics::splinePosition(points, startIndex, timeRate);
 	SetTarget(target_);
 

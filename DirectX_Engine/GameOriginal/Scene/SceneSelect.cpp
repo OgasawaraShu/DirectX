@@ -155,7 +155,7 @@ void SceneSelect::ChangeScene()
 			change = 0;
 		}
 
-		if (Tutorial == true)
+		if (Tutorial == true&&First_ivent_flag==false)
 		{
 			Tutorial_time += 1;
 
