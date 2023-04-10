@@ -245,7 +245,7 @@ void ObjFbx::BoxObjUpdate(float angleX, float angleY)
 	//レイのチェック
 	BoxRayCheck();
 	//重力処理
-	//ObjFall();
+	ObjFall();
 	//平行移動
 	matTrans = XMMatrixTranslation(position.x , position.y += fallV.m128_f32[1], position.z);
 
@@ -344,27 +344,39 @@ void ObjFbx::RazerRayCheck()
 
 void ObjFbx::ObjFall()
 {
+
+
+	//
+	Sphere sphere;
+	sphere.center = { position.x,position.y-2.2f,position.z,0 };
+	sphere.redius = 1.0f;
+	RaycastHit raycastHit;
+
+	if (CollisionManager::GetInstance()->Spherecast(sphere, COLLISION_ATTR_WALL, &raycastHit, 5.0f)) {
+		if (cursorOn2 == false)
+		{
+			onGround = true;
+		}
+	}
+    else
+	{
+		if (cursorOn2 == false)
+		{
+			onGround = false;
+		}
+	}
+
 	// 落下処理
 	if (!onGround) {
 		// 下向き加速度
-		const float fallAcc = -0.01f;
+		const float fallAcc = -0.03f;
 		const float fallVYMin = -0.5f;
 		// 加速
 		fallV.m128_f32[1] = max(fallV.m128_f32[1] + fallAcc, fallVYMin);
 	}
-
-	// レイのスタート地点を設定
-	Sphere sphere;
-    sphere.center = { MyPosition.x,MyPosition.y,MyPosition.z,0 };
-	sphere.redius = 5.0f;
-	RaycastHit raycastHit;
-
-	if (CollisionManager::GetInstance()->Spherecast(sphere, COLLISION_ATTR_WALL, &raycastHit, 35.0f)) {
-		onGround = true;
-	}
 	else
 	{
-		onGround = false;
+		fallV.m128_f32[1] = 0.0f;
 	}
 }
 

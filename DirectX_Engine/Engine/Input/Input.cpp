@@ -50,14 +50,8 @@ void Input::Update()
     if ((scene == 1|| scene == 2||scene==3)&&Menu_flag==false&&Edit_flag==false)
     {
         SetCursorPos(640, 360);
-        ShowCursor(false);
     }
     
-    if(Menu_flag == true||Edit_flag==true)
-    {
-        ShowCursor(true);
-    }
-
 
     // マウス
     result = devMouse->Acquire();	// マウス動作開始

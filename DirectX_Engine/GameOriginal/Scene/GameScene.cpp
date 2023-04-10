@@ -410,6 +410,7 @@ void GameScene::SceneUpdate()
 	{
 	    Cut_y_size = 0;
 		Tutorial_num = 0;
+		Second_text_flag = true;
 		player->PlayerResetTitle();
 		mapedit->MapInitialize();
 		lightGroup->SetDirLightActive(0, false);
@@ -901,7 +902,11 @@ void GameScene::SceneDraw()
 
 	if (scene->GetScene() == 2)
 	{
-		Tutorial_num = 4;
+		if (Second_text_flag == true)
+		{
+			Tutorial_num = 4;
+			Second_text_flag = false;
+		}
 
 		if (player->GetPositionZ() > 65.0f&&Tutorial_num == 4)
 		{

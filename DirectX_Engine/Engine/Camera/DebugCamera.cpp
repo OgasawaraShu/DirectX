@@ -137,8 +137,7 @@ void DebugCamera::Update()
 			{
 				Red_rotate.y = 0;
 			}
-
-			if (Red_rotate.y == 0)
+			else if (Red_rotate.y == 0)
 			{
 				Red_rotate.y = 180;
 			}
@@ -162,8 +161,7 @@ void DebugCamera::Update()
 			{
 				Blue_rotate.y = 0;
 			}
-
-			if (Blue_rotate.y == 0)
+			else if (Blue_rotate.y == 0)
 			{
 				Blue_rotate.y = 180;
 			}

@@ -76,6 +76,7 @@ public:
 
 private://ƒNƒ‰ƒX•Ï”
 
+	bool Second_text_flag = true;
 	int Tutorial_num = 0;
 	int scene_ = 0;
 	int c = 0;
