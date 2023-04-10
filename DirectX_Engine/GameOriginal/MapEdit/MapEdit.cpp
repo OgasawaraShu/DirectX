@@ -92,7 +92,7 @@ void MapEdit::CreateObj(ID3D12GraphicsCommandList* cmdList)
 			//ƒ‚ƒfƒ‹‚ðŽw’è
 			fence->SetFbxmodelType(Fence_model_num);
 			//verŽw’è
-			fence->SetFbxVer(null_ver);
+			fence->SetFbxVer(block_ver);
 			//“o˜^
 			Fences.push_back(std::move(fence));
 
@@ -1831,7 +1831,7 @@ void MapEdit::PasteInfo()
 		//ƒ‚ƒfƒ‹‚ðŽw’è
 		fence->SetFbxmodelType(Fence_model_num);
 		//verŽw’è
-		fence->SetFbxVer(null_ver);
+		fence->SetFbxVer(block_ver);
 		//“o˜^
 		Fences.push_back(std::move(fence));
 

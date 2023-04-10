@@ -106,6 +106,25 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 				debug = 1;
 				BlueCollision = true;
 				BlueAttack = false;
+		
+				if (Collision_fbx_flag == 1)
+				{
+					position.x += 5.0f;
+				}
+				else if (Collision_fbx_flag == 2)
+				{
+					position.x -= 5.0f;
+				}
+				else if (Collision_fbx_flag == 3)
+				{
+					position.z += 5.0f;
+				}
+				else if (Collision_fbx_flag == 4)
+				{
+					position.z -= 5.0f;
+				}
+			
+
 			}
 			else if (info.collider->attribute == 512)
 			{
@@ -169,6 +188,22 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 				RedCollision = true;
 				RedAttack = false;
 
+				if (Collision_fbx_flag == 1)
+				{
+					position.x += 5.0f;
+				}
+				else if (Collision_fbx_flag == 2)
+				{
+					position.x -= 5.0f;
+				}
+				else if (Collision_fbx_flag == 3)
+				{
+					position.z += 5.0f;
+				}
+				else if (Collision_fbx_flag == 4)
+				{
+					position.z -= 5.0f;
+				}
 			}
 			else if(info.collider->attribute == 512)
 			{
@@ -291,7 +326,7 @@ void BulletFbx::BlueBulletUpdate(float angleX, float angleY)
 		Vector.m128_f32[2] = Target.z - position.z;
 		Target_ = Target;
 
-		Vector = XMVector3Normalize(Vector) * 6.0f;
+		Vector = XMVector3Normalize(Vector) * 2.0f;
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 
 
@@ -334,7 +369,7 @@ void BulletFbx::BlueBulletUpdate(float angleX, float angleY)
 		Vector.m128_f32[1] = Target.y - position.y;
 		Vector.m128_f32[2] = Target.z - position.z;
 
-		Vector = XMVector3Normalize(Vector) * 6.0f;
+		Vector = XMVector3Normalize(Vector) * 2.0f;
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	}
 	else if(debug==1)
@@ -472,7 +507,7 @@ void BulletFbx::RedBulletUpdate(float angleX, float angleY)
 		Vector.m128_f32[2] = Target.z - position.z;
 		Target_ = Target;
 
-		Vector = XMVector3Normalize(Vector);
+		Vector = XMVector3Normalize(Vector)*2.0f;
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 
 
@@ -504,7 +539,7 @@ void BulletFbx::RedBulletUpdate(float angleX, float angleY)
 		Vector.m128_f32[1] = Target.y - position.y;
 		Vector.m128_f32[2] = Target.z - position.z;
 		
-		Vector = XMVector3Normalize(Vector);
+		Vector = XMVector3Normalize(Vector)*2.0f;
 
 		matTrans = XMMatrixTranslation(position.x, position.y, position.z);
 	}
