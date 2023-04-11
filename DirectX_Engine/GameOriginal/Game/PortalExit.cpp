@@ -54,9 +54,9 @@ void PortalExit::OriginalUpdate(float angleX, float angleY)
 	{
 		if (ScaleExit.x < 0.1)
 		{
-			ScaleExit.x += 0.003;
-			ScaleExit.y += 0.003;
-			ScaleExit.z += 0.003;
+			ScaleExit.x += 0.012;
+			ScaleExit.y += 0.012;
+			ScaleExit.z += 0.012;
 
 			rotation.x = 0;
 			rotation.y = 0;

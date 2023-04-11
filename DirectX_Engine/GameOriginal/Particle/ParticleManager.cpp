@@ -566,6 +566,138 @@ void ParticleManager::CreateParticles(XMFLOAT3 pos)
 	}
 }
 
+void ParticleManager::CreateParticlesPortal(XMFLOAT3 pos, int rotate)
+{
+	for (int i = 0; i < 10; i++) {
+		// X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
+		const float rnd_pos = 0.0f;
+
+		XMFLOAT3 Add_rotate{};
+		int Vel_flag{};
+		float Add_pos_wight=10.3f;
+		float Add_pos_height = 20.6f;
+		int Create_rand = rand() % 2;
+		int Create_sign = rand() % 2;
+
+
+		if (rotate == 1||rotate==2)
+		{
+			Add_rotate.x = 0.0f; 
+			//Create_randで固定する軸を決めrand_inで固定されてる軸の符号を決める
+			if (Create_rand == 0)
+			{
+				Add_rotate.y = (float)rand() / RAND_MAX * Add_pos_height - Add_pos_height / 2.0f;
+				Add_rotate.z = Add_pos_wight/2;
+			}
+			else
+			{
+				Add_rotate.z = (float)rand() / RAND_MAX * Add_pos_wight - Add_pos_wight / 2.0f;
+				Add_rotate.y = Add_pos_height/2;
+			}
+			Vel_flag = 1;
+		}
+		else if (rotate == 3 || rotate == 4)
+		{
+			Add_rotate.z = 0.0f;
+			//Create_randで固定する軸を決めrand_inで固定されてる軸の符号を決める
+			if (Create_rand == 0)
+			{
+				Add_rotate.x = (float)rand() / RAND_MAX * Add_pos_wight - Add_pos_wight / 2.0f;
+				Add_rotate.y = Add_pos_height/2;
+			}
+			else
+			{
+				Add_rotate.y = (float)rand() / RAND_MAX * Add_pos_height - Add_pos_height / 2.0f;
+				Add_rotate.x = Add_pos_wight/2;
+			}
+
+			Vel_flag = 2;
+		}
+		else if (rotate == 5 || rotate == 6)
+		{
+			Add_rotate.y = 0.0f;
+			//Create_randで固定する軸を決めrand_inで固定されてる軸の符号を決める
+			if (Create_rand == 0)
+			{
+				Add_rotate.x = (float)rand() / RAND_MAX * Add_pos_wight - Add_pos_wight / 2.0f;
+				Add_rotate.z = Add_pos_height/2;
+			}
+			else
+			{
+				Add_rotate.z = (float)rand() / RAND_MAX * Add_pos_wight - Add_pos_wight / 2.0f;
+				Add_rotate.x = Add_pos_wight/2;
+			}
+
+
+			Vel_flag = 3;
+		}
+
+		XMFLOAT3 vel{};
+		if (i < 5)
+		{
+			const float rnd_vel = 0.1f;
+
+			if (Vel_flag == 1)
+			{
+				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			}
+			else if (Vel_flag == 2)
+			{
+				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			}
+			else if (Vel_flag == 3)
+			{
+				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			}
+		}
+		else
+		{
+			const float rnd_vel = 0.1f;
+
+			if (Vel_flag == 1)
+			{
+				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			}
+			else if (Vel_flag == 2)
+			{
+				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			}
+			else if (Vel_flag == 3)
+			{
+				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			}
+		}
+		
+		XMFLOAT3 acc{};
+		const float rnd_acc = 0.001f;
+		acc.y = -(float)rand() / RAND_MAX * rnd_acc;
+
+		vel = { 0,0,0 };
+		// 追加
+
+		if (Create_sign == 0)
+		{
+			Add(60, pos + Add_rotate, vel, acc, 1.5f, 0.0f);
+		}
+		else
+		{
+			Add(60, pos - Add_rotate, vel, acc, 1.5f, 0.0f);
+		}
+	}
+}
+
 void ParticleManager::CreateParticles2(XMFLOAT3 pos)
 {
 

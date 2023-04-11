@@ -450,7 +450,6 @@ void GameScene::SceneUpdate()
 	mapedit->SetShotRed(redBullet->GetShot2());
 	mapedit->SetWark(player->GetWark());
 	mapedit->SetTutorial(scene->GetTutorial_2());
-
 	redExit->SetRotateFlag(redBullet->GetCollisionFbxFlag());
 	blueExit->SetRotateFlag(blueBullet->GetCollisionFbxFlag());
 	redExit->GetFlag(redBullet->GetWarpFlag());
@@ -460,12 +459,10 @@ void GameScene::SceneUpdate()
 	Bluecamera->SetEyePos(blueExit->GetMyPosition());
 	Redcamera->SetEyePos(redExit->GetMyPosition());
 	scene->SetFirstIvent(camera->GetIventFlag());
-
-
-
-
 	Bluecamera->SetMatRot(camera->GetRot());
 	Redcamera->SetMatRot(camera->GetRot());
+
+
 	float in = 2;
 	if (player->Getground() == true)
 	{
@@ -666,6 +663,17 @@ void GameScene::SceneUpdate()
 			if (blueBullet->RedP_Attack() == true) particleManRed->CreateParticles(blueBullet->GetPosition());
 			if (redBullet->BlueP_Attack() == true) particleManBlue->CreateParticles(redBullet->GetPosition());
 
+			if (redBullet->GetWarpFlag() == true)
+			{
+				particleManBlue->CreateParticlesPortal(redBullet->GetPosition(),redBullet->GetCollisionFbxFlag());
+			}
+
+			if (blueBullet->GetWarpFlag2() == true)
+			{
+				particleManRed->CreateParticlesPortal(blueBullet->GetPosition(), blueBullet->GetCollisionFbxFlag());
+			}
+
+
 			particleManRed->Update();
 			particleManBlue->BlueUpdate();
 
@@ -727,43 +735,32 @@ void GameScene::SceneDraw()
 	
 
 	//FBX描画
-	redExit->RenPreDraw(dxCommon_->GetCmdList());
-	    
+	redExit->RenPreDraw(dxCommon_->GetCmdList());	    
 	int Blue_camera_select = 2;
 	playerBlue->SetIsPlay(player->GetIsPlay());
 	playerBlue->DrawPortalWindow(Blue_camera_select);
-
-
-
 	if (redBullet->GetWarpFlag() == true)
 	{
 		playerBlue->Draw2(dxCommon_->GetCmdList());
 		mapedit->BlueCameraObjUpdate(dxCommon_->GetCmdList());
 	}
-	
-
-
 	if (redBullet->GetWarpFlag() == false || blueBullet->GetWarpFlag2() == false)
 	{
 		portaltime = 0;
 	}
-
 	redExit->RenPostDraw(dxCommon_->GetCmdList());
 
-	blueExit->RenPreDraw2(dxCommon_->GetCmdList());
-	
+	blueExit->RenPreDraw2(dxCommon_->GetCmdList());	
 	if (blueBullet->GetWarpFlag2() == true)
 	{
 		player->Draw2(dxCommon_->GetCmdList());
 		mapedit->RedCameraObjUpdate(dxCommon_->GetCmdList());
 	}
-	
 	blueExit->RenPostDraw2(dxCommon_->GetCmdList());
+
 
 	//レンダ―テクスチャの描画
 	postEffect->PreDrawScene(dxCommon_->GetCmdList());
-
-
 	//バックバッファの番号を取得（2つなので0番か1番）
 	dxCommon_->ImguiPre();
 
@@ -958,8 +955,8 @@ void GameScene::SceneDraw()
 	spriteChangeScene->Update();
 	spriteChangeScene->SpriteDraw();
 	spriteChangeScene->SetColor({ 1,1,1,scene->GetChange() });
-	if (player->GetColision() == false && scene->GetEdit() == false)camera->ColisionAfterCameraSet(player->GetMyPosition());
 
+	if (player->GetColision() == false && scene->GetEdit() == false)camera->ColisionAfterCameraSet(player->GetMyPosition());
 	scene_ = scene->GetScene();
 	camera->SetOldScene(scene->OldScene());
 

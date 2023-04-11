@@ -140,7 +140,11 @@ public: // メンバ関数
 
 	void CreateParticles(XMFLOAT3 pos);
 
+	void CreateParticlesPortal(XMFLOAT3 pos, int rotate);
+
 	void CreateParticles2(XMFLOAT3 pos);
+
+
 
 
 private: // メンバ変数
