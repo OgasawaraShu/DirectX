@@ -341,7 +341,7 @@ volatile void DebugCamera::MainSceneUpdate()
 			move = -(XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
 		}
 
-		move.m128_f32[1] = 0;
+		move.m128_f32[1] = 0.0f;
 	}
 
 	if (Colision == false)

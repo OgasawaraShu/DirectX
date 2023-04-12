@@ -269,12 +269,19 @@ void ObjFbx::BoxRayCheck()
 	ray.dir = CammeraZAxis;
 
 
+	Sphere sphere;
+	
+	sphere.redius = 2.0f;
+
+
 	//パッドのポインタ
 	GamePad* GP = nullptr;
 	GP = new GamePad();
 
 	//パッドの更新
 	GP->Update();
+
+
 
 	//レイが当たっているのなら取得
 	if (CollisionManager::GetInstance()->Raycast(ray,COLLISION_ATTR_OBJ2, &raycastHit, 35.0f) && (input->TriggerKey(DIK_F) || (GP->iPad_B == 1 && Old_iPad_B == 0)) && !cursorOn2&&Tutorial==false) {
@@ -285,22 +292,55 @@ void ObjFbx::BoxRayCheck()
 		//離す処理
 		cursorOn2 = false;
 	}
+	
 
 	//持ってるときは少し奥で追従させる
 	if (cursorOn2 == true)
 	{
 		move = { 2,0,0,0 };
 		//少し奥で持たせる
-		position.x = (MyPosition.x + Vector.m128_f32[0] * 8);
-		position.y = (MyPosition.y + Vector.m128_f32[1] * 8);
-		position.z = (MyPosition.z + Vector.m128_f32[2] * 8);
+		position.x = (MyPosition.x + Vector.m128_f32[0] * Box_ray_length);
+		position.y = (MyPosition.y + Vector.m128_f32[1] * Box_ray_length);
+		position.z = (MyPosition.z + Vector.m128_f32[2] * Box_ray_length);
 
 		//反転したらを戻す
 		if (Target.z < MyPosition.z)
 		{
 			Vector.m128_f32[2] = MyPosition.z + 2 - Target.z + 2;
 		}
+
+		sphere.center = { position.x,position.y,position.z,0 };
+
+		if ((CollisionManager::GetInstance()->Spherecast(sphere, COLLISION_ATTR_WALL, &raycastHit, 5.0f))|| (CollisionManager::GetInstance()->Spherecast(sphere, COLLISION_ATTR_BLOCK, &raycastHit, 5.0f))) {
+			Collision_Box = true;
+		}
+		else
+		{
+			Collision_Box = false;
+		}
 	}
+
+	if (Collision_Box == true)
+	{
+		XMFLOAT3 position_;
+		float error = 5.0f;
+
+		position_.x = (MyPosition.x + Vector.m128_f32[0] * Box_ray_length);
+		position_.y = (MyPosition.y + Vector.m128_f32[1] * Box_ray_length);
+		position_.z = (MyPosition.z + Vector.m128_f32[2] * Box_ray_length);
+
+		position = Old_stock_pos;
+	}
+	else
+	{
+		//持っているときの前の座標を覚える
+		Old_stock_pos.x = position.x;
+		//持っているときの前の座標を覚える
+		Old_stock_pos.y = position.y;
+		//持っているときの前の座標を覚える
+		Old_stock_pos.z = position.z;
+	}
+
 
 	//トリガー処理のための記憶
 	Old_iPad_left = GP->iPad_left, Old_iPad_right = GP->iPad_right, iOld_Pad_up = GP->iPad_up, Old_iPad_down = GP->iPad_down;

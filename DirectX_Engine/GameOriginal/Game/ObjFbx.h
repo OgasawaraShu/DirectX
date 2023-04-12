@@ -97,6 +97,13 @@ protected:
     int Wark_time = 0;
     //地面の判定
     bool onGround = true;//地面の判定
+
+    bool Collision_Box = false;
+    //持つ長さ
+    float Box_ray_length = 8.0f;
+
+    XMFLOAT3 Old_stock_pos;
+
     //落ちるベクトル
     XMVECTOR fallV;
 

@@ -672,7 +672,7 @@ void GameScene::SceneUpdate()
 			{
 				particleManRed->CreateParticlesPortal(blueBullet->GetPosition(), blueBullet->GetCollisionFbxFlag());
 			}
-
+	
 
 			particleManRed->Update();
 			particleManBlue->BlueUpdate();
