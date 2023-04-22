@@ -88,6 +88,11 @@ XMFLOAT3 Physics::splinePosition(const std::vector<XMFLOAT3>& points, size_t sta
 	return position;
 }
 
+float Physics::easingOut(const float& start, const float& end, const float t)
+{
+	return start * (1.0f - t * (2 - t)) + end * (t * (2 - t));
+}
+
 
 
 void Physics::Initialize()

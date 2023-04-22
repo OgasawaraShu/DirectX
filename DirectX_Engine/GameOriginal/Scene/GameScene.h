@@ -95,6 +95,11 @@ private://クラス変数
 	BYTE olds[256] = {};
 
 	bool End_flag = false;
+	float TimeRate1 = 0.0f;
+	float TimeRate2 = 0.0f;
+	float start = 253;
+	float end = 360;
+	int Gun_txt_time = 0;
 
 	//Imgui用の調整データ
 	float pointLightPos[3] = { 0,0,0 };
@@ -149,6 +154,8 @@ private://ポインタ
 	Sprite* spriteMenuOp = nullptr;
 	Sprite* spriteMenuExit = nullptr;
 	Sprite* spriteCusor = nullptr;
+	Sprite* spriteNavi1 = nullptr;
+	Sprite* spriteNavi2 = nullptr;
 
 
 	//デバックテキスト

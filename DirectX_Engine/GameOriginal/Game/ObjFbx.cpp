@@ -271,7 +271,7 @@ void ObjFbx::BoxRayCheck()
 
 	Sphere sphere;
 	
-	sphere.redius = 2.0f;
+	sphere.redius = 2.5f;
 
 
 	//パッドのポインタ
@@ -292,7 +292,6 @@ void ObjFbx::BoxRayCheck()
 		//離す処理
 		cursorOn2 = false;
 	}
-	
 
 	//持ってるときは少し奥で追従させる
 	if (cursorOn2 == true)
@@ -308,7 +307,7 @@ void ObjFbx::BoxRayCheck()
 		{
 			Vector.m128_f32[2] = MyPosition.z + 2 - Target.z + 2;
 		}
-
+		//球の当たりの当たり判定の座標をBOXに設定
 		sphere.center = { position.x,position.y,position.z,0 };
 
 		if ((CollisionManager::GetInstance()->Spherecast(sphere, COLLISION_ATTR_WALL, &raycastHit, 5.0f))|| (CollisionManager::GetInstance()->Spherecast(sphere, COLLISION_ATTR_BLOCK, &raycastHit, 5.0f))) {
@@ -320,11 +319,12 @@ void ObjFbx::BoxRayCheck()
 		}
 	}
 
+
+	XMFLOAT3 position_{};
+	float error = 6.0f;
+
 	if (Collision_Box == true)
 	{
-		XMFLOAT3 position_;
-		float error = 5.0f;
-
 		position_.x = (MyPosition.x + Vector.m128_f32[0] * Box_ray_length);
 		position_.y = (MyPosition.y + Vector.m128_f32[1] * Box_ray_length);
 		position_.z = (MyPosition.z + Vector.m128_f32[2] * Box_ray_length);
@@ -340,6 +340,28 @@ void ObjFbx::BoxRayCheck()
 		//持っているときの前の座標を覚える
 		Old_stock_pos.z = position.z;
 	}
+
+
+	//本来持っている位置よりも誤差が生まれていたらすり抜け防止のため離す
+	//X	軸
+	if ((position.x <= position_.x - error || position.x >= position_.x + error)&&cursorOn2==true&&Collision_Box==true)
+	{
+		Collision_Box = false;
+		cursorOn2 = false;
+	}
+	//Ｙ軸
+	if ((position.y <= position_.y - error || position.y >= position_.y + error) && cursorOn2 == true && Collision_Box == true)
+	{
+		Collision_Box = false;
+		cursorOn2 = false;
+	}
+	//Z軸
+	if ((position.z <= position_.z - error || position.z >= position_.z + error) && cursorOn2 == true && Collision_Box == true)
+	{
+		Collision_Box = false;
+		cursorOn2 = false;
+	}
+
 
 
 	//トリガー処理のための記憶

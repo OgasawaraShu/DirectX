@@ -37,6 +37,8 @@ public:
 	//スプライン曲線
     static XMFLOAT3 splinePosition(const std::vector<XMFLOAT3>&points, size_t startIndex, float t);
 
+	static float easingOut(const float& start, const float& end, const float t);
+
 private:
 
 	float acceleration_g = G / 60;//加速度

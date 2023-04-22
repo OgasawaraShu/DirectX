@@ -1572,7 +1572,7 @@ void MapEdit::ObjMapUpdate(std::list<std::unique_ptr<MapEdit>>& Objs, int sceneS
 			
 			mapObj_->Update();
 		}
-		else if (mapObj_->GetFbxmodelType() == 6)
+		else if (mapObj_->GetFbxmodelType() == 6 && scene == sceneSet)
 		{
 			//必要な情報をセットしていく
 			mapObj_->SetMyPosition(MyPosition);
@@ -2333,7 +2333,7 @@ void MapEdit::RedCameraObjUpdate(ID3D12GraphicsCommandList* cmdList)
 
 		if (mapObj_->GetFbxmodelType() == 6)
 		{
-			mapObj_->DrawPortalWindowMove(Gun_pos,Gun_rotate, Red_camera_select);
+			//mapObj_->DrawPortalWindowMove(Gun_pos,Gun_rotate, Red_camera_select);
 		}
 		else
 		{
@@ -2364,7 +2364,7 @@ void MapEdit::BlueCameraObjUpdate(ID3D12GraphicsCommandList* cmdList)
 
 		if (mapObj_->GetFbxmodelType() == 6)
 		{
-			mapObj_->DrawPortalWindowMove(Gun_pos, Gun_rotate, Blue_camera_select);
+		//	mapObj_->DrawPortalWindowMove(Gun_pos, Gun_rotate, Blue_camera_select);
 		}
 		else
 		{
@@ -2386,17 +2386,15 @@ void MapEdit::MapObjUpdate()
 		{
 			mapObj_->Update();
 		}
-		else if (mapObj_->GetFbxmodelType() == 6)
+		else if (mapObj_->GetFbxmodelType() == 6 && scene != 2)
 		{
 			//必要な情報をセットしていく
 			mapObj_->SetMyPosition(MyPosition);
 			mapObj_->SetCameraAxisZ(CammeraZAxis);
 			mapObj_->SetTarget(Target);
-
 			mapObj_->SetShotBlue(Shot);
 			mapObj_->SetShotRed(Shot2);
 			mapObj_->SetWark(wark);
-
 			mapObj_->SetTutorial(Tutorial);
 
 			//Gunを持った時のチュートリアルフラグ

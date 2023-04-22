@@ -55,7 +55,18 @@ void SceneSelect::MouseGet()
 
 void SceneSelect::Title()
 {
-	
+	// マウスの入力を取得
+	Input::MouseMove mouseMove = input->GetMouseMove();
+
+	GetCursorPos(&p);
+
+	// スクリーン座標をクライアント座標に変換する
+	ScreenToClient(hwnd, &p);
+
+	//マウスの座標を代入
+	mouseX = p.x;
+	mouseY = p.y;
+
 	//タイトルで指定範囲内でクリックしたら適切なシーンにする
 	if (scene == 0)
 	{
@@ -171,7 +182,7 @@ void SceneSelect::ChangeScene()
 		{
 			Tutorial_time_2 += 1;
 
-			int End_tutoirial_time_2 = 1020;
+			int End_tutoirial_time_2 = 1160;
 
 			if (Tutorial_time_2 > End_tutoirial_time_2)
 			{

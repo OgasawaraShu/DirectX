@@ -200,6 +200,20 @@ void GameScene::SpriteInitialize(DirectXCommon* dxCommon,WinApp* winApp)
 	spriteCusor->SetSize({ 40,40 });
 	spriteCusor->SettexSize({ 1600,1200 });
 
+	spriteNavi1 = Sprite::Create(spriteCommon, 15);
+
+	spriteCommon->SpriteCommonLoadTexture(15, L"Resources/UI/Navi1.png");
+	spriteNavi1->SetPosition({ 640,253,0 });
+	spriteNavi1->SetSize({ 1280,720 });
+	spriteNavi1->SettexSize({ 1280,720 });
+
+	spriteNavi2 = Sprite::Create(spriteCommon, 16);
+
+	spriteCommon->SpriteCommonLoadTexture(16, L"Resources/UI/Navi2.png");
+	spriteNavi2->SetPosition({ 640,253,0 });
+	spriteNavi2->SetSize({ 1280,720 });
+	spriteNavi2->SettexSize({ 1280,720 });
+
 	//デバックテキスト
 	debugtext = new DebugText();
 	debugtext2 = new DebugText();
@@ -338,8 +352,8 @@ void GameScene::FbxInitialize()
 	float radius = 5.0f;
 	float PlayerRadius = 1.0f;
 
-	redBullet->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
-	blueBullet->SetColider(new SphereCollider(XMVECTOR{ 0,radius,0,0 }, radius));
+	redBullet->SetColider(new SphereCollider(XMVECTOR{ 0,0,0,0 }, radius));
+	blueBullet->SetColider(new SphereCollider(XMVECTOR{ 0,0,0,0 }, radius));
 	player->SetColider(new SphereCollider(XMVECTOR{ 0,PlayerRadius,0,0 }, PlayerRadius));
 
 	//当たり判定の属性
@@ -400,6 +414,7 @@ void GameScene::SceneUpdate()
 		fbx3d36->SetPosition({ 307,10,60 });
 		fbx3d36->SetScale({ 0.1,0.1, 0.1 });
 		fbx3d36->SetRotate({ 0,0,180 });
+		
 	}
 	if (player->GetColision() == false)
 	{
@@ -813,8 +828,11 @@ void GameScene::SceneDraw()
 	}
 
 	// パーティクルの描画
-	particleManRed->Draw(dxCommon_->GetCmdList());
-	particleManBlue->Draw(dxCommon_->GetCmdList());
+	if (scene->GetScene() != 99)
+	{
+		particleManRed->Draw(dxCommon_->GetCmdList());
+		particleManBlue->Draw(dxCommon_->GetCmdList());
+	}
 	//ポストエフェクトここまで
 	postEffect->PostDrawScene(dxCommon_->GetCmdList());
 
@@ -890,10 +908,55 @@ void GameScene::SceneDraw()
 	if (player->GetTutorialWalk() == true && scene->GetScene() == 1)
 	{
 		Tutorial_num = 2;
+
+		if (scene->GetTutorial_2() == false&& mapedit->GetTutorialGun() == false)
+		{
+
+			TimeRate1 += 0.2f;
+
+			float Time = min(TimeRate1 / 5.0f, 1.0f);
+			float easeY = Physics::easingOut(start, end, Time);
+
+			spriteNavi1->SetPosition({ 640,easeY,0 });
+			spriteNavi1->SpriteTransVertexBuffer();
+			spriteNavi1->Update();
+			spriteNavi1->SpriteDraw();
+		}
+
 	}
 	if (mapedit->GetTutorialGun() == true&&Tutorial_num==2&&scene->GetScene()==1)
 	{
+		Gun_txt_time += 1;
 		Tutorial_num = 3;
+
+		TimeRate2 += 0.2f;
+
+		float Time = min(TimeRate2 / 5.0f, 1.0f);
+		float easeY = Physics::easingOut(end, start, Time);
+
+		if (easeY > start)
+		{
+			TimeRate1 = 0.0f;
+
+			spriteNavi1->SetPosition({ 640,easeY,0 });
+			spriteNavi1->SpriteTransVertexBuffer();
+			spriteNavi1->Update();
+			spriteNavi1->SpriteDraw();
+		}
+		else if(easeY <= start&&Gun_txt_time>1200)
+		{
+			TimeRate1 += 0.2f;
+
+
+
+			float Time2 = min(TimeRate1 / 5.0f, 1.0f);
+			float easeY2 = Physics::easingOut(start, end, Time2);
+
+			spriteNavi2->SetPosition({ 640,easeY2,0 });
+			spriteNavi2->SpriteTransVertexBuffer();
+			spriteNavi2->Update();
+			spriteNavi2->SpriteDraw();
+		}
 	}
 
 
