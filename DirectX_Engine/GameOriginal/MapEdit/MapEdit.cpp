@@ -1597,6 +1597,11 @@ void MapEdit::ObjMapUpdate(std::list<std::unique_ptr<MapEdit>>& Objs, int sceneS
 			}
 
 			mapObj_->ObjUpdate(0, 0);
+
+			if (mapObj_->GetPossible() == true)
+			{
+				Possible_get_flag = true;
+			}
 		}
 		else if (mapObj_->GetFbxmodelType() == 7 && scene == sceneSet)
 		{
@@ -1608,6 +1613,11 @@ void MapEdit::ObjMapUpdate(std::list<std::unique_ptr<MapEdit>>& Objs, int sceneS
 			mapObj_->SetTutorial(Tutorial);
 
 			mapObj_->BoxObjUpdate(0, 0);
+
+			if (mapObj_->GetPossible() == true)
+			{
+				Possible_get_flag = true;
+			}
 		}
 		else if (mapObj_->GetFbxmodelType() == 9 && scene == sceneSet)
 		{
@@ -1619,6 +1629,11 @@ void MapEdit::ObjMapUpdate(std::list<std::unique_ptr<MapEdit>>& Objs, int sceneS
 			mapObj_->SetTutorial(Tutorial);
 
 			mapObj_->TurettUpdate();
+
+			if (mapObj_->GetPossible() == true)
+			{
+				Possible_get_flag = true;
+			}
 		}
 	}
 }
@@ -2378,6 +2393,8 @@ void MapEdit::BlueCameraObjUpdate(ID3D12GraphicsCommandList* cmdList)
 void MapEdit::MapObjUpdate()
 {
 
+	Possible_get_flag = false;
+
 	//txt‚©‚ç“Ç‚İ‚ñ‚¾î•ñ‚ğ‚à‚Æ‚ÉXVA˜^‰æ
 	for (std::unique_ptr<MapEdit>& mapObj_ : mapObjs) {
 		//mapObj_->Update();
@@ -2408,6 +2425,11 @@ void MapEdit::MapObjUpdate()
 			}
 
 			mapObj_->ObjUpdate(0, 0);
+
+			if (mapObj_->GetPossible() == true)
+			{
+				Possible_get_flag = true;
+			}
 		}
 		else if (mapObj_->GetFbxmodelType() == 7 && scene != 2)
 		{
@@ -2418,6 +2440,11 @@ void MapEdit::MapObjUpdate()
 			mapObj_->SetTutorial(Tutorial);
 
 			mapObj_->BoxObjUpdate(0, 0);
+
+			if (mapObj_->GetPossible() == true)
+			{
+				Possible_get_flag = true;
+			}
 		}
 		else if (mapObj_->GetFbxmodelType() == 9 && scene !=2)
 		{
@@ -2429,11 +2456,18 @@ void MapEdit::MapObjUpdate()
 			mapObj_->SetTutorial(Tutorial);
 
 			mapObj_->TurettUpdate();
+
+			if (mapObj_->GetPossible() == true)
+			{
+				Possible_get_flag = true;
+			}
 		}
 	}
 
+
 	int sceneSecond = 2;
 	int sceneThree = 3;
+
 	ObjMapUpdate(mapObjs2, sceneSecond);
 	ObjMapUpdate(mapObjs3, sceneThree);
 }

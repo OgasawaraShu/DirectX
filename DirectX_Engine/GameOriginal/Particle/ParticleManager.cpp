@@ -568,7 +568,7 @@ void ParticleManager::CreateParticles(XMFLOAT3 pos)
 
 void ParticleManager::CreateParticlesPortal(XMFLOAT3 pos, int rotate)
 {
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 5; i++) {
 		// X,Y,Z全て[-5.0f,+5.0f]でランダムに分布
 		const float rnd_pos = 0.0f;
 

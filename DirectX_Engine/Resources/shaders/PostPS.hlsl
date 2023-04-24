@@ -19,7 +19,7 @@ float WhiteNoise(float2 coord) {
 float4 main(VSOutput input) : SV_TARGET
 {
 
-	//
+	
 	if (Post == true)
 	{
 	float density = 200;

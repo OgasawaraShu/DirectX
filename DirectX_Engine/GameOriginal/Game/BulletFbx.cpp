@@ -123,7 +123,14 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 				{
 					position.z -= 5.0f;
 				}
-			
+				else if (Collision_fbx_flag == 5)
+				{
+					position.y -= 2.0f;
+				}
+				else if (Collision_fbx_flag == 6)
+				{
+					position.y += 3.0f;
+				}
 
 			}
 			else if (info.collider->attribute == 512)
@@ -204,6 +211,14 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 				{
 					position.z -= 5.0f;
 				}
+				else if (Collision_fbx_flag == 5)
+				{
+					position.y -= 2.0f;
+				}
+				else if (Collision_fbx_flag == 6)
+				{
+					position.y += 3.0f;
+				}
 			}
 			else if(info.collider->attribute == 512)
 			{
@@ -218,7 +233,6 @@ void BulletFbx::OnCollision(const CollisionInfo& info)
 			}
 		}
 	}
-
 }
 
 BulletFbx::BulletFbx(Input* input)

@@ -54,6 +54,8 @@ public:
 
     bool GetTutorialGun() { return Tutorial_gun; }
 
+    bool GetPossible() { return Possible_get; }
+
     float GetRotationY() { return rotation.y; }
 
     void SetInitPosition(XMFLOAT3 pos) { Init_pos = pos; }
@@ -99,6 +101,8 @@ protected:
     bool onGround = true;//ínñ ÇÃîªíË
 
     bool Collision_Box = false;
+
+    bool Possible_get = false;
     //éùÇ¬í∑Ç≥
     float Box_ray_length = 8.0f;
 

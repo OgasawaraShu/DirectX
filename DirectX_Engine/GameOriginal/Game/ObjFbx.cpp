@@ -215,6 +215,11 @@ void ObjFbx::RayCheck()
 		rotation.y = 180;
 	}
 
+	Possible_get = false;
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ, &raycastHit, 20.0f) && !cursorOn && Tutorial == false) {
+		Possible_get = true;
+	}
+
 	//トリガー処理のための記憶
 	Old_iPad_left = GP->iPad_left, Old_iPad_right = GP->iPad_right, iOld_Pad_up = GP->iPad_up, Old_iPad_down = GP->iPad_down;
 	Old_iPad_leftshoulder = GP->iPad_leftshoulder, Old_iPad_rightshoulder = GP->iPad_rightshoulder;
@@ -321,7 +326,7 @@ void ObjFbx::BoxRayCheck()
 
 
 	XMFLOAT3 position_{};
-	float error = 6.0f;
+	float error = 9.0f;
 
 	if (Collision_Box == true)
 	{
@@ -362,7 +367,11 @@ void ObjFbx::BoxRayCheck()
 		cursorOn2 = false;
 	}
 
+	Possible_get = false;
 
+	if (CollisionManager::GetInstance()->Raycast(ray, COLLISION_ATTR_OBJ2, &raycastHit, 35.0f)&& !cursorOn2 && Tutorial == false) {
+		Possible_get = true;
+	}
 
 	//トリガー処理のための記憶
 	Old_iPad_left = GP->iPad_left, Old_iPad_right = GP->iPad_right, iOld_Pad_up = GP->iPad_up, Old_iPad_down = GP->iPad_down;

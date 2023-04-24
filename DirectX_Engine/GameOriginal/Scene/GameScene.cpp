@@ -214,6 +214,27 @@ void GameScene::SpriteInitialize(DirectXCommon* dxCommon,WinApp* winApp)
 	spriteNavi2->SetSize({ 1280,720 });
 	spriteNavi2->SettexSize({ 1280,720 });
 
+	spriteNavi0 = Sprite::Create(spriteCommon, 17);
+
+	spriteCommon->SpriteCommonLoadTexture(17, L"Resources/UI/Navi0.png");
+	spriteNavi0->SetPosition({ 640,253,0 });
+	spriteNavi0->SetSize({ 1280,720 });
+	spriteNavi0->SettexSize({ 1280,720 });
+
+	spriteNavi3 = Sprite::Create(spriteCommon, 18);
+
+	spriteCommon->SpriteCommonLoadTexture(18, L"Resources/UI/Navi3.png");
+	spriteNavi3->SetPosition({ 640,253,0 });
+	spriteNavi3->SetSize({ 1280,720 });
+	spriteNavi3->SettexSize({ 1280,720 });
+
+
+	spriteGet = Sprite::Create(spriteCommon, 19);
+
+	spriteCommon->SpriteCommonLoadTexture(19, L"Resources/UI/AimingGet.png");
+	spriteGet->SetPosition({ 640,362.5,0 });
+	spriteGet->SetSize({ 127,141 });
+	spriteGet->SettexSize({ 127,141 });
 	//デバックテキスト
 	debugtext = new DebugText();
 	debugtext2 = new DebugText();
@@ -814,6 +835,7 @@ void GameScene::SceneDraw()
 			mapedit->LoadSet(dxCommon_->GetCmdList());
 			mapedit->MapObjUpdate();
 			mapedit->MapEditDraw(dxCommon_->GetCmdList());
+			PossibleGet = mapedit->GetPossibleFlag();
 		}
 
 		
@@ -889,9 +911,18 @@ void GameScene::SceneDraw()
 
 		if (scene->GetTutorial() == false)
 		{
-			spriteAim->SpriteTransVertexBuffer();
-			spriteAim->Update();
-			spriteAim->SpriteDraw();
+			if (PossibleGet == false)
+			{
+				spriteAim->SpriteTransVertexBuffer();
+				spriteAim->Update();
+				spriteAim->SpriteDraw();
+			}
+			else if (PossibleGet == true)
+			{
+				spriteGet->SpriteTransVertexBuffer();
+				spriteGet->Update();
+				spriteGet->SpriteDraw();
+			}
 		}
 		//テキスト
 	
@@ -903,7 +934,31 @@ void GameScene::SceneDraw()
 		}
 	}
 
+	if (player->GetTutorialWalk() == false && scene->GetScene() == 1 && scene->GetTutorial() == false && Cut_y_size >= 270)
+	{
+		TimeRate1 += 0.2f;
 
+		float Time = min(TimeRate1 / 5.0f, 1.0f);
+		float easeY = Physics::easingOut(start, end, Time);
+
+		spriteNavi0->SetPosition({ 640,easeY,0 });
+		spriteNavi0->SpriteTransVertexBuffer();
+		spriteNavi0->Update();
+		spriteNavi0->SpriteDraw();
+	}
+	else if(player->GetTutorialWalk() == true && scene->GetScene() == 1&& scene->GetTutorial_2() == true)
+	{
+		TimeRate2 += 0.2f;
+		TimeRate1 = 0.0f;
+
+		float Time = min(TimeRate2 / 5.0f, 1.0f);
+		float easeY = Physics::easingOut(end, start, Time);
+
+		spriteNavi0->SetPosition({ 640,easeY,0 });
+		spriteNavi0->SpriteTransVertexBuffer();
+		spriteNavi0->Update();
+		spriteNavi0->SpriteDraw();
+	}
 
 	if (player->GetTutorialWalk() == true && scene->GetScene() == 1)
 	{
@@ -911,7 +966,7 @@ void GameScene::SceneDraw()
 
 		if (scene->GetTutorial_2() == false&& mapedit->GetTutorialGun() == false)
 		{
-
+			TimeRate2 = 0.0f;
 			TimeRate1 += 0.2f;
 
 			float Time = min(TimeRate1 / 5.0f, 1.0f);
@@ -924,6 +979,8 @@ void GameScene::SceneDraw()
 		}
 
 	}
+
+
 	if (mapedit->GetTutorialGun() == true&&Tutorial_num==2&&scene->GetScene()==1)
 	{
 		Gun_txt_time += 1;
@@ -970,12 +1027,37 @@ void GameScene::SceneDraw()
 
 		if (player->GetPositionZ() > 65.0f&&Tutorial_num == 4)
 		{
-			Tutorial_num = 5;
+			Tutorial_num = 5;		
 		}
 	}
+
+	if (Tutorial_num == 5)
+	{
+		stage2_txt_time += 1;
+
+		if (stage2_txt_time >= 800)
+		{
+			TimeRate1 += 0.2f;
+
+			float Time2 = min(TimeRate1 / 5.0f, 1.0f);
+			float easeY2 = Physics::easingOut(start, end, Time2);
+
+			spriteNavi3->SetPosition({ 640,easeY2,0 });
+			spriteNavi3->SpriteTransVertexBuffer();
+			spriteNavi3->Update();
+			spriteNavi3->SpriteDraw();
+		}
+	}
+
 	if (scene->GetScene() == 3)
 	{
 		Tutorial_num = 6;
+	}
+
+	if (scene->GetScene() == 99)
+	{
+		TimeRate1 = 0.0f;
+		TimeRate2 = 0.0f;
 	}
 
 

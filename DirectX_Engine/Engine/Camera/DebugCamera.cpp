@@ -335,7 +335,7 @@ volatile void DebugCamera::MainSceneUpdate()
 			move = (XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
 		}
 		else if (s == 2) {
-			move = -(XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
+			move = (XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));
 		}
 		else if (s == 3) {
 			move = -(XMVector3Normalize(ColisionVec - XMVector3Dot(ColisionVec, move) * move));

@@ -97,9 +97,12 @@ private://クラス変数
 	bool End_flag = false;
 	float TimeRate1 = 0.0f;
 	float TimeRate2 = 0.0f;
+	float TimeRate3 = 0.0f;
 	float start = 253;
 	float end = 360;
 	int Gun_txt_time = 0;
+	int stage2_txt_time = 0;
+	bool PossibleGet = false;
 
 	//Imgui用の調整データ
 	float pointLightPos[3] = { 0,0,0 };
@@ -154,8 +157,11 @@ private://ポインタ
 	Sprite* spriteMenuOp = nullptr;
 	Sprite* spriteMenuExit = nullptr;
 	Sprite* spriteCusor = nullptr;
+	Sprite* spriteGet = nullptr;
+	Sprite* spriteNavi0 = nullptr;
 	Sprite* spriteNavi1 = nullptr;
 	Sprite* spriteNavi2 = nullptr;
+	Sprite* spriteNavi3 = nullptr;
 
 
 	//デバックテキスト

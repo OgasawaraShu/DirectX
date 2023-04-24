@@ -103,6 +103,8 @@ public:
 
 	bool GetTutorial() { return Tutorial_box; }
 
+	bool GetPossibleFlag() { return Possible_get_flag;}
+
 	void SetTutorialGun(bool flag) { Tutorial_gun = flag; }
 
 	void SetScene(int scene_) { scene = scene_; }
@@ -258,7 +260,7 @@ private:
 	//portalgunを取ったかのフラグ
 	bool Cursor_on;
 
-	
+	bool Possible_get_flag=false;
 
 	//コリジョンサイズのモデル可視化フラグ
 	bool Colision_draw_flag = true;
